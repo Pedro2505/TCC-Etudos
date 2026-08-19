@@ -28,6 +28,20 @@ Número só entra com o script que o gerou. Se não sei qual script, escrevo "n�
 > erra mais em tráfego legítimo e responde "probabilidade 0,87" quando o analista pergunta
 > por que bloqueou.
 
+**Primeira frase do capítulo 2 escrita por ele** — 19/08, seção 2.4:
+
+> O vazamento de dados (*data leakage*) ocorre quando os dados de teste vazam e vão para os
+> dados de treino.
+
+*Estado:* frase 1 fechada. A **frase 2** falta e tem que dizer duas coisas: o recall fica
+alto **no experimento**, e isso sugere um desempenho que o sistema não terá em produção.
+
+*Como ela nasceu (vale para o diário):* ele definiu vazamento como causa de **overfitting**
+na primeira tentativa. Corrigiu sozinho depois da pergunta dos dois alunos que receberam o
+gabarito — o aluno que estudou também tirou 98, logo o defeito está na **medição**, não no
+modelo. Também escreveu que o vazamento "deixa o recall ruim"; corrigiu para **alto** ao
+lembrar que a nota do gabarito foi 98.
+
 ---
 
 ## 2. Conteúdo levantado, ainda por escrever (eu escrevo)
