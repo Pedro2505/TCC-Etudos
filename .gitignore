@@ -1,0 +1,32 @@
+# Ambiente virtual (recriavel via requirements.txt)
+venv/
+.venv/
+
+# Cache do Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Node (frontend, quando chegar a hora)
+node_modules/
+dist/
+
+# Artefatos de execucao
+*.log
+
+# Arquivos brutos do CSIC 2010 (54 MB, redistribuicao restrita pela fonte).
+# Ficam em disco, fora do versionamento.
+datasets/CSIC2010/*.txt
+
+# Datasets de terceiros fora de escopo (decisao de 13/08). Nao redistribuir.
+datasets/SQL Injection/
+datasets/XSS/
+
+# Modelos treinados (regeraveis pelo script de treino)
+models/*.pkl
+
+# Editores / SO
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
