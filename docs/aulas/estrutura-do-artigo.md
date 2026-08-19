@@ -266,6 +266,70 @@ introdução. É um dos parágrafos mais fortes que o artigo pode ter.
 
 ---
 
+## 3b. Regras do `TCC Modelo.docx` (lidas em 2026-08-19)
+
+O modelo da Unimar está na raiz do repositório. **Ele manda mais que qualquer combinado
+deste arquivo.** O que ele exige, e que não estava sendo seguido:
+
+### Numeração de seções
+
+`2 SEÇÃO 2` · `2.1 Subseção 2.1` — número, espaço, título. Seção em maiúsculas e negrito,
+subseção em negrito com inicial maiúscula.
+
+### Quadro × Tabela — são coisas diferentes, com numerações independentes
+
+| | **Quadro** | **Tabela** |
+| :--- | :--- | :--- |
+| Conteúdo | explicações e conteúdo **textual** | resumo de conteúdo **numérico** |
+| Bordas | **fechadas** — grade completa | **laterais abertas** — só três linhas horizontais: topo, sob o cabeçalho, base |
+| Chamada no texto | "Quadro 1", "Quadro 2"… | "Tabela 1", "Tabela 2"… |
+
+Sempre com inicial maiúscula seguida da numeração, e **sempre referidos no texto**.
+As duas séries são numeradas **separadamente**.
+
+### Título, fonte e alinhamento (vale para Quadro, Tabela e Figura)
+
+- **Título acima**, centralizado: `**Quadro 1** – Exemplo de quadro`. Só o rótulo em negrito;
+  travessão e título em texto normal.
+- **Fonte abaixo**, centralizada: `**Fonte:** Elaboração própria`. Só "Fonte:" em negrito.
+  Quando não for sua: `Fonte: Universidade de Marília (2026)`.
+- O elemento inteiro **centralizado no texto**.
+
+### Citações — as formas que o modelo exemplifica
+
+Indiretas:
+
+| Autores | Forma |
+| :--- | :--- |
+| um | `(Sobrenome, 2026)` |
+| dois ou três | `(Sobrenome 1; Sobrenome 2; Sobrenome 3, 2026)` |
+| mais de três | `(Sobrenome et al., 2026)` |
+| autor no corpo do texto | `De acordo com Autor (2026, p. 11)` |
+
+Diretas:
+
+- **até 3 linhas** — entre aspas, no corpo do parágrafo, com `(Sobrenome, 2026, p. 10)`.
+- **4 linhas ou mais** — pula uma linha, **recuo de 4 cm no parágrafo inteiro, fonte
+  tamanho 11, sem aspas**, com a citação antes ou depois.
+
+### Referências
+
+- **Somente as citadas no texto.** Referência não citada é erro, não é bônus.
+- Padrão das diretrizes da revista **RDBCI**. O modelo traz os seis formatos: livro, evento,
+  periódico, periódico online, monografia/dissertação/tese, publicação online.
+- Ferramenta indicada pelo próprio modelo: **MORE UFSC** — https://more.ufsc.br/
+  **Usar durante o fichamento**, gerando a entrada na hora, em vez de deixar as 12 para o fim.
+
+### Resumo e palavras-chave — conferidos em 19/08
+
+| Exigência do modelo | Estado na entrega parcial |
+| :--- | :--- |
+| Resumo estruturado, até 200 palavras | **158 palavras** — OK |
+| Abstract | 155 palavras — OK |
+| 3 a 5 palavras-chave separadas por `;` | 5, separadas por `;` — OK |
+
+---
+
 ## 4. Formato: ABNT (confirmado em 2026-08-13)
 
 Artigo científico em **ABNT NBR 6022**, uma coluna.

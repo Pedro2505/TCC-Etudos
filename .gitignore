@@ -30,3 +30,7 @@ models/*.pkl
 .idea/
 Thumbs.db
 desktop.ini
+
+# Capturas do TCC Modelo.docx (referencia de formatacao)
+image.png
+image copy.png
