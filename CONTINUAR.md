@@ -162,7 +162,10 @@ Pendências herdadas dela (detalhadas em `estrutura-do-artigo.md` §1b):
 - [ ] **Trabalhos relacionados:** 8–12 referências fichadas, fora do horário de sessão.
       Ainda não começou.
 - [ ] Trocar o Notepad por VS Code antes da Etapa 1. **Vence hoje** — a Etapa 1 é amanhã.
-- [x] `git init` — feito em 19/08. Falta o primeiro commit e um `.gitignore` conferido.
+- [x] **Git resolvido em 19/08.** Repositório **privado** em
+      `https://github.com/Pedro2505/TCC-Etudos.git`, branch `main`, primeiro commit enviado.
+      Fora do versionamento: CSIC bruto (54 MB) e os datasets SQLi/XSS fora de escopo.
+      **Novo hábito: commitar ao fim de cada sessão.**
 
 ## Frases já prontas para o artigo
 
