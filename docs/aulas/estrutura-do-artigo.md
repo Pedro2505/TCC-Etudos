@@ -210,20 +210,29 @@ elementos gráficos da seção 5 e da análise em volta deles.
 **12 elementos.** Cada um nasce de uma etapa do `ROTEIRO.md`. Com a análise em volta de
 cada um, as 20 páginas se preenchem honestamente.
 
-| # | Elemento | Etapa |
-| :--- | :--- | :--- |
-| Tab. 1 | Composição do CSIC 2010 por partição | 1 |
-| Tab. 2 | Distribuição das famílias de anomalia + concordância da amostra de 50 | 3 |
-| Tab. 3 | Features por bloco | 4 |
-| Tab. 4 | Validação cruzada — média ± desvio entre folds | 5 |
-| Fig. 2 | Curva limiar × FPR / recall / precisão | 6 |
-| Tab. 5 | **Ablação e baseline regex** | 7 |
-| Tab. 6 | Camada 1 (assinaturas) isolada | 8 |
-| Fig. 1 | Arquitetura da cascata | 9 |
-| Tab. 7 | Latência — mediana e p95 por camada | 9 |
-| **Tab. 8** | **Matriz de concordância** ← *resultado central* | 10 |
-| Tab. 9 | Recall **por família**, por configuração | 10 |
-| Fig. 3 | Laudo de explicabilidade | 11 |
+> **Revisado em 2026-08-19** aplicando a distinção Quadro × Tabela do `TCC Modelo.docx`
+> (§3b). "Features por bloco" é conteúdo textual → virou **Quadro 1**, e as tabelas
+> seguintes foram renumeradas. As duas séries são independentes.
+
+| # | Elemento | Tipo | Etapa |
+| :--- | :--- | :--- | :--- |
+| Tab. 1 | Composição do CSIC 2010 por partição | numérico | 1 |
+| Tab. 2 | Distribuição das famílias de anomalia + concordância da amostra de 50 | numérico | 3 |
+| **Quadro 1** | **Features por bloco** | **textual** | 4 |
+| Tab. 3 | Validação cruzada — média ± desvio entre folds | numérico | 5 |
+| Fig. 2 | Curva limiar × FPR / recall / precisão | gráfico | 6 |
+| Tab. 4 | **Ablação e baseline regex** | numérico | 7 |
+| Tab. 5 | Camada 1 (assinaturas) isolada | numérico | 8 |
+| Fig. 1 | Arquitetura da cascata | diagrama | 9 |
+| Tab. 6 | Latência — mediana e p95 por camada | numérico | 9 |
+| **Tab. 7** | **Matriz de concordância** ← *resultado central* | numérico | 10 |
+| Tab. 8 | Recall **por família**, por configuração | numérico | 10 |
+| Fig. 3 | Laudo de explicabilidade | imagem | 11 |
+
+**Candidato a Quadro 2, ainda não decidido** (levantado em 19/08): as **24 regras de
+assinatura** da camada 1 — nome da regra, o que casa, exemplo. É conteúdo textual puro, e
+responde à pergunta de banca *"quais são as suas assinaturas?"* sem gastar página de
+resultado. Decidir na Etapa 8.
 
 ### Regra de sessão (a partir de 2026-08-13)
 
