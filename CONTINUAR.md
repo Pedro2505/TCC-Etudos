@@ -46,15 +46,99 @@ Diário do dia registrado.
 
 (Pendente desde 13/08. Cobrar numa retomada.)
 
-## Próximo passo — Etapa 1: ingestão do CSIC 2010 (sessão 3, quinta 20/08)
+## O PLANO MUDOU EM 19/08 — leia isto antes de qualquer coisa
 
-Modo: **tentativa curta, depois gabarito** (decidido em 13/08 — o valor da Etapa 1 está no
-código funcionando, não na decisão).
+Decisão do Pedro, com a auditoria do projeto antigo na mão: **o que decide a nota é o artigo
+e a defesa**, não redigitar 1.750 linhas que já funcionam em `C:\Dev\Tcc`.
 
-Fecha com a **Tabela 1 do artigo** — composição do CSIC 2010 por partição — e o parágrafo
-que a analisa, escrito na mesma sessão.
+- **Todas as etapas passam a ser reaproveitadas e auditadas**, pelo protocolo de 5 passos do
+  `CLAUDE.md`. A regra das "5 etapas intocáveis à mão" está **revogada**.
+- **O passo 4 do protocolo — nomear a alternativa descartada — não é negociável.** É a
+  única coisa que separa este caminho de chegar na banca defendendo o que não entende.
+- As ~10 sessões liberadas foram para **artigo (10)** e **simulado de banca (4)**.
 
-Antes de começar: trocar o Notepad pelo VS Code. (O `git init` já foi feito em 19/08.)
+### A ameaça número 1 à defesa (descoberta em 19/08)
+
+Medição do projeto antigo (`docs/medicoes/avaliacao_hibrida.md`), recall por família:
+
+| Família | n | Assinaturas | Modelo | Ganho da camada 2 |
+| :--- | ---: | ---: | ---: | ---: |
+| Tampering sem assinatura | 11.332 | 4,0% | 49,6% | **+45,6 pp** |
+| SQLi | 1.018 | 100,0% | 99,9% | +0,0 pp |
+| XSS | 952 | 100,0% | 100,0% | +0,0 pp |
+| **SQLi + XSS (escopo declarado)** | **1.970** | **100,0%** | **99,9%** | **+0,0 pp** |
+
+> **No escopo que o artigo declara, a camada de ML acrescenta zero.** Todo o ganho está em
+> *parameter tampering*, que a introdução entregue nem menciona.
+
+Pergunta de banca fatal: *"se o seu WAF de regras já pega 100% de SQLi e XSS, para que serve
+o Machine Learning num trabalho sobre SQLi e XSS?"*
+
+Duas saídas, decisão na sessão de **10/09**, com dado na mão:
+
+- **A — alargar o escopo declarado** para detecção de anomalias HTTP em geral. O resultado
+  central vira os +45,6 pp em tampering. Custo: mexer na introdução entregue e conversar com
+  o Paulo.
+- **B — provar o ganho dentro do escopo atual**: construir um conjunto de SQLi/XSS
+  **ofuscados** que as assinaturas não pegam e medir o recall do modelo neles. O
+  `evasion_test.py` do projeto antigo é a semente, mas hoje é demonstração com 5 payloads,
+  não medição. Custo: uma sessão, e o resultado pode não ser o desejado.
+
+### Auditoria dos objetivos específicos (19/08)
+
+| # | Objetivo específico | Situação no projeto antigo |
+| :--- | :--- | :--- |
+| 1 | Estudar SQLi e XSS | texto — a escrever |
+| 2 | Analisar WAFs tradicionais | texto — a escrever |
+| 3 | Selecionar datasets HTTP | OK — CSIC 2010, 32.808 requisições em escopo |
+| 4 | Pré-processamento e features | OK — `extractor.py` |
+| 5 | **Treinar e comparar diferentes modelos** | **NÃO CUMPRIDO.** Só Random Forest; B/C/D do `baseline_comparison.md` são ablação de features, todas RF. Resolver em **11/09**. |
+| 6 | Middleware integrado | OK — `api.py` |
+| 7 | As 6 métricas + tempo de resposta | OK — latência por etapa, p50/p95/p99, 300 execuções |
+| — | "Zero-day" (seção 1.2) | **NÃO MEDIDO.** `evasion_test.py` testa ofuscação de ataque conhecido, que não é zero-day. Suavizar ou declarar em limitações. |
+
+## Próximo passo — sessão 3, quinta 20/08
+
+**Migração e reprodução.** Trazer o sistema para este repositório e rodar ponta a ponta.
+
+Critério de aceite: **os números reproduzem**. Se o recall por família sair diferente do que
+está em `C:\Dev\Tcc\docs\medicoes\`, descobrir por quê antes de seguir.
+
+Fecha com a **Tabela 1 do artigo** (composição do CSIC 2010 por partição) gerada por script
+**deste** repositório — e o parágrafo que a analisa. Isso também resolve a divergência dos
+6,6% x 13,9% (ver `CLAUDE.md`).
+
+Antes de começar: trocar o Notepad pelo VS Code.
+
+## Calendário revisado (22 sessões, 20/08 a 30/10)
+
+| Sessões | Datas | O quê |
+| :--- | :--- | :--- |
+| 3–4 | 20, 21/08 | Migração e reprodução ponta a ponta · **Tabela 1** |
+| 5–8 | 27, 28/08 · 03, 04/09 | **Auditoria** das 11 peças, protocolo de 5 passos, ~3 por sessão |
+| 9 | 10/09 | **Resolver o escopo** — medir SQLi/XSS ofuscados, decidir A ou B |
+| 10 | 11/09 | **Cumprir o objetivo 5** — +2 classificadores sob a mesma validação |
+| 11–16 | 17, 18, 24, 25/09 · 01, 02/10 | **Artigo** — capítulos 2 a 7, um por sessão |
+| 17–18 | 08, 09/10 | Consolidação: tabelas, figuras, referências ABNT |
+| 19–20 | 15, 16/10 | Revisão final. **Texto fechado em 16/10.** |
+| 21–24 | 22, 23, 29, 30/10 | **Simulados de banca e ensaio da defesa** |
+
+**Fora das sessões:** fichamento de 8–12 referências para *Trabalhos relacionados*.
+Continua sendo o único item que não cabe nas quintas e sextas — e agora é o gargalo do
+capítulo 3.
+
+## Como treinar a defesa (definido em 19/08)
+
+Em ordem de eficácia. Os dois primeiros são diários, os dois últimos são de sessão:
+
+1. **Explicar em voz alta, sem olhar, com cronômetro.** 3 minutos por peça. Mental não vale
+   — mental engana.
+2. **A pergunta "por que não Y?"** para cada decisão. É o passo 4 do protocolo e é o que
+   separa quem fez de quem viu ser feito.
+3. **Simulado de banca com interrupção.** 20 minutos ao fim de cada etapa auditada, sem
+   consulta. Ele precisa **pedir** — até 19/08 nunca pediu nenhum.
+4. **Gravar o áudio explicando e ouvir depois.** Desconfortável e eficaz: as hesitações
+   aparecem.
 
 ## Decisões travadas (não reabrir)
 
