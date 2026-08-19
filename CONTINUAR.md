@@ -108,6 +108,24 @@ Fecha com a **Tabela 1 do artigo** (composição do CSIC 2010 por partição) ge
 **deste** repositório — e o parágrafo que a analisa. Isso também resolve a divergência dos
 6,6% x 13,9% (ver `CLAUDE.md`).
 
+### Estado da escrita (fim de 19/08)
+
+**Seção 2.4 do artigo — 3 de 6 frases do parágrafo de vazamento**, escritas por ele. Texto e
+registro do processo em `NECESSARIO.md` §1. Retomar por aí: faltam os **três exemplos
+concretos** (TF-IDF fora do fold, par GET/POST, limiar), que é a parte fácil — ele deu os
+três de cabeça em 19/08. Depois os parágrafos de classificação, Random Forest e validação.
+
+**As subseções 2.1, 2.2 e 2.3 estão travadas por referências**, não por escrita. Sem
+fichamento não adianta sentar para escrever — vira `[CITAR]` a cada linha.
+
+> **O gargalo real do trabalho hoje é o fichamento de 8–12 referências.** Ele trava o
+> capítulo 2 (três quartos) e o capítulo 3 inteiro. Não cabe nas sessões de quinta e sexta;
+> é leitura de terça à noite, duas por noite. **Cobrar isso dele toda sessão.**
+
+**Método de escrita que funcionou** (usar de novo): ele responde **falando**, depois
+transforma em frase. Uma ideia por frase, ponto final em vez de "que" encadeado. Checklist
+dos erros de forma dele em `NECESSARIO.md` §1.
+
 Antes de começar: trocar o Notepad pelo VS Code.
 
 ## Calendário revisado (22 sessões, 20/08 a 30/10)
