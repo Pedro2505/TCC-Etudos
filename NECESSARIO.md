@@ -28,19 +28,34 @@ Número só entra com o script que o gerou. Se não sei qual script, escrevo "n�
 > erra mais em tráfego legítimo e responde "probabilidade 0,87" quando o analista pergunta
 > por que bloqueou.
 
-**Primeira frase do capítulo 2 escrita por ele** — 19/08, seção 2.4:
+**Seção 2.4 — parágrafo do vazamento, escrito por ele em 19/08.** Estado: **3 de 6 frases.**
 
 > O vazamento de dados (*data leakage*) ocorre quando os dados de teste vazam e vão para os
-> dados de treino.
+> dados de treino. O recall fica alto no experimento, mas em produção não repete esse valor.
+> Se em produção o modelo não teria a informação, no treino não pode ter essa informação.
 
-*Estado:* frase 1 fechada. A **frase 2** falta e tem que dizer duas coisas: o recall fica
-alto **no experimento**, e isso sugere um desempenho que o sistema não terá em produção.
+*Pendência de digitação:* corrigir `infomração` → informação na terceira frase.
 
-*Como ela nasceu (vale para o diário):* ele definiu vazamento como causa de **overfitting**
-na primeira tentativa. Corrigiu sozinho depois da pergunta dos dois alunos que receberam o
-gabarito — o aluno que estudou também tirou 98, logo o defeito está na **medição**, não no
-modelo. Também escreveu que o vazamento "deixa o recall ruim"; corrigiu para **alto** ao
-lembrar que a nota do gabarito foi 98.
+*Falta escrever — os três exemplos concretos:* TF-IDF ajustado antes de dividir · par
+GET/POST do mesmo payload no CSIC (e por que `drop_duplicates` não resolve) · limiar
+escolhido no mesmo dado em que se mede.
+
+### Como estas três frases nasceram (registro do processo)
+
+Vale para o diário e para a próxima sessão de escrita — os erros dele são previsíveis e
+todos foram corrigidos por ele mesmo, com pergunta:
+
+1. Definiu vazamento como causa de **overfitting**. Corrigiu com a pergunta dos dois alunos
+   que receberam o gabarito: o que estudou também tirou 98, logo o defeito está na
+   **medição**, não no modelo.
+2. Escreveu que o vazamento "deixa o recall ruim". Corrigiu para **alto** ao lembrar que a
+   nota do gabarito foi 98 — o vazamento não parece erro, parece sucesso.
+3. Escreveu a régua proibindo "os dados de teste". Corrigiu para **essa informação** ao
+   responder que na forma 1 nenhuma linha do teste foi copiada e mesmo assim houve vazamento.
+
+**Padrão dos erros de forma dele:** sujeito omitido, repetição da mesma palavra na mesma
+frase, "a gente" no lugar da forma impessoal, e frases longas com três "que" encadeados.
+A solução que funcionou para a última foi **ponto final**: uma ideia por frase.
 
 ---
 
