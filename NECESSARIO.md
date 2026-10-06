@@ -77,11 +77,30 @@ Cada item abaixo é um parágrafo que ainda não existe. A ideia está fechada; 
 
 ---
 
-## 2b. Números da auditoria de 19/08 — **NENHUM PODE SER CITADO AINDA**
+## 2b. Números da auditoria de 19/08 — reproduzidos em 06/10, **exceto a latência**
 
 Vieram de `C:\Dev\Tcc\docs\medicoes\`, geradas pelo projeto antigo. **Regra nº 1: só entram
-no artigo depois de rerodados por script deste repositório.** Estão aqui como referência do
-que esperar, e para detectar se a reprodução der diferente.
+no artigo depois de rerodados por script deste repositório.**
+
+**Atualização 06/10 (checkup):** rerodados aqui, com resultado idêntico:
+
+- configurações A–D, complementaridade e recall por família:
+  `python avaliacao_hibrida.py` → `docs/medicoes/avaliacao_hibrida.md`
+- validação cruzada, ablação por bloco, limiar 0,650 e recall por família do modelo:
+  `python treino_modelo.py` → `models/model_metadata.json`, `docs/medicoes/curva_limiar.csv`
+
+A regra 1 está cumprida para esses números. **A regra 2 ainda não:** nenhum dos dois scripts
+foi auditado. **A latência continua sem script.** No antigo foi "instrumentação direta" sem
+arquivo salvo (`C:\Dev\Tcc\docs\testes_realizados.md` §2). Não citar.
+
+Números novos do log do `treino_modelo.py` (06/10), ablação por bloco de features
+(F1 médio ± desvio, 5 folds):
+heurísticas + TF-IDF 0,7182 ± 0,0126 · só TF-IDF 0,6686 ± 0,0085 · só contexto HTTP
+0,4312 ± 0,0077 · **completo 0,7824 ± 0,0088**.
+
+Tabela 1, do log do `ingestao_csic.py` (06/10): 36.000 normais de treino · 36.000 normais
+de teste · 25.065 anômalas, todas parseadas (bate com o publicado). 51.480 com payload →
+**32.808 em escopo**. A queda de 51.480 para 32.808 ainda precisa ser explicada.
 
 Base: CSIC 2010, 32.808 requisições em escopo (18.620 legítimas / 14.188 anômalas).
 Validação `StratifiedGroupKFold(5)` agrupada por payload, TF-IDF por fold, probabilidades

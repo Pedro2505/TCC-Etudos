@@ -3,7 +3,60 @@
 > **Para o Claude:** leia este arquivo, o `ROTEIRO.md` e o `diario.md` antes de responder.
 > O material de orientação está em [`docs/aulas/README.md`](docs/aulas/README.md).
 >
-> Última atualização: **2026-08-19**, fim da sessão 2 (recuperação).
+> Última atualização: **2026-10-06** (checkup geral após a tela azul). As seções abaixo
+> deste bloco são o estado de **19/08** e ficam como histórico.
+
+---
+
+## ESTADO EM 06/10 — leia isto primeiro
+
+**Nomes dos scripts em português desde 06/10** (commit `8affda1`): `api.py` → `servidor.py`,
+`model_trainer.py` → `treino_modelo.py`, `extractor.py` → `extrator.py`,
+`ingestion_csic.py` → `ingestao_csic.py`, `ingestion.py` → `ingestao.py`,
+`explain.py` → `explicacao.py`, `evasion_test.py` → `teste_evasao.py`,
+`false_positive_test.py` → `teste_falso_positivo.py`. O texto histórico abaixo usa os nomes antigos.
+
+**Reprodução feita (critério da sessão 3).** Em 06/10, `ingestao_csic.py`,
+`treino_modelo.py` e `avaliacao_hibrida.py` rodaram neste repositório. O
+`docs/medicoes/avaliacao_hibrida.md` saiu **byte a byte idêntico** ao do projeto antigo.
+O treino reproduziu F1 0,7824 ± 0,0088 e o limiar 0,650. A ameaça nº 1 (ganho zero em
+SQLi/XSS) está **confirmada aqui**, não é mais só número herdado.
+
+**Tela azul de 06/10 (~03:23).** Zerou `models/*.pkl`, `models/model_metadata.json` e
+`docs/medicoes/recall_por_familia.csv`. Foram restaurados do projeto antigo e conferidos
+contra o log do treino daqui. O `requirements.txt` registra um segfault intermitente no
+treino no mesmo dia. **Suspeita de RAM:** rodar `mdsched.exe` antes do próximo treino pesado.
+
+**Nada foi registrado entre 19/08 e 06/10.** As sessões de 10/09 (escopo) e 11/09
+(objetivo 5) não têm decisão gravada. Nenhuma peça tem auditoria no `diario.md` (0 de 11).
+O artigo segue com a introdução entregue e 3 frases da seção 2.4.
+
+### O que falta, em ordem de bloqueio
+
+1. **E-mail ao Paulo, uma mensagem só:** data exata da entrega; se as 20 páginas contam
+   referências; escopo A ou B; o objetivo específico da camada de assinaturas; a regra de
+   uso de IA. Sem a data não dá para planejar o resto.
+2. **Escopo (decisão do Pedro + Paulo).** Recomendação do Claude: **A**, alargar para
+   anomalias HTTP. O resultado já existe e está reproduzido, sem custo de código. B custa
+   uma sessão e pode não dar resultado.
+3. **Objetivo 5:** +2 classificadores na mesma validação, ou reescrever o objetivo.
+4. **Auditoria mínima, com passo 4:** `ingestao_csic.py`, `treino_modelo.py`,
+   `assinaturas.py` e `avaliacao_hibrida.py`. São as peças que produzem os números do artigo.
+   `servidor.py` e `extrator.py` vêm em seguida. As demais podem ficar fora do texto.
+5. **Tabelas sem script ainda:**
+   - Tab. 1: já tem números no log do `ingestao_csic.py`. Falta explicar 51.480 → 32.808.
+   - Tab. 2: rodar `validar_familias.py`. O antigo usou 40 amostras, o ROTEIRO pede 50.
+   - **Tab. 4:** a ablação por bloco já sai do `treino_modelo.py`, e a camada 1 isolada
+     (`avaliacao_hibrida.py`) serve como o baseline de regex. O `baseline_comparison.py`
+     não foi migrado e não faz falta.
+   - **Tab. 6 (latência): nenhum script gera os números.** No antigo foi "instrumentação
+     direta", sem script salvo. Até existir um script, **não citar** os 31,94 ms.
+   - Fig. 1 (diagrama), Fig. 2 (gráfico de `curva_limiar.csv`), Fig. 3 (`explicacao.py`).
+6. **Fichamento** de 8–12 referências. Trava os capítulos 2 e 3.
+7. **Escrita:** capítulos 2 a 7, ~16 páginas.
+8. **Demo:** `models/demo/` não existe aqui e foi treinado com datasets fora de escopo.
+   Na banca, rodar `python servidor.py` (modelo do CSIC) e não `WAF_MODELO=demo`.
+9. `git push`. O repositório remoto está 2 commits atrás.
 
 ---
 
