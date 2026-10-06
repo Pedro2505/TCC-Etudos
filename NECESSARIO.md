@@ -40,6 +40,21 @@ Número só entra com o script que o gerou. Se não sei qual script, escrevo "n�
 GET/POST do mesmo payload no CSIC (e por que `drop_duplicates` não resolve) · limiar
 escolhido no mesmo dado em que se mede.
 
+**Capítulo 4 (Metodologia) — deduplicação, primeira frase dele, 06/10.** Estado: rascunho.
+
+> foram removidas 18.672 requisições duplicadas para o modelo não decorar
+
+*Origem do número:* `logs/ingestion_csic.log` linha 62, gerado por `ingestao_csic.py`
+(51.480 com payload → 32.808 depois da deduplicação por texto, path, método e rótulo).
+*Pendências apontadas na revisão:* dizer o que "duplicada" significa; dizer de quanto para
+quanto; trocar "para o modelo não decorar" (o problema é a cópia no teste, não decorar o
+treino); falta a frase do recall inflado.
+
+*Como chegou nela (06/10):* não sabia de onde vinham as 18.672; achou no log. Errou duas
+vezes no caminho: disse que o recall serve para detectar se o modelo decorou, e depois que
+o F1 serve. Corrigiu com a analogia dos dois alunos com nota 98. **Ponto a reconferir:**
+nenhuma métrica medida sobre o teste vazado denuncia o vazamento.
+
 ### Como estas três frases nasceram (registro do processo)
 
 Vale para o diário e para a próxima sessão de escrita — os erros dele são previsíveis e
@@ -167,8 +182,9 @@ o rótulo real do dataset.
   `decodificador_ofuscacao`. Ou se corrige antes da defesa, ou entra aqui como limitação,
   com a medida do impacto. *(06/10)*
 - **Comentários do código citam números sem script:** 36,6% (`servidor.py`; o medido é
-  36,4%), "6,7 pontos de F1" (o log dá 6,4), 22,3% de ataques no path, 28,54 ms. Nenhum
-  desses vai para o artigo sem rerodar. *(06/10)*
+  36,4%), "6,7 pontos de F1" (o log dá 6,4) e 28,54 ms. Nenhum desses vai para o artigo
+  sem rerodar. *(06/10)* **Correção, mesmo dia:** o 22,3% tem origem sim. O log do
+  `ingestao_csic.py` mostra 5.585 ataques sem parâmetro, de 25.065 = 22,3%.
 - **Uso de IA no trabalho:** descobrir a regra da Unimar e declarar o que for exigido.
   Pergunta para o Paulo. *(19/08)*
 

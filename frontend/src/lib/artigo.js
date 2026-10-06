@@ -151,6 +151,25 @@ export const CAPITULOS = [
       'Por que agrupar por payload? O que acontece com o par GET/POST se não agrupar?',
       'Por que o limiar não é 0,5? Por que o critério é o F1 dentro do teto, e não o recall máximo?',
     ],
+    frases: [
+      {
+        onde: 'deduplicação (06/10) — rascunho, falta revisar',
+        texto: 'foram removidas 18.672 requisições duplicadas para o modelo não decorar',
+      },
+    ],
+    fatos: [
+      ['97.065 requisições lidas dos três arquivos (36.000 + 36.000 + 25.065), igual ao publicado pelo CSIC', 'ingestao_csic.py (log)'],
+      ['45.585 (47,0%) não têm nenhum parâmetro; 5.585 delas são ataques: 22,3% dos 25.065 ataques ficam fora do alcance do WAF, que só olha valores de parâmetro', 'ingestao_csic.py (log)'],
+      ['51.480 com parâmetro → 18.672 cópias idênticas removidas (36,3%) → 32.808 usadas', 'ingestao_csic.py (log)'],
+      ['Cópia idêntica = mesmo texto, mesmo path, mesmo método e mesmo rótulo', 'ingestao_csic.py (CHAVE_DEDUP)'],
+      ['32.808 = 18.620 normais + 14.188 anômalas (43,2% de ataques)', 'avaliacao_hibrida.py'],
+      ['16.034 grupos de payload (path + texto), 2,0 requisições por grupo em média, no máximo 5', 'ingestao_csic.py (log)'],
+      ['266 grupos (1,66%) têm o mesmo payload rotulado como normal e como ataque', 'ingestao_csic.py (log)'],
+      ['114 requisições com byte nulo, protegidas para não serem cortadas ao salvar em CSV', 'ingestao_csic.py (log)'],
+      ['Tampering 11.332 (79,9%) · SQLi 1.018 (7,2%) · XSS 952 (6,7%) · CRLF 388 · SSI/comando 384 · controle/nulo 114', 'ingestao_csic.py (log)'],
+      ['Validação: StratifiedGroupKFold com 5 folds, semente 42; cada fold com 43,2% de ataques', 'treino_modelo.py (log)'],
+      ['Limiar 0,650: maior F1 entre os limiares com falso positivo ≤ 1%, nas previsões out-of-fold', 'treino_modelo.py (log)'],
+    ],
     elementos: ['tab1', 'tab2', 'quadro1'],
     cuidados: [
       'A família de cada ataque foi dada por expressões regulares — diga isso aqui, não esconda no fim.',
@@ -175,6 +194,12 @@ export const CAPITULOS = [
       'Se a cascata decide igual a "regra OU modelo", para que serve a ordem?',
       'Por que existe um segundo modelo só para a demonstração?',
       'O que o middleware NÃO inspeciona? (path, headers, corpo)',
+    ],
+    fatos: [
+      ['24 regras de assinatura; nenhum falso positivo nas 18.620 requisições normais', 'avaliacao_hibrida.py'],
+      ['Modelo final: Random Forest, 100 árvores, 62 features, treinado nas 32.808 requisições', 'treino_modelo.py → model_metadata.json'],
+      ['Modelo de demonstração: limiar 0,46, treinado em 20.000 exemplos de outros datasets', 'models/demo/model_metadata.json (copiado do projeto antigo)'],
+      ['Com o modelo do CSIC, as 4 frases normais em português foram barradas (p de 0,88 a 0,98); com o demo, 26 de 26 exemplos deram o previsto', 'verificar_roteiro.py (06/10)'],
     ],
     elementos: ['fig1', 'tab6'],
     cuidados: [
@@ -201,6 +226,16 @@ export const CAPITULOS = [
       'Quantos ataques só o modelo pegou? E quanto tráfego normal ele barrou para isso? (sempre os dois juntos)',
       'Em que tipo de ataque está o ganho do modelo? O que isso diz sobre o tema do trabalho?',
       'O que a célula "nenhuma pegou" (40%) significa para quem opera o WAF?',
+    ],
+    fatos: [
+      ['Validação cruzada, limiar 0,5: F1 0,782 ± 0,009 · precisão 92,9% · recall 67,6% · FP 3,9% · ROC-AUC 0,888', 'treino_modelo.py'],
+      ['Ablação (F1): só contexto 0,431 · só TF-IDF 0,669 · heurísticas + TF-IDF 0,718 · os três blocos 0,782', 'treino_modelo.py (log)'],
+      ['No limiar 0,650: recall 59,4% · precisão 97,9% · FP 0,99% (184 requisições normais) · F1 0,740', 'treino_modelo.py / avaliacao_hibrida.py'],
+      ['Só as regras: precisão 100% · recall 23,4% · FP 0%', 'avaliacao_hibrida.py'],
+      ['Regras + modelo: recall 59,8% · FP 0,99% — todo o falso positivo vem do modelo', 'avaliacao_hibrida.py'],
+      ['Dos 14.188 ataques: as duas pegaram 23,0% · só as regras 0,3% (49) · só o modelo 36,4% (5.167) · nenhuma 40,2% (5.707)', 'avaliacao_hibrida.py'],
+      ['Ganho do modelo: tampering +45,6 pp (4,0% → 49,6%) · SQLi e XSS +0,0 pp (as regras já pegam 100%)', 'avaliacao_hibrida.py'],
+      ['Com limiar 0,5 em vez de 0,65, o recall em tampering sobe de 49,6% para 59,6%, com FP de 3,9%', 'treino_modelo.py (log)'],
     ],
     elementos: ['tab3', 'fig2', 'tab4', 'tab5', 'tab7', 'tab8', 'fig3'],
     cuidados: [
@@ -254,7 +289,7 @@ export const LIMITACOES = [
   'A demonstração usa outro modelo, treinado em dados fora do escopo do artigo.',
   'Zero-day não foi medido; os ataques disfarçados testados são de tipos conhecidos.',
   'As 24 regras não são o OWASP CRS: um WAF real teria centenas.',
-  'O WAF inspeciona só os valores dos parâmetros — não o path, headers nem corpo.',
+  'O WAF inspeciona só os valores dos parâmetros — não o path, headers nem corpo. 5.585 dos 25.065 ataques (22,3%) não têm parâmetro nenhum (ingestao_csic.py, log).',
   'Com o modelo demo, 11 de 39 frases normais difíceis foram barradas (teste_falso_positivo.py).',
   'Latência não medida por script neste repositório.',
 ];

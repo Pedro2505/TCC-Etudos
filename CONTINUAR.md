@@ -79,6 +79,10 @@ O frontend foi refeito: abas **Testar ao vivo** (caminho da requisição etapa p
 tabelas para copiar no Word, limitações, regras ABNT). Os dados vêm de
 `frontend/public/resultados.json`, gerado por `python exportar_painel.py` a partir das
 medições. **Rodar o exportador de novo sempre que o treino ou a avaliação híbrida mudarem.**
+Desde 06/10 também existe a aba **Banca**: 30 perguntas por tema, com pista, palavras que
+não podem faltar e onde conferir, mais autoavaliação e simulado com 3 minutos por pergunta.
+Perguntas novas vão em `frontend/src/lib/banca.js`, e fatos do artigo em
+`frontend/src/lib/artigo.js`.
 O `servidor.py` passou a devolver o payload normalizado e a nota do modelo também quando
 libera. Só campos novos na resposta: nenhuma decisão mudou, e o roteiro continua 26/26.
 

@@ -141,6 +141,20 @@ function Capitulo({ c, d, feitos, marcar }) {
         </>
       )}
 
+      {c.fatos?.length > 0 && (
+        <>
+          <h4>Fatos com número (cada um com o script de origem)</h4>
+          <ul className="fatos-lista">
+            {c.fatos.map(([texto, fonte]) => (
+              <li key={texto}>
+                <span>{texto}</span>
+                <code className="fonte-fato">{fonte}</code>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+
       {c.elementos.length > 0 && <h4>Tabelas, figuras e dados</h4>}
       {c.elementos.map((id) => <Elemento key={id} id={id} d={d} />)}
 

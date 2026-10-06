@@ -6,10 +6,13 @@ import Historico from './components/Historico';
 import ConferirRoteiro from './components/ConferirRoteiro';
 import Resultados from './components/Resultados';
 import Artigo from './components/Artigo';
+import Banca from './components/Banca';
 import { chaveDoCaso } from './lib/resultado';
 import { enviarRequisicao } from './lib/waf';
 
-const ABAS = { vivo: 'Testar ao vivo', resultados: 'Resultados do modelo', artigo: 'Artigo' };
+const ABAS = {
+  vivo: 'Testar ao vivo', resultados: 'Resultados do modelo', artigo: 'Artigo', banca: 'Banca',
+};
 
 function abaDaUrl() {
   const aba = window.location.hash.slice(1);
@@ -70,6 +73,7 @@ export default function App() {
       )}
       {aba === 'resultados' && <Resultados />}
       {aba === 'artigo' && <Artigo />}
+      {aba === 'banca' && <Banca />}
     </main>
   );
 }
