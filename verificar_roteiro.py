@@ -13,7 +13,7 @@ digo que ele prova.
 
 Rodar ANTES de gravar, com o backend em pe:
 
-    WAF_MODELO=demo python api.py        (num terminal)
+    WAF_MODELO=demo python servidor.py        (num terminal)
     python verificar_roteiro.py          (noutro)
 ==============================================================================
 """
@@ -90,7 +90,7 @@ def bater(caso):
     except urllib.error.URLError as e:
         raise SystemExit(
             f"\n[ERRO] Nao consegui falar com o backend em {BASE}.\n"
-            f"       Suba com:  WAF_MODELO=demo python api.py\n"
+            f"       Suba com:  WAF_MODELO=demo python servidor.py\n"
             f"       Detalhe: {e}\n")
 
 

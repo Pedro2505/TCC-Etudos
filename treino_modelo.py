@@ -9,7 +9,7 @@ Este script faz quatro coisas, nesta ordem:
     3. Escolhe o limiar de decisao (o corte entre "libera" e "bloqueia").
     4. Treina o modelo final e salva no disco.
 
-Rodar:  python model_trainer.py
+Rodar:  python treino_modelo.py
 
 ------------------------------------------------------------------------------
 O QUE MUDOU EM RELACAO A VERSAO ANTERIOR, E POR QUE
@@ -86,11 +86,11 @@ def carregar_dados_csic() -> pd.DataFrame:
         # O CSV nao sobrevive a um \x00: o pandas TRUNCA a string nele na releitura.
         # A ingestao grava o byte nulo como U+E000; aqui ele volta ao original, para
         # que o treino veja o mesmo payload que o middleware ve em producao.
-        from ingestion_csic import restaurar_nulo
+        from ingestao_csic import restaurar_nulo
         df = restaurar_nulo(df)
     else:
         print("[1/4] Arquivo processado nao encontrado; reprocessando os brutos...")
-        from ingestion_csic import carregar_supervisionado
+        from ingestao_csic import carregar_supervisionado
         df = carregar_supervisionado()
 
     df['Sentence'] = df['Sentence'].astype(str)
@@ -124,14 +124,14 @@ def carregar_dados_demo() -> pd.DataFrame:
     Na defesa eu declaro explicitamente qual modelo esta rodando e por que.
     """
     print("[1/4] Carregando datasets de payload SQLi/XSS (modelo de demonstracao)...")
-    from ingestion import unificar_datasets
+    from ingestao import unificar_datasets
 
     df = unificar_datasets()
     df = df.sample(min(20000, len(df)), random_state=SEMENTE).reset_index(drop=True)
     df['Sentence'] = df['Sentence'].astype(str)
 
     # Estes datasets nao tem contexto HTTP (sao payloads soltos, sem requisicao).
-    # Preencho com os mesmos valores que extractor.CONTEXTO_PADRAO usa na inferencia,
+    # Preencho com os mesmos valores que extrator.CONTEXTO_PADRAO usa na inferencia,
     # para que treino e inferencia vejam a mesma coisa. Como sao constantes, essas
     # colunas nao carregam informacao aqui -- o modelo de demo se apoia so no texto.
     df['metodo'] = 'GET'
@@ -142,7 +142,7 @@ def carregar_dados_demo() -> pd.DataFrame:
 
     # Sem estrutura de requisicao, o grupo e o proprio payload normalizado: impede que
     # variantes triviais do mesmo payload caiam em lados opostos do split.
-    from ingestion_csic import normalizar_payload
+    from ingestao_csic import normalizar_payload
     df['grupo_payload'] = df['Sentence'].map(normalizar_payload)
 
     print(f"      {len(df)} payloads | "
@@ -183,7 +183,7 @@ def preparar_colunas_auxiliares(df: pd.DataFrame) -> pd.DataFrame:
     interprete uma codificacao numerica (GET=0, POST=1, PUT=2) como se PUT fosse
     "maior" que GET, o que nao faz sentido.
     """
-    from extractor import extrair_features_manuais
+    from extrator import extrair_features_manuais
 
     df = extrair_features_manuais(df)
     for metodo in ['GET', 'POST', 'PUT']:
@@ -483,7 +483,7 @@ def treinar_final(df: pd.DataFrame, limiar: float, resumo: dict,
       model_metadata.json  - ordem das colunas, limiar e metricas
 
     O metadata resolve um risco real: a ordem das colunas na inferencia tem que
-    ser identica a do treino. Hoje o api.py monta o DataFrame na mao e funciona por
+    ser identica a do treino. Hoje o servidor.py monta o DataFrame na mao e funciona por
     coincidencia de construcao. Com a lista salva, da para reindexar
     explicitamente e falhar alto se algo divergir.
     """

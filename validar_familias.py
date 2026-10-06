@@ -60,7 +60,7 @@ TEMPLATES = {
 def carregar() -> pd.DataFrame:
     if not CSIC.exists():
         raise FileNotFoundError(
-            f"{CSIC} nao encontrado. Rode `python ingestion_csic.py` primeiro.")
+            f"{CSIC} nao encontrado. Rode `python ingestao_csic.py` primeiro.")
     return pd.read_csv(CSIC, keep_default_na=False)
 
 

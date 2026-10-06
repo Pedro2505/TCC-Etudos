@@ -9,7 +9,7 @@ from starlette.concurrency import run_in_threadpool
 # Caminho único de inferência, compartilhado com os scripts de teste.
 # Antes eu duplicava a montagem da matriz aqui e em mais três arquivos, o que gerava
 # divergência silenciosa quando eu alterava as features.
-from extractor import carregar_artefatos, classificar
+from extrator import carregar_artefatos, classificar
 
 # CAMADA 1 do WAF híbrido. Ver o docstring de assinaturas.py para o enquadramento:
 # este trabalho não propõe substituir um WAF de assinaturas pelo modelo, e sim somar
@@ -39,8 +39,8 @@ app.add_middleware(
 # português com p≈0,90, porque está fora da distribuição que ele viu. Para a
 # demonstração ao vivo, cuja aplicação-alvo é em português, uso o modelo de demo.
 #
-#   WAF_MODELO=demo python api.py     -> models/demo/  (demonstração)
-#   python api.py                     -> models/       (modelo do CSIC, monografia)
+#   WAF_MODELO=demo python servidor.py     -> models/demo/  (demonstração)
+#   python servidor.py                     -> models/       (modelo do CSIC, monografia)
 PASTA_MODELO = 'models/demo' if os.getenv('WAF_MODELO') == 'demo' else 'models'
 
 print(f"Carregando o modelo de {PASTA_MODELO}/...")
@@ -212,7 +212,7 @@ async def waf_middleware(request: Request, call_next):
     latencia_ms = (time.time() - start_time) * 1000
 
     # 4. O veredito, usando o limiar CALIBRADO em vez do 0,5 implícito do .predict().
-    # O limiar foi escolhido em model_trainer.py sob um alvo declarado de falso
+    # O limiar foi escolhido em treino_modelo.py sob um alvo declarado de falso
     # positivo (≤1%), sobre probabilidades out-of-fold.
     if eh_ataque:
         print(f"[WAF][CAMADA 2] BLOQUEADO  p={probabilidade:.3f} (limiar {LIMIAR:.3f}) | "
@@ -293,4 +293,4 @@ app.mount("/", StaticFiles(directory="static", html=True), name="static")
 if __name__ == "__main__":
     import uvicorn
     # Inicia o servidor web na porta 8000
-    uvicorn.run("api:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("servidor:app", host="127.0.0.1", port=8000, reload=True)

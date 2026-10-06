@@ -20,13 +20,13 @@ executa em producao. Este script mede a taxa na tarefa correta.
 LIMITACAO DECLARADA: o corpus abaixo e sintetico e pequeno, construido por
 categoria de trafego. Ele serve para EVIDENCIAR o problema, nao para ser a
 metrica final da monografia. A metrica final vem da validacao cruzada sobre o
-CSIC 2010, em model_trainer.py.
+CSIC 2010, em treino_modelo.py.
 
 ------------------------------------------------------------------------------
 QUAL MODELO ESTE SCRIPT MEDE, E POR QUE ISSO IMPORTA
 ------------------------------------------------------------------------------
-Rodar:  python false_positive_test.py            -> models/demo/  (padrao)
-        python false_positive_test.py --csic     -> models/       (CSIC 2010)
+Rodar:  python teste_falso_positivo.py            -> models/demo/  (padrao)
+        python teste_falso_positivo.py --csic     -> models/       (CSIC 2010)
 
 O corpus aqui e em portugues. O modelo treinado no CSIC 2010 aprendeu o trafego
 da loja "tienda1", que e em espanhol e tem parametros proprios (`precio`,
@@ -48,7 +48,7 @@ portugues, para que o numero medido seja falso positivo de verdade.
 
 import sys
 
-from extractor import carregar_artefatos, classificar
+from extrator import carregar_artefatos, classificar
 
 if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8')
@@ -130,10 +130,10 @@ if __name__ == '__main__':
     linhas_md.append(f"| **TOTAL** | **{len(todos)}** | **{total_fp}** | **{taxa:.1%}** |")
 
     sufixo = '_csic' if usar_csic else ''
-    destino = f'docs/medicoes/false_positive_test{sufixo}.md'
+    destino = f'docs/medicoes/teste_falso_positivo{sufixo}.md'
     with open(destino, 'w', encoding='utf-8') as f:
         f.write('# Falsos Positivos em Tráfego Benigno Realista\n\n')
-        f.write(f'Gerado por `false_positive_test.py` contra `{pasta}/`.\n\n')
+        f.write(f'Gerado por `teste_falso_positivo.py` contra `{pasta}/`.\n\n')
         f.write(f'- Dataset de treino: {metadata.get("dataset", "não informado")}\n')
         f.write(f'- Limiar de decisão: {limiar:.3f}\n\n')
         if usar_csic:

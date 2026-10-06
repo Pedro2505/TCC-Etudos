@@ -56,7 +56,7 @@ export async function enviarRequisicao({ rota, parametro, valor }) {
       status: 0,
       mensagem:
         'Falha de conexão. O backend está rodando? ' +
-        '(WAF_MODELO=demo python api.py, porta 8000)',
+        '(WAF_MODELO=demo python servidor.py, porta 8000)',
       payloadEnviado: valor,
       rota,
       latenciaCliente: performance.now() - t0,

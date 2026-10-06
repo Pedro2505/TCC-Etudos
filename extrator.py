@@ -81,8 +81,8 @@ def extrair_features_tfidf(df: pd.DataFrame, coluna_texto: str = 'Sentence') -> 
 # ==============================================================================
 # Por que esta seção existe:
 #
-# Eu tinha o código de montagem da matriz duplicado em quatro lugares (api.py,
-# explain.py, debug_model.py e false_positive_test.py). Toda vez que eu mudava as
+# Eu tinha o código de montagem da matriz duplicado em quatro lugares (servidor.py,
+# explicacao.py, debug_model.py e teste_falso_positivo.py). Toda vez que eu mudava as
 # features, precisava editar os quatro — e quando esqueci um, o erro foi silencioso
 # até o sklearn reclamar de contagem de colunas.
 #
@@ -176,7 +176,7 @@ def preparar_para_inferencia(payload: str, vetorizador, colunas: Optional[list] 
             raise ValueError(
                 f"Features ausentes na inferência: {sorted(faltando)}. "
                 "O modelo foi treinado com um conjunto de features diferente do que "
-                "este código monta — retreine com model_trainer.py ou atualize esta função."
+                "este código monta — retreine com treino_modelo.py ou atualize esta função."
             )
         pronto = pronto[colunas]      # reindex explícito: garante a MESMA ordem do treino
 

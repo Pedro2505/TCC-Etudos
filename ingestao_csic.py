@@ -2,14 +2,14 @@
 ==============================================================================
 PIPELINE DE INGESTAO — HTTP DATASET CSIC 2010
 ==============================================================================
-Por que este modulo substitui o ingestion.py como fonte principal:
+Por que este modulo substitui o ingestao.py como fonte principal:
 
 Os datasets de SQLi/XSS usados nas Sprints 1-4 tem a classe benigna composta por
 CONSULTAS SQL LEGITIMAS (ex: "SELECT COUNT(thumb) FROM elephant"). O WAF, porem,
 opera na camada HTTP, onde trafego benigno e "tenis de corrida masculino" ou
 "pedro@gmail.com". Essa incompatibilidade de dominio faz a taxa de falso positivo
 medida (0,23%) nao descrever a tarefa real: em trafego HTTP realista ela e de
-23,1% (ver docs/medicoes/false_positive_test.md).
+23,1% (ver docs/medicoes/teste_falso_positivo.md).
 
 O CSIC 2010 resolve isso: sao requisicoes HTTP REAIS a uma aplicacao de
 e-commerce (a loja "tienda1"), com metodo, path, parametros, headers e corpo.
@@ -450,7 +450,7 @@ def carregar_supervisionado(deduplicar: bool = True,
         PARAMETRO NENHUM — sao GETs a recursos, tipo
         /tienda1/asf-logo-wide.gif~ ou /tienda1/6909030637832563290.jsp.
 
-        Consequencia arquitetural: o middleware atual (api.py) inspeciona apenas
+        Consequencia arquitetural: o middleware atual (servidor.py) inspeciona apenas
         os VALORES dos query params, portanto e estruturalmente incapaz de
         detectar 22,3% dos ataques deste dataset, por mais bem treinado que o
         modelo esteja. Detectar esses casos exige features do PATH, o que e uma
@@ -554,10 +554,10 @@ def main() -> None:
     print(f"     Colunas: {list(df.columns)}")
     print(f"     Byte nulo protegido como U+E000 em {n_nulos} requisicoes — sem isso o "
           "round-trip pelo CSV TRUNCA o payload no \\x00 e apaga a evidencia do ataque.")
-    print("\n     Para carregar:  use model_trainer.carregar_dados_csic(), que ja aplica "
+    print("\n     Para carregar:  use treino_modelo.carregar_dados_csic(), que ja aplica "
           "restaurar_nulo().")
     print("     Direto pelo pandas:  pd.read_csv(..., keep_default_na=False) seguido de "
-          "ingestion_csic.restaurar_nulo(df).")
+          "ingestao_csic.restaurar_nulo(df).")
     print("     keep_default_na=False e necessario: sem isso o pandas converte "
           "payloads vazios e strings como 'null'/'NA' em NaN.")
 

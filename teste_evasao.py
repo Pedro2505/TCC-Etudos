@@ -31,7 +31,7 @@ for nome, payload in payloads_ofuscados.items():
             print(f"[BYPASS CRÍTICO] {nome: <30} -> O ataque passou!")
             
     except requests.exceptions.ConnectionError:
-        print(f"[ERRO] Falha de conexão. O servidor (api.py) está rodando na porta 8000?")
+        print(f"[ERRO] Falha de conexão. O servidor (servidor.py) está rodando na porta 8000?")
         break
         
     time.sleep(0.2)

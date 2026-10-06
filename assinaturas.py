@@ -39,7 +39,7 @@ exatamente esse o caso aqui. Por isso a arquitetura passou a ser em cascata:
    que torna o ganho medido da camada 2 uma estimativa CONSERVADORA.
 
 3. As regras foram escritas a partir da logica de deteccao do CRS, e NAO
-   copiadas de `ingestion_csic.FAMILIAS_PAYLOAD`, que atribui familia de ataque.
+   copiadas de `ingestao_csic.FAMILIAS_PAYLOAD`, que atribui familia de ataque.
    Se eu reusasse aquelas regexes aqui, o recall da camada 1 por familia seria
    100% por construcao, e a medicao nao significaria nada.
 
@@ -147,7 +147,7 @@ REGRAS: List[Regra] = [
     #
     # Como a camada 1 existe justamente para dar o MOTIVO do bloqueio, reportar a regra
     # errada anula boa parte do seu valor. A decisao (bloquear) era a mesma; o laudo,
-    # nao. O mesmo ajuste foi aplicado em ingestion_csic.FAMILIAS_PAYLOAD, para que a
+    # nao. O mesmo ajuste foi aplicado em ingestao_csic.FAMILIAS_PAYLOAD, para que a
     # taxonomia das duas camadas concorde.
     Regra('RCE-001', 'Diretiva Server-Side Include', 'Injecao SSI/Comando',
           r"(?i)<!--\s*#\s*(?:exec|include|echo|config|printenv)\b"),

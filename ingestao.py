@@ -74,7 +74,7 @@ def extrair_e_sanitizar_csv(caminho_arquivo: str, tipo_ataque: str,
         # REESCRITA HEURÍSTICA DE LABELS (weak supervision)
         # O SQLiV3 rotula como 0 algumas queries que contêm injeção estrutural.
         # ATENÇÃO METODOLÓGICA: esta regex usa as MESMAS palavras-chave que a feature
-        # 'qtd_keywords_sql' do extractor.py conta. Ao aplicá-la, o label passa a ser
+        # 'qtd_keywords_sql' do extrator.py conta. Ao aplicá-la, o label passa a ser
         # função quase determinística de uma feature -> vazamento circular.
         # Por isso é opcional: baseline_comparison.py mede o impacto dos dois cenários.
         if reescrever_labels:

@@ -2,7 +2,7 @@ import pandas as pd
 import shap
 import numpy as np
 import matplotlib.pyplot as plt
-from extractor import carregar_artefatos, preparar_para_inferencia
+from extrator import carregar_artefatos, preparar_para_inferencia
 
 # ==============================================================================
 # SCRIPT DE EXPLICABILIDADE DE INTELIGÊNCIA ARTIFICIAL (XAI)
@@ -17,7 +17,7 @@ limiar = metadata.get('limiar_decisao', 0.5)
 payload = "<script>alert('Ataque Direto')</script>"
 print(f"[*] Payload interceptado: {payload}")
 
-# Usa o caminho único de inferência, o mesmo que o api.py executa em produção.
+# Usa o caminho único de inferência, o mesmo que o servidor.py executa em produção.
 X_payload = preparar_para_inferencia(payload.lower(), vetorizador, metadata.get('colunas'))
 probabilidade = float(modelo.predict_proba(X_payload)[0][1])
 print(f"[*] Probabilidade de ataque: {probabilidade:.4f} | limiar: {limiar:.3f} | "

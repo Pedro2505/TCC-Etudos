@@ -40,7 +40,7 @@ export default function PainelWaf({ metricas }) {
       {!carregando && !info && (
         <p className="aviso-erro">
           Não consegui falar com o backend na porta 8000. Suba com{' '}
-          <code>WAF_MODELO=demo python api.py</code>.
+          <code>WAF_MODELO=demo python servidor.py</code>.
         </p>
       )}
 

@@ -44,7 +44,7 @@ O que a cascata muda e outra coisa, e vale a pena declarar com precisao:
 
 --- VIES DECLARADO: A CIRCULARIDADE DA ATRIBUICAO DE FAMILIA ---------------
 O CSIC 2010 rotula apenas normal/anomalo. A familia de ataque e atribuida por
-mim, com as regexes de `ingestion_csic.FAMILIAS_PAYLOAD`. As regras da camada 1
+mim, com as regexes de `ingestao_csic.FAMILIAS_PAYLOAD`. As regras da camada 1
 foram escritas de forma independente (ver o docstring de assinaturas.py), mas
 descrevem os mesmos fenomenos e portanto se sobrepoem.
 
@@ -77,7 +77,7 @@ import pandas as pd
 from sklearn.metrics import confusion_matrix, f1_score
 
 import assinaturas
-from model_trainer import (ALVO_FALSO_POSITIVO, N_FOLDS, carregar_dados_csic,
+from treino_modelo import (ALVO_FALSO_POSITIVO, N_FOLDS, carregar_dados_csic,
                            preparar_colunas_auxiliares, validar)
 
 if hasattr(sys.stdout, 'reconfigure'):
@@ -104,12 +104,12 @@ def recalibrar_camada2(y: np.ndarray, prob_oof: np.ndarray, disparou: np.ndarray
     """
     Escolhe o limiar da camada 2 sob o orcamento de falso positivo TOTAL.
 
-    A diferenca em relacao a `model_trainer.escolher_limiar` e o que entra na
+    A diferenca em relacao a `treino_modelo.escolher_limiar` e o que entra na
     conta do falso positivo: aqui, uma requisicao legitima ja bloqueada pela
     camada 1 conta como FP do sistema INDEPENDENTEMENTE do limiar. O orcamento
     disponivel para a camada 2 e o que sobra depois disso.
 
-    Criterio mantido identico ao do model_trainer, para que os dois numeros
+    Criterio mantido identico ao do treino_modelo, para que os dois numeros
     sejam comparaveis: entre os limiares que respeitam o alvo, o de maior F1.
     """
     n_legitimas = int((y == 0).sum())
@@ -214,7 +214,7 @@ def main() -> None:
 
     # --- 3. Camada 2: modelo, com a mesma validacao da monografia ------------
     print(f"\n[2/4] Camada 2 — validacao cruzada StratifiedGroupKFold({N_FOLDS})...")
-    print("      (mesma metodologia do model_trainer.py: TF-IDF ajustado por fold,")
+    print("      (mesma metodologia do treino_modelo.py: TF-IDF ajustado por fold,")
     print("       agrupamento por payload, probabilidades out-of-fold)")
     _, prob_oof = validar(df, usar_heuristicas=True, usar_tfidf=True, usar_contexto=True)
 
@@ -348,7 +348,7 @@ def escrever_relatorio(df, resultados, conc, fam, agregado, limiar_mono, limiar_
 
     A('\n### Viés declarado nesta tabela\n')
     A('O CSIC 2010 rotula apenas normal/anômalo. A **família é atribuída por regex** '
-      '(`ingestion_csic.classificar_familia_ataque`). As regras da camada 1 foram '
+      '(`ingestao_csic.classificar_familia_ataque`). As regras da camada 1 foram '
       'escritas de forma independente, mas descrevem os mesmos fenômenos, então há '
       'sobreposição inevitável.\n')
     A('**Consequência:** o recall da camada 1 por família é **otimista por construção** '
@@ -371,7 +371,7 @@ def escrever_relatorio(df, resultados, conc, fam, agregado, limiar_mono, limiar_
     A('\nA camada 2 não precisa mais cobrir sozinha todo o recall: parte dele vem da '
       'camada 1, a um custo de falso positivo que esta tabela mede. O limiar recalibrado '
       'é a consequência direta disso — é o mesmo critério de calibração do '
-      '`model_trainer.py` (maior F1 dentro do orçamento), aplicado ao sistema completo em '
+      '`treino_modelo.py` (maior F1 dentro do orçamento), aplicado ao sistema completo em '
       'vez de ao modelo isolado. Curva completa em `curva_limiar_cascata.csv`.\n')
 
     A('\n## 5. Regras que mais dispararam\n')
