@@ -25,7 +25,7 @@ datasets/SQL Injection/
 datasets/XSS/
 
 # Modelos treinados (regeraveis pelo script de treino)
-models/*.pkl
+models/**/*.pkl
 
 # Editores / SO
 .vscode/

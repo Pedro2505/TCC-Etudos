@@ -54,9 +54,31 @@ O artigo segue com a introdução entregue e 3 frases da seção 2.4.
    - Fig. 1 (diagrama), Fig. 2 (gráfico de `curva_limiar.csv`), Fig. 3 (`explicacao.py`).
 6. **Fichamento** de 8–12 referências. Trava os capítulos 2 e 3.
 7. **Escrita:** capítulos 2 a 7, ~16 páginas.
-8. **Demo:** `models/demo/` não existe aqui e foi treinado com datasets fora de escopo.
-   Na banca, rodar `python servidor.py` (modelo do CSIC) e não `WAF_MODELO=demo`.
-9. `git push`. O repositório remoto está 2 commits atrás.
+8. **Demo — resolvido em 06/10, com uma descoberta.** `models/demo/` foi trazido do `Tcc`.
+   O `verificar_roteiro.py` mostra o seguinte:
+   - **Modelo do CSIC** (`python servidor.py`): 6 de 26 casos divergem. Ele bloqueia
+     **todo o tráfego legítimo em português** ("pedro.almeida", e-mail, comentário) com
+     p = 0,88–0,98. O "normal" que ele aprendeu é a loja espanhola de 2010; qualquer outra
+     coisa vira anomalia.
+   - **Modelo demo** (`WAF_MODELO=demo python servidor.py`): 26 de 26 conforme.
+   **A demo da banca usa o modelo demo, e ele NÃO é o modelo medido no artigo.** Isso
+   precisa ser dito antes que perguntem. Está registrado no `NECESSARIO.md` §3.
+9. `git push`. O repositório remoto está atrás.
+
+### Como subir o sistema (verificado em 06/10)
+
+```
+WAF_MODELO=demo venv\Scripts\python.exe servidor.py    # porta 8000
+cd frontend; npm run dev                               # porta 5173
+venv\Scripts\python.exe verificar_roteiro.py           # confere os 26 casos
+```
+
+Em PowerShell, `WAF_MODELO=demo cmd` não funciona. Use `$env:WAF_MODELO='demo'` antes.
+
+**Decisão de 06/10: continuar no `tccNovo`.** O `Tcc` está parado desde 28/07. O código dele
+é o mesmo que está aqui. O que faltava (`models/demo`, `validacao_familias.md`, imagem do
+SHAP, medições demo e de falso positivo) foi copiado para cá. O `Tcc` fica só como arquivo
+de consulta.
 
 ---
 

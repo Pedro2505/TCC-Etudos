@@ -154,6 +154,14 @@ o rótulo real do dataset.
   a mesma validação. *(19/08)*
 - **Nenhum objetivo específico prevê a camada de assinaturas**, mas ela produz o resultado
   central. Falar com o Paulo antes da versão final.
+- **O modelo do CSIC não generaliza para outro domínio, e a demo usa outro modelo.** Medido
+  em 06/10 com `verificar_roteiro.py` contra `python servidor.py` (modelo do CSIC): os 4
+  casos legítimos em português ("pedro.almeida", "joao.silva@email.com", um comentário,
+  uma busca) foram bloqueados pela camada 2 com p = 0,88–0,98. Com o modelo demo
+  (`models/demo/`, treinado nos datasets de SQLi/XSS fora de escopo) os 26 casos passam.
+  Consequências: (a) o "normal" do modelo é o tráfego de **uma** aplicação; em outra, ele
+  precisaria ser retreinado. (b) A demonstração ao vivo não roda o modelo cujos números
+  estão no artigo. Pergunta de banca garantida. *(06/10)*
 - **Uso de IA no trabalho:** descobrir a regra da Unimar e declarar o que for exigido.
   Pergunta para o Paulo. *(19/08)*
 
