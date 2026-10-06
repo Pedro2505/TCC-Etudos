@@ -1,411 +1,175 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=JetBrains+Mono:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
 
+/* Fundo claro de propósito: a apresentação vai para um projetor, e texto escuro
+   sobre papel é o que sobrevive a projetor fraco e a compressão de vídeo.
+   Duas cores com significado (barrado / liberado) e mais nada. */
 :root {
-  --fundo: #0b1120;
-  --superficie: rgba(30, 41, 59, 0.55);
-  --superficie-forte: rgba(15, 23, 42, 0.8);
-  --borda: rgba(148, 163, 184, 0.18);
-  --texto: #e2e8f0;
-  --texto-fraco: #94a3b8;
-  --verde: #22c55e;
-  --vermelho: #ef4444;
-  --amarelo: #eab308;
-  --roxo: #a855f7;
-  --azul: #3b82f6;
-  --ciano: #06b6d4;
-  --mono: 'JetBrains Mono', ui-monospace, monospace;
+  --papel: #f7f5f0;
+  --papel-2: #efebe3;
+  --tinta: #1f1e1b;
+  --tinta-fraca: #6b675f;
+  --linha: #ddd8cd;
+  --barrado: #a63a24;
+  --liberado: #2f6a3a;
+  --marca: #f3e7c4;
+  --sans: 'IBM Plex Sans', system-ui, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, monospace;
 }
 
 * { box-sizing: border-box; }
 
-/* Tipografia calibrada para GRAVAÇÃO DE VÍDEO.
-   O painel antigo era legível no monitor e ilegível quando recomprimido pelo
-   YouTube/Meet: corpo em 0,87rem vira ~11px efetivos depois do downscale. Subi a
-   base para 17px e ampliei os corpos proporcionalmente. */
+/* Base em 17px: legível depois de recomprimido numa gravação. */
 html { font-size: 17px; }
 
 body {
   margin: 0;
-  font-family: 'Inter', system-ui, sans-serif;
-  background:
-    radial-gradient(1200px 600px at 10% -10%, #1e293b 0%, transparent 60%),
-    radial-gradient(900px 500px at 100% 0%, #172554 0%, transparent 55%),
-    var(--fundo);
-  color: var(--texto);
-  min-height: 100vh;
+  background: var(--papel);
+  color: var(--tinta);
+  font-family: var(--sans);
   line-height: 1.55;
 }
 
-.app-container { max-width: 1560px; margin: 0 auto; padding: 30px 26px 64px; }
-
-/* ---------- cabeçalho ---------- */
-header { margin-bottom: 22px; }
-h1 { font-size: 2.1rem; margin: 0 0 6px; font-weight: 800; letter-spacing: -0.02em; }
-h1 span { color: var(--ciano); font-weight: 600; font-size: 0.7em; }
-.subtitulo { color: var(--texto-fraco); font-size: 0.92rem; margin: 0 0 14px; }
-.explicacao {
-  max-width: 108ch; font-size: 0.97rem; color: #cbd5e1; margin: 0;
-  padding: 15px 19px; background: var(--superficie); border: 1px solid var(--borda);
-  border-left: 3px solid var(--azul); border-radius: 10px;
+.pagina {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 48px 20px 80px;
 }
 
-h2 { font-size: 1.12rem; margin: 0; font-weight: 600; letter-spacing: -0.01em; }
-h3 { font-size: 1rem; margin: 0; font-weight: 600; }
+h1, h2, h3 { margin: 0; font-weight: 600; }
+h1 { font-size: 2rem; letter-spacing: -0.015em; line-height: 1.2; }
+h2 { font-size: 1.25rem; }
+h3 { font-size: 1rem; }
 
-/* ---------- diagrama da cascata (centro visual do vídeo) ---------- */
-.arquitetura {
-  background: var(--superficie); border: 1px solid var(--borda);
-  border-radius: 14px; padding: 20px 22px; margin-bottom: 22px;
-}
-.arq-tese {
-  font-size: 0.95rem; color: #cbd5e1; margin: 0 0 18px; max-width: 112ch;
-  padding: 12px 16px; border-radius: 9px;
-  background: rgba(6,182,212,0.06); border: 1px solid rgba(6,182,212,0.22);
-  border-left: 3px solid var(--ciano);
-}
-.arq-tese strong { color: #67e8f9; }
-
-.fluxo {
-  display: flex; align-items: stretch; gap: 6px; flex-wrap: wrap;
-}
-.etapa {
-  flex: 1 1 150px; min-width: 140px;
-  background: var(--superficie-forte); border: 1px solid var(--borda);
-  border-radius: 11px; padding: 13px 14px;
-  display: flex; flex-direction: column; gap: 5px;
-  transition: border-color .25s, box-shadow .25s, transform .25s;
-}
-.etapa-rotulo {
-  font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.05em;
-  color: var(--texto-fraco); font-weight: 600;
-}
-.etapa-valor { font-size: 1.7rem; font-weight: 700; font-family: var(--mono); line-height: 1.1; }
-.etapa-unidade {
-  font-size: 0.68rem; font-weight: 500; font-family: 'Inter', sans-serif;
-  color: var(--texto-fraco); text-transform: uppercase; letter-spacing: 0.04em;
-}
-.etapa-detalhe { font-size: 0.76rem; color: var(--texto-fraco); line-height: 1.4; }
-
-.etapa-camada1 { border-color: rgba(168,85,247,0.4); }
-.etapa-camada1 .etapa-valor { color: #c4b5fd; }
-.etapa-camada2 { border-color: rgba(6,182,212,0.4); }
-.etapa-camada2 .etapa-valor { color: #67e8f9; }
-.etapa-saida .etapa-valor { color: var(--verde); }
-.etapa-entrada .etapa-valor { color: var(--texto); }
-
-/* A etapa que decidiu a última requisição acende. É o que dá leitura imediata em
-   vídeo: quem assiste vê a decisão migrar da camada 1 para a 2 na Bateria 5. */
-.etapa-ativa {
-  transform: translateY(-2px);
-  box-shadow: 0 0 0 1px currentColor, 0 8px 26px -8px rgba(0,0,0,0.6);
-}
-.etapa-camada1.etapa-ativa { color: var(--roxo); border-color: var(--roxo); }
-.etapa-camada2.etapa-ativa { color: var(--ciano); border-color: var(--ciano); }
-.etapa-saida.etapa-ativa { color: var(--verde); border-color: var(--verde); }
-
-.seta-fluxo {
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  padding: 0 2px; min-width: 62px;
-}
-.seta-glifo { font-size: 1.2rem; color: var(--texto-fraco); line-height: 1; }
-.seta-rotulo {
-  font-size: 0.63rem; color: var(--texto-fraco); text-align: center;
-  margin-top: 3px; letter-spacing: 0.02em;
+code { font-family: var(--mono); font-size: 0.92em; }
+.fraco { color: var(--tinta-fraca); }
+.so-leitor {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
 }
 
-@media (max-width: 1100px) {
-  .fluxo { flex-direction: column; }
-  .seta-fluxo { flex-direction: row; gap: 8px; min-width: 0; padding: 2px 0; }
-  .seta-glifo { transform: rotate(90deg); }
-}
-
-/* ---------- layout ---------- */
-.layout-principal {
-  display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 22px;
-  align-items: start;
-}
-.coluna-esquerda, .coluna-direita { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
-
-@media (max-width: 1180px) {
-  .layout-principal { grid-template-columns: 1fr; }
-}
-
-/* ---------- blocos ---------- */
-.painel-waf, .baterias, .alvos, .log-auditoria {
-  background: var(--superficie); border: 1px solid var(--borda);
-  border-radius: 14px; padding: 20px;
-}
-
-.painel-cabecalho {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 12px; margin-bottom: 14px; flex-wrap: wrap;
-}
-
-/* ---------- tags ---------- */
-.tag {
-  font-size: 0.7rem; font-weight: 600; padding: 3px 9px; border-radius: 999px;
-  text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap;
-}
-.tag-ok { background: rgba(34,197,94,0.15); color: #4ade80; border: 1px solid rgba(34,197,94,0.35); }
-.tag-alerta { background: rgba(234,179,8,0.15); color: #facc15; border: 1px solid rgba(234,179,8,0.35); }
-.tag-erro { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.35); }
-.tag-neutra { background: rgba(148,163,184,0.12); color: var(--texto-fraco); border: 1px solid var(--borda); }
-.tag-alvo { background: rgba(239,68,68,0.12); color: #fca5a5; border: 1px solid rgba(239,68,68,0.3); }
-
-/* ---------- painel do modelo ---------- */
-.grid-info {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 10px; margin-bottom: 14px;
-}
-.dado {
-  background: var(--superficie-forte); border: 1px solid var(--borda);
-  border-radius: 9px; padding: 9px 12px; display: flex; flex-direction: column; gap: 2px;
-}
-.dado-largo { grid-column: span 2; }
-.dado-rotulo { font-size: 0.68rem; color: var(--texto-fraco); text-transform: uppercase; letter-spacing: 0.05em; }
-.dado-valor { font-size: 0.86rem; font-weight: 500; font-family: var(--mono); word-break: break-word; }
-
-.nota-modelo {
-  font-size: 0.85rem; color: #cbd5e1; background: rgba(234,179,8,0.07);
-  border: 1px solid rgba(234,179,8,0.25); border-left: 3px solid var(--amarelo);
-  border-radius: 9px; padding: 12px 15px; margin: 0 0 14px;
-}
-.aviso-erro {
-  font-size: 0.88rem; background: rgba(239,68,68,0.08);
-  border: 1px solid rgba(239,68,68,0.3); border-radius: 9px; padding: 12px 15px; margin: 0 0 14px;
-}
-
-.grid-metricas {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(112px, 1fr)); gap: 10px;
-}
-.metrica {
-  background: var(--superficie-forte); border: 1px solid var(--borda);
-  border-radius: 9px; padding: 11px; text-align: center;
-}
-.metrica-valor { display: block; font-size: 1.5rem; font-weight: 700; font-family: var(--mono); }
-.metrica-rotulo { font-size: 0.68rem; color: var(--texto-fraco); text-transform: uppercase; letter-spacing: 0.04em; }
-.metrica.verde .metrica-valor { color: var(--verde); }
-.metrica.vermelho .metrica-valor { color: var(--vermelho); }
-.metrica.amarelo .metrica-valor { color: var(--amarelo); }
-
-/* ---------- baterias ---------- */
-.baterias-intro, .alvos-intro { font-size: 0.9rem; color: var(--texto-fraco); margin: 0 0 14px; }
-
-.bateria { border: 1px solid var(--borda); border-radius: 11px; margin-bottom: 10px; overflow: hidden; }
-.bateria-verde { border-left: 3px solid var(--verde); }
-.bateria-vermelho { border-left: 3px solid var(--vermelho); }
-.bateria-roxo { border-left: 3px solid var(--roxo); }
-.bateria-amarelo { border-left: 3px solid var(--amarelo); }
-.bateria-ciano { border-left: 3px solid var(--ciano); }
-
-/* A bateria que demonstra a tese ganha destaque visual permanente: em vídeo, quem
-   assiste precisa saber qual das seis é a que importa antes de eu falar. */
-.bateria-destaque {
-  border-color: rgba(6,182,212,0.42);
-  background: rgba(6,182,212,0.05);
-  box-shadow: 0 0 0 1px rgba(6,182,212,0.14);
-}
-.marca-tese {
-  font-size: 0.62rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase;
-  background: var(--ciano); color: #042f2e; padding: 3px 8px; border-radius: 5px;
-}
-.bateria-resumo {
-  font-size: 0.83rem; color: var(--texto-fraco); font-weight: 400;
-  display: block; margin-top: 3px;
-}
-.camada-esperada {
-  font-size: 0.66rem; font-weight: 600; padding: 4px 8px; border-radius: 6px;
-  white-space: nowrap; font-family: var(--mono); margin-top: 2px;
-}
-.camada-esperada-1 { background: rgba(168,85,247,0.15); color: #c4b5fd; }
-.camada-esperada-2 { background: rgba(6,182,212,0.15); color: #67e8f9; }
-.camada-esperada-0 { background: rgba(148,163,184,0.12); color: var(--texto-fraco); }
-
-.bateria-titulo {
-  width: 100%; background: var(--superficie-forte); border: none; color: var(--texto);
-  padding: 14px 16px; font-size: 0.98rem; font-weight: 600; text-align: left;
-  cursor: pointer; display: flex; align-items: center; gap: 10px; font-family: inherit;
-}
-.bateria-titulo:hover { background: rgba(51, 65, 85, 0.6); }
-.seta { color: var(--texto-fraco); font-size: 0.8rem; }
-.bateria-contagem {
-  margin-left: auto; font-size: 0.7rem; color: var(--texto-fraco); font-weight: 400;
-  background: rgba(148,163,184,0.1); padding: 2px 8px; border-radius: 999px;
-}
-
-.bateria-corpo { padding: 15px; }
-.bateria-objetivo {
-  font-size: 0.91rem; color: #cbd5e1; margin: 0 0 12px; line-height: 1.6;
-}
-
-.lista-casos { list-style: none; padding: 0; margin: 12px 0 0; display: flex; flex-direction: column; gap: 11px; }
-.caso { background: var(--superficie-forte); border: 1px solid var(--borda); border-radius: 9px; padding: 11px 13px; }
-.caso-topo { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 7px; }
-
-.caso-payload {
-  flex: 1; min-width: 0; background: rgba(2, 6, 23, 0.7);
-  border: 1px solid rgba(148,163,184,0.22); border-radius: 7px; padding: 8px 10px;
-  cursor: pointer; text-align: left; transition: border-color 0.15s, background 0.15s;
-}
-.caso-payload:hover:not(:disabled) { border-color: var(--azul); background: rgba(59,130,246,0.1); }
-.caso-payload:disabled { opacity: 0.5; cursor: not-allowed; }
-.caso-payload code {
-  font-family: var(--mono); font-size: 0.86rem; color: #f1f5f9;
-  word-break: break-all; white-space: pre-wrap;
-}
-
-.esperado {
-  font-size: 0.68rem; font-weight: 600; padding: 4px 8px; border-radius: 6px;
-  white-space: nowrap; font-family: var(--mono); margin-top: 2px;
-}
-.esperado-bloqueio { background: rgba(239,68,68,0.14); color: #fca5a5; }
-.esperado-passe { background: rgba(34,197,94,0.14); color: #86efac; }
-
-.caso-porque { font-size: 0.86rem; color: #94a3b8; margin: 0; line-height: 1.6; }
-.marca-limite { color: var(--amarelo); }
-
-.btn-executar-tudo, .btn-bateria {
-  background: linear-gradient(135deg, var(--azul), #1d4ed8); color: #fff; border: none;
-  padding: 10px 18px; border-radius: 8px; font-weight: 600; font-size: 0.88rem;
-  cursor: pointer; font-family: inherit;
-}
-.btn-bateria { background: linear-gradient(135deg, #475569, #334155); }
-.btn-executar-tudo:hover:not(:disabled), .btn-bateria:hover:not(:disabled) { filter: brightness(1.12); }
-.btn-executar-tudo:disabled, .btn-bateria:disabled { opacity: 0.5; cursor: not-allowed; }
-
-/* ---------- cards de formulário ---------- */
-.card {
-  background: var(--superficie-forte); border: 1px solid var(--borda);
-  border-radius: 11px; padding: 15px; margin-bottom: 12px;
-}
-.card-cabecalho { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 6px; }
-.card-nota { font-size: 0.8rem; color: var(--texto-fraco); margin: 0 0 12px; }
-.card-nota code, .explicacao code, .nota-modelo code, .aviso-erro code {
-  font-family: var(--mono); font-size: 0.85em; background: rgba(2,6,23,0.6);
-  padding: 1px 5px; border-radius: 4px; color: #f1f5f9;
-}
-
-.input-icon {
-  display: flex; align-items: center; gap: 8px; background: rgba(2, 6, 23, 0.7);
-  border: 1px solid rgba(148,163,184,0.22); border-radius: 8px; padding: 0 11px; margin-bottom: 10px;
-}
-.input-icon img { opacity: 0.5; }
-input[type='text'], textarea {
-  width: 100%; padding: 10px 0; background: transparent; border: none;
-  color: var(--texto); font-family: var(--mono); font-size: 0.82rem; outline: none;
-}
-textarea {
-  background: rgba(2, 6, 23, 0.7); border: 1px solid rgba(148,163,184,0.22);
-  border-radius: 8px; padding: 10px 11px; margin-bottom: 10px; resize: vertical;
-}
+/* ---------- botões e campos ---------- */
+button, input, select { font: inherit; color: inherit; }
 
 button {
-  background: linear-gradient(135deg, var(--vermelho), #b91c1c); color: #fff; border: none;
-  padding: 10px 18px; border-radius: 8px; font-weight: 600; font-size: 0.82rem;
-  cursor: pointer; width: 100%; font-family: inherit;
+  background: var(--tinta);
+  color: var(--papel);
+  border: 1px solid var(--tinta);
+  border-radius: 4px;
+  padding: 7px 14px;
+  cursor: pointer;
+  transition: background-color .15s, transform .1s;
 }
-button:hover:not(:disabled) { filter: brightness(1.12); }
-button:disabled { opacity: 0.45; cursor: not-allowed; }
-.secondary-btn { background: linear-gradient(135deg, var(--azul), #1d4ed8); }
-
-/* ---------- log ---------- */
-.log-vazio { font-size: 0.85rem; color: var(--texto-fraco); text-align: center; padding: 24px 0; margin: 0; }
-.log-legenda {
-  font-size: 0.78rem; color: var(--texto-fraco); margin: 0 0 13px;
-  padding: 9px 12px; background: var(--superficie-forte);
-  border: 1px solid var(--borda); border-radius: 8px; line-height: 1.6;
-}
-.amostra {
-  font-family: var(--mono); font-size: 0.72rem; font-weight: 600;
-  padding: 1px 7px; border-radius: 5px; white-space: nowrap;
-}
-.amostra-bloqueado { background: rgba(239,68,68,0.16); color: #f87171; }
-.amostra-permitido { background: rgba(34,197,94,0.16); color: #4ade80; }
-/* As camadas do WAF híbrido usam matizes próprios (violeta/ciano), fora da escala
-   vermelho-verde que já significa bloqueado-permitido. São eixos independentes:
-   qualquer camada produz 403, e misturar as paletas confundiria os dois sinais. */
-.amostra-camada1 { background: rgba(168,85,247,0.16); color: #c4b5fd; }
-.amostra-camada2 { background: rgba(6,182,212,0.16); color: #67e8f9; }
-
-.btn-limpar {
-  width: auto; background: transparent; border: 1px solid var(--borda);
-  color: var(--texto-fraco); font-size: 0.72rem; padding: 4px 11px;
-}
-.lista-log {
-  list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column;
-  gap: 9px; max-height: 620px; overflow-y: auto;
+button:hover:not(:disabled) { background: #3a3833; }
+button:active:not(:disabled) { transform: translateY(1px); }
+button:disabled { opacity: .45; cursor: default; }
+button:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 2px solid var(--tinta); outline-offset: 2px;
 }
 
-/* A borda esquerda segue o STATUS, nunca a conformidade: 403 é vermelho sempre. */
-.entrada {
-  background: var(--superficie-forte); border: 1px solid var(--borda);
-  border-left-width: 3px; border-radius: 9px; padding: 10px 13px;
+button.discreto {
+  background: none; color: var(--tinta-fraca); border-color: var(--linha);
+  padding: 3px 10px; font-size: 0.85rem;
 }
-.entrada-bloqueado { border-left-color: var(--vermelho); }
-.entrada-permitido { border-left-color: var(--verde); }
-.entrada-erro { border-left-color: #f97316; background: rgba(249,115,22,0.06); }
+button.discreto:hover:not(:disabled) { background: var(--papel-2); color: var(--tinta); }
 
-/* Divergência do esperado é sinalizada por contorno âmbar, somado à cor do status.
-   Assim os dois sinais convivem sem um sobrescrever o outro. */
-.entrada-divergente {
-  outline: 1.5px solid rgba(234,179,8,0.55);
-  outline-offset: -1px;
-  background: rgba(234,179,8,0.07);
+input, select {
+  background: #fff;
+  border: 1px solid var(--linha);
+  border-radius: 4px;
+  padding: 7px 10px;
 }
 
-.entrada-topo { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; margin-bottom: 5px; }
-.badge {
-  font-family: var(--mono); font-size: 0.74rem; font-weight: 700;
-  padding: 3px 9px; border-radius: 5px;
+/* ---------- cabeçalho ---------- */
+.cabecalho { margin-bottom: 28px; }
+.autor { margin: 4px 0 18px; color: var(--tinta-fraca); }
+.resumo { margin: 0 0 16px; max-width: 64ch; }
+.estado { margin: 0; font-size: 0.92rem; }
+.estado code { background: var(--papel-2); padding: 1px 5px; border-radius: 3px; }
+.ponto {
+  display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+  margin-right: 8px; vertical-align: 1px;
 }
-.badge-bloqueado { background: rgba(239,68,68,0.18); color: #f87171; border: 1px solid rgba(239,68,68,0.4); }
-.badge-permitido { background: rgba(34,197,94,0.18); color: #4ade80; border: 1px solid rgba(34,197,94,0.4); }
-.badge-erro { background: rgba(249,115,22,0.2); color: #fdba74; border: 1px solid rgba(249,115,22,0.45); }
-
-.entrada-decisao { font-size: 0.78rem; font-weight: 500; color: #cbd5e1; }
-
-/* Selo de conformidade: sinal independente do status. */
-.selo {
-  font-size: 0.7rem; font-weight: 600; padding: 3px 9px; border-radius: 999px;
-  white-space: nowrap; font-family: var(--mono);
-}
-.selo-conforme {
-  background: rgba(34,197,94,0.1); color: #86efac; border: 1px solid rgba(34,197,94,0.35);
-}
-.selo-divergente {
-  background: rgba(234,179,8,0.18); color: #fde047; border: 1px solid rgba(234,179,8,0.6);
-  font-weight: 700;
+.ponto.ligado { background: var(--liberado); }
+.ponto.desligado { background: var(--barrado); }
+.nota {
+  margin: 10px 0 0; max-width: 64ch; font-size: 0.88rem; color: var(--tinta-fraca);
 }
 
-/* Selo de proveniência: qual camada do WAF híbrido produziu o bloqueio. */
-.selo-camada1 {
-  background: rgba(168,85,247,0.14); color: #c4b5fd; border: 1px solid rgba(168,85,247,0.45);
+/* ---------- fluxo ---------- */
+.fluxo {
+  list-style: none; margin: 0 0 40px; padding: 14px 0;
+  display: flex; flex-wrap: wrap; gap: 4px 0;
+  border-top: 1px solid var(--linha); border-bottom: 1px solid var(--linha);
 }
-.selo-camada2 {
-  background: rgba(6,182,212,0.14); color: #67e8f9; border: 1px solid rgba(6,182,212,0.45);
+.fluxo li {
+  display: flex; flex-direction: column; padding: 4px 12px;
+  border-radius: 4px; transition: background-color .25s;
+}
+.fluxo li + li { margin-left: 20px; position: relative; }
+.fluxo li + li::before {
+  content: '→'; position: absolute; left: -17px; top: 4px; color: var(--tinta-fraca);
+}
+.fluxo li.decidiu { background: var(--marca); }
+.fluxo-nome { font-weight: 500; }
+.fluxo-conta { font-family: var(--mono); font-size: 0.85rem; }
+
+/* ---------- seções ---------- */
+.secao { margin-bottom: 44px; }
+.secao h2 { margin-bottom: 12px; }
+.secao-topo {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+  margin-bottom: 12px;
+}
+.secao-topo h2 { margin: 0; }
+
+/* ---------- teste manual ---------- */
+.teste-manual { display: flex; gap: 8px; flex-wrap: wrap; }
+.teste-manual input { flex: 1 1 260px; font-family: var(--mono); }
+.resultado-manual { margin: 10px 0 0; }
+
+/* ---------- roteiro ---------- */
+.bateria { margin-top: 26px; }
+.bateria-topo { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.bateria-resumo { margin: 2px 0 8px; color: var(--tinta-fraca); font-size: 0.92rem; }
+
+.casos, .historico { list-style: none; margin: 0; padding: 0; }
+
+.casos li {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) 10rem minmax(0, 1.6fr);
+  gap: 4px 14px; align-items: baseline;
+  padding: 7px 0; border-bottom: 1px solid var(--linha);
 }
 
-.entrada-rota {
-  display: block; font-family: var(--mono); font-size: 0.72rem;
-  color: var(--texto-fraco); margin-bottom: 6px;
+button.payload {
+  background: none; border: none; padding: 0; color: inherit; text-align: left;
+  overflow-wrap: anywhere;
 }
-.entrada-hora { margin-left: auto; font-size: 0.7rem; color: #64748b; font-family: var(--mono); }
+button.payload:hover:not(:disabled) { background: none; text-decoration: underline; }
+.previsto { font-size: 0.85rem; color: var(--tinta-fraca); }
+.obtido { font-size: 0.92rem; }
 
-.entrada-payload {
-  display: block; font-family: var(--mono); font-size: 0.78rem; color: #f1f5f9;
-  background: rgba(2, 6, 23, 0.7); border-radius: 6px; padding: 7px 9px;
-  margin-bottom: 7px; word-break: break-all; white-space: pre-wrap;
-}
-.entrada-metricas {
-  display: flex; gap: 14px; flex-wrap: wrap; font-size: 0.74rem;
-  color: var(--texto-fraco); font-family: var(--mono); margin-bottom: 5px;
-}
-.entrada-metricas strong { color: var(--texto); }
-.entrada-mensagem { font-size: 0.79rem; color: var(--texto-fraco); margin: 0; }
+.nao-bateu { background: #f6e3dc; }
+.aviso { color: var(--barrado); font-weight: 600; }
 
-/* ---------- rodapé ---------- */
-footer {
-  margin-top: 28px; padding: 16px 19px; background: var(--superficie);
-  border: 1px solid var(--borda); border-left: 3px solid var(--amarelo); border-radius: 11px;
+/* ---------- veredito ---------- */
+.veredito.barrado strong { color: var(--barrado); }
+.veredito.liberado strong { color: var(--liberado); }
+.veredito.erro { color: var(--barrado); }
+.veredito code { background: var(--papel-2); padding: 0 4px; border-radius: 3px; }
+
+/* ---------- histórico ---------- */
+.historico li {
+  display: grid;
+  grid-template-columns: 5.5rem minmax(0, 1.4fr) 9rem minmax(0, 1.6fr);
+  gap: 4px 14px; align-items: baseline;
+  padding: 6px 0; border-bottom: 1px solid var(--linha); font-size: 0.92rem;
 }
-footer p { font-size: 0.87rem; color: #cbd5e1; margin: 0; max-width: 115ch; }
+.payload-texto { overflow-wrap: anywhere; }
+.hora, .rota { font-family: var(--mono); font-size: 0.8rem; }
+
+/* ---------- tela estreita ---------- */
+@media (max-width: 680px) {
+  .pagina { padding-top: 28px; }
+  .casos li, .historico li { grid-template-columns: 1fr; }
+}
