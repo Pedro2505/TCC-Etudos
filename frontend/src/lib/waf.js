@@ -24,18 +24,17 @@ export async function enviarRequisicao({ rota, parametro, valor }) {
     const resposta = await fetch(url);
     const latenciaCliente = performance.now() - t0;
     const corpo = await resposta.json().catch(() => ({}));
+    // Quando o WAF libera, o que ele viu vem dentro de `waf`, junto da resposta da rota.
+    const waf = corpo.waf ?? corpo;
 
     return {
       ok: true,
       bloqueado: resposta.status === 403,
       erroInterno: resposta.status === 503,
       status: resposta.status,
-      // O backend só devolve a probabilidade quando bloqueia. Quando libera, ela
-      // fica abaixo do limiar e eu não a exponho na resposta — anotei isso como
-      // melhoria possível, porque ver a probabilidade do tráfego permitido também
-      // é informativo.
-      probabilidade: corpo.probabilidade_ataque ?? null,
-      limiar: corpo.limiar ?? null,
+      probabilidade: waf.probabilidade_ataque ?? null,
+      limiar: waf.limiar ?? null,
+      normalizado: waf.payload_normalizado ?? null,
       // Proveniência do bloqueio no WAF híbrido: 'assinatura' (camada 1) ou
       // 'modelo' (camada 2). Um log que só diz "403" é operacionalmente
       // incompleto — quem opera precisa saber se foi uma regra nomeada ou uma
@@ -44,9 +43,11 @@ export async function enviarRequisicao({ rota, parametro, valor }) {
       regraId: corpo.regra_id ?? null,
       regraNome: corpo.regra_nome ?? null,
       regraFamilia: corpo.regra_familia ?? null,
-      latenciaBackend: corpo.latencia_ms ?? null,
+      latenciaBackend: waf.latencia_ms ?? null,
       latenciaCliente,
       mensagem: corpo.detail ?? corpo.mensagem ?? '(sem mensagem)',
+      // Resposta da rota vulnerável. Só existe quando o WAF liberou.
+      respostaApp: resposta.status === 200 ? corpo.mensagem ?? null : null,
       payloadEnviado: valor,
       rota,
     };

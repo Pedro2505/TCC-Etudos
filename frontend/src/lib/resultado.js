@@ -9,6 +9,12 @@ export function numero(valor, casas) {
   });
 }
 
+/** Fração (0,594) como porcentagem ("59,4%"). */
+export function pct(valor, casas = 1) {
+  if (valor == null) return '—';
+  return `${numero(valor * 100, casas)}%`;
+}
+
 /** Identifica um caso pela rota, parâmetro e valor enviado. */
 export function chaveDoCaso(caso) {
   return `${caso.rota}|${caso.parametro}|${caso.payload}`;

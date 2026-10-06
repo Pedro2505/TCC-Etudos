@@ -1,18 +1,34 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Cabecalho from './components/Cabecalho';
-import Fluxo from './components/Fluxo';
-import TesteManual from './components/TesteManual';
-import Roteiro from './components/Roteiro';
+import Console from './components/Console';
+import Pipeline from './components/Pipeline';
 import Historico from './components/Historico';
+import ConferirRoteiro from './components/ConferirRoteiro';
+import Resultados from './components/Resultados';
+import Artigo from './components/Artigo';
 import { chaveDoCaso } from './lib/resultado';
 import { enviarRequisicao } from './lib/waf';
 
+const ABAS = { vivo: 'Testar ao vivo', resultados: 'Resultados do modelo', artigo: 'Artigo' };
+
+function abaDaUrl() {
+  const aba = window.location.hash.slice(1);
+  return aba in ABAS ? aba : 'vivo';
+}
+
 export default function App() {
+  const [aba, setAba] = useState(abaDaUrl);
   const [registros, setRegistros] = useState([]);
   const [ocupado, setOcupado] = useState(false);
 
-  // Toda requisição passa por aqui, venha do roteiro ou do teste manual, para que
-  // o histórico e o fluxo registrem tudo do mesmo jeito.
+  useEffect(() => {
+    const aoMudar = () => setAba(abaDaUrl());
+    window.addEventListener('hashchange', aoMudar);
+    return () => window.removeEventListener('hashchange', aoMudar);
+  }, []);
+
+  // Toda requisição passa por aqui, para que o caminho, o placar e o histórico
+  // registrem tudo do mesmo jeito.
   const enviar = useCallback(async (caso) => {
     setOcupado(true);
     const resultado = await enviarRequisicao({
@@ -33,20 +49,27 @@ export default function App() {
     return registro;
   }, []);
 
-  // Resultado mais recente de cada caso, para mostrar na linha dele no roteiro.
-  const ultimoPorChave = useMemo(() => {
-    const mapa = {};
-    for (const r of registros) if (!(r.chave in mapa)) mapa[r.chave] = r;
-    return mapa;
-  }, [registros]);
-
   return (
     <main className="pagina">
       <Cabecalho />
-      <Fluxo registros={registros} />
-      <TesteManual onEnviar={enviar} ocupado={ocupado} />
-      <Roteiro onEnviar={enviar} ocupado={ocupado} ultimoPorChave={ultimoPorChave} />
-      <Historico registros={registros} onLimpar={() => setRegistros([])} />
+
+      <nav className="abas" aria-label="Seções">
+        {Object.entries(ABAS).map(([id, nome]) => (
+          <a key={id} href={`#${id}`} aria-current={aba === id ? 'page' : undefined}>{nome}</a>
+        ))}
+      </nav>
+
+      {aba === 'vivo' && (
+        <>
+          <Console onEnviar={enviar} ocupado={ocupado}>
+            <Pipeline r={registros[0]} />
+          </Console>
+          <Historico registros={registros} onLimpar={() => setRegistros([])} />
+          <ConferirRoteiro onEnviar={enviar} ocupado={ocupado} />
+        </>
+      )}
+      {aba === 'resultados' && <Resultados />}
+      {aba === 'artigo' && <Artigo />}
     </main>
   );
 }

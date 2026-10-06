@@ -65,6 +65,23 @@ O artigo segue com a introdução entregue e 3 frases da seção 2.4.
    precisa ser dito antes que perguntem. Está registrado no `NECESSARIO.md` §3.
 9. `git push`. O repositório remoto está atrás.
 
+10. **NORMALIZAÇÃO DUPLICADA — achado de 06/10, gravidade alta.** O `servidor.py` tem a
+    própria `decodificador_ofuscacao` (linha ~84), diferente da `normalizar_payload` do
+    `ingestao_csic.py` que o treino usa. É o *training/serving skew* da Etapa 2, e a
+    resposta para *"sua normalização é a mesma no treino e em produção?"* hoje é **não**.
+    Entra na auditoria do `servidor.py` (a decisão de corrigir é do Pedro). Medir se muda
+    algum resultado do roteiro.
+
+### Frontend e aba Artigo (06/10)
+
+O frontend foi refeito: abas **Testar ao vivo** (caminho da requisição etapa por etapa),
+**Resultados do modelo** (gráficos) e **Artigo** (mapa por capítulo: checklist, perguntas,
+tabelas para copiar no Word, limitações, regras ABNT). Os dados vêm de
+`frontend/public/resultados.json`, gerado por `python exportar_painel.py` a partir das
+medições. **Rodar o exportador de novo sempre que o treino ou a avaliação híbrida mudarem.**
+O `servidor.py` passou a devolver o payload normalizado e a nota do modelo também quando
+libera. Só campos novos na resposta: nenhuma decisão mudou, e o roteiro continua 26/26.
+
 ### Como subir o sistema (verificado em 06/10)
 
 ```

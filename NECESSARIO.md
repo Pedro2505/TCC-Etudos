@@ -162,6 +162,13 @@ o rótulo real do dataset.
   Consequências: (a) o "normal" do modelo é o tráfego de **uma** aplicação; em outra, ele
   precisaria ser retreinado. (b) A demonstração ao vivo não roda o modelo cujos números
   estão no artigo. Pergunta de banca garantida. *(06/10)*
+- **Normalização diferente no treino e no servidor** (achado em 06/10). O treino usa
+  `ingestao_csic.normalizar_payload`, e o `servidor.py` usa a sua própria
+  `decodificador_ofuscacao`. Ou se corrige antes da defesa, ou entra aqui como limitação,
+  com a medida do impacto. *(06/10)*
+- **Comentários do código citam números sem script:** 36,6% (`servidor.py`; o medido é
+  36,4%), "6,7 pontos de F1" (o log dá 6,4), 22,3% de ataques no path, 28,54 ms. Nenhum
+  desses vai para o artigo sem rerodar. *(06/10)*
 - **Uso de IA no trabalho:** descobrir a regra da Unimar e declarar o que for exigido.
   Pergunta para o Paulo. *(19/08)*
 

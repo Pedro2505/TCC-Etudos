@@ -161,6 +161,7 @@ async def waf_middleware(request: Request, call_next):
                 "regra_id": regra.id,
                 "regra_nome": regra.nome,
                 "regra_familia": regra.familia,
+                "payload_normalizado": payload,
                 "latencia_ms": latencia_ms,
             },
             headers=CABECALHOS_CORS,
@@ -225,6 +226,7 @@ async def waf_middleware(request: Request, call_next):
                 "camada": "modelo",
                 "probabilidade_ataque": round(probabilidade, 4),
                 "limiar": LIMIAR,
+                "payload_normalizado": payload,
                 "latencia_ms": latencia_ms,
             },
             headers=CABECALHOS_CORS,
@@ -235,7 +237,20 @@ async def waf_middleware(request: Request, call_next):
 
     request.state.waf_latency = latencia_ms
     request.state.waf_probabilidade = probabilidade
+    request.state.waf_normalizado = payload
     return await call_next(request)
+
+
+def veredito_do_waf(request: Request) -> dict:
+    """O que o WAF viu numa requisição que ele liberou. Só para o painel de demonstração."""
+    estado = request.state
+    probabilidade = getattr(estado, 'waf_probabilidade', None)
+    return {
+        "probabilidade_ataque": round(probabilidade, 4) if probabilidade is not None else None,
+        "limiar": LIMIAR,
+        "payload_normalizado": getattr(estado, 'waf_normalizado', None),
+        "latencia_ms": getattr(estado, 'waf_latency', None),
+    }
 
 # --- ROTA DE TRANSPARÊNCIA DO WAF ---
 
@@ -278,12 +293,14 @@ def informacoes_do_waf():
 def login_fake_vulneravel(usuario: str = "", request: Request = None):
     # Rota que finge ser um login. Se o WAF deixar passar, ela executa a query.
     consulta_sql = f"SELECT * FROM usuarios WHERE username = '{usuario}'"
-    return {"mensagem": f"Consulta '{consulta_sql}' executada no banco de dados."}
+    return {"mensagem": f"Consulta '{consulta_sql}' executada no banco de dados.",
+            "waf": veredito_do_waf(request)}
 
 @app.get("/api/comentarios")
 def rota_busca(texto: str = "", request: Request = None):
     # Rota alvo de XSS. Se passar pelo WAF, o "XSS" foi guardado.
-    return {"mensagem": f"O comentário '{texto}' foi salvo com sucesso!"}
+    return {"mensagem": f"O comentário '{texto}' foi salvo com sucesso!",
+            "waf": veredito_do_waf(request)}
 
 # Montar arquivos estáticos (Dashboard Web)
 if not os.path.exists("static"):

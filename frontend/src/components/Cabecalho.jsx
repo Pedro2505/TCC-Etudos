@@ -25,9 +25,9 @@ export default function Cabecalho() {
         Pedro Henrique Juliani · TCC de Ciência da Computação
       </p>
       <p className="resumo">
-        Antes de chegar na aplicação, cada requisição passa por regras de assinatura e,
-        se nenhuma disparar, por um modelo de Machine Learning (Random Forest). A
-        aplicação embaixo é vulnerável de propósito: toda a proteção está no WAF.
+        Um firewall de aplicação web que barra ataques como SQL injection e XSS em duas etapas: primeiro
+        regras de ataques conhecidos, depois um modelo de Machine Learning para o que as
+        regras deixaram passar. A aplicação protegida é vulnerável de propósito.
       </p>
 
       <p className="estado">
@@ -53,12 +53,8 @@ export default function Cabecalho() {
       {info && (
         <p className="nota">
           {ehDemo
-            ? 'Este modelo foi treinado com tráfego em português, só para a demonstração. ' +
-              'Os números do artigo vêm do modelo do CSIC 2010, que aprendeu o tráfego de ' +
-              'uma loja espanhola e por isso barra texto comum em português.'
-            : 'Este é o modelo do CSIC 2010, o mesmo dos números do artigo. Ele aprendeu o ' +
-              'tráfego de uma loja espanhola e barra texto comum em português. Para a ' +
-              'apresentação, use o modelo de demonstração.'}
+            ? 'Modelo treinado em português só para esta demonstração. Os números do artigo são do modelo do CSIC 2010 (aba Resultados).'
+            : 'Este modelo aprendeu o tráfego de uma loja espanhola e barra texto comum em português. Para demonstrar, use o modelo de demonstração.'}
         </p>
       )}
     </header>
