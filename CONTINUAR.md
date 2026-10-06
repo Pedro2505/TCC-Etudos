@@ -79,7 +79,13 @@ O frontend foi refeito: abas **Testar ao vivo** (caminho da requisição etapa p
 tabelas para copiar no Word, limitações, regras ABNT). Os dados vêm de
 `frontend/public/resultados.json`, gerado por `python exportar_painel.py` a partir das
 medições. **Rodar o exportador de novo sempre que o treino ou a avaliação híbrida mudarem.**
-Desde 06/10 também existe a aba **Banca**: 30 perguntas por tema, com pista, palavras que
+**Reunião com o orientador: quarta 07/10.** A pauta está na aba **Plano** do site (7
+perguntas, com campo para a resposta). As respostas ficam salvas só no navegador em que
+foram digitadas: **na próxima sessão, pedir ao Pedro o que o Paulo respondeu** e gravar
+aqui as decisões (escopo, objetivos, datas, regra de IA).
+
+Também na aba **Banca**: um manual de estudo com 11 módulos (`frontend/src/lib/manual.js`),
+que ensina cada assunto e aponta os cartões que o testam. Desde 06/10 também existe a aba **Banca**: 30 perguntas por tema, com pista, palavras que
 não podem faltar e onde conferir, mais autoavaliação e simulado com 3 minutos por pergunta.
 Perguntas novas vão em `frontend/src/lib/banca.js`, e fatos do artigo em
 `frontend/src/lib/artigo.js`.

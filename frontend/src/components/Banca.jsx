@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react';
 import { PERGUNTAS, TEMAS } from '../lib/banca';
+import ComLinks from './ComLinks';
+import Manual from './Manual';
+import { rolarParaAbas } from '../lib/rolar';
 
 /**
  * Treino para a banca.
@@ -25,7 +28,16 @@ function lerAvaliacao() {
 export default function Banca() {
   const [avaliacao, setAvaliacao] = useState(lerAvaliacao);
   const [tema, setTema] = useState('todos');
-  const [modo, setModo] = useState('lista');
+  const [modo, setModo] = useState('manual');
+  // Cartões escolhidos a partir de um módulo do manual ("testar com os cartões").
+  const [soIds, setSoIds] = useState(null);
+
+  function testar(ids) {
+    setSoIds(ids);
+    setTema('todos');
+    setModo('lista');
+    rolarParaAbas();
+  }
 
   function avaliar(id, nivel) {
     setAvaliacao((atual) => {
@@ -37,14 +49,15 @@ export default function Banca() {
 
   const contagem = Object.keys(NIVEIS).map((n) => [n, PERGUNTAS.filter((p) => avaliacao[p.id] === n).length]);
   const semResposta = PERGUNTAS.filter((p) => !avaliacao[p.id]).length;
-  const visiveis = PERGUNTAS.filter((p) => tema === 'todos' || p.tema === tema);
+  const visiveis = PERGUNTAS.filter((p) => (soIds ? soIds.includes(p.id)
+    : tema === 'todos' || p.tema === tema));
 
   return (
     <div className="banca">
       <p className="artigo-intro">
-        Responda <strong>em voz alta, sem olhar nada</strong>, antes de abrir a ajuda. Mental
-        não vale: mental engana. A ajuda dá uma pista e as palavras que não podem faltar,
-        não a resposta pronta.
+        Primeiro <strong>estude</strong> o módulo no manual. Depois teste com os cartões:
+        responda <strong>em voz alta, sem olhar nada</strong>, antes de abrir a ajuda.
+        Mental não vale, mental engana.
       </p>
 
       <div className="placar-banca">
@@ -55,25 +68,36 @@ export default function Banca() {
       </div>
 
       <div className="modos">
-        <button className={modo === 'lista' ? 'ativo' : 'discreto'} onClick={() => setModo('lista')}>
-          Estudar por tema
+        <button className={modo === 'manual' ? 'ativo' : 'discreto'} onClick={() => setModo('manual')}>
+          1. Manual de estudo
+        </button>
+        <button className={modo === 'lista' ? 'ativo' : 'discreto'}
+          onClick={() => { setSoIds(null); setModo('lista'); }}>
+          2. Cartões
         </button>
         <button className={modo === 'simulado' ? 'ativo' : 'discreto'} onClick={() => setModo('simulado')}>
-          Simulado (3 min por pergunta)
+          3. Simulado (3 min)
         </button>
       </div>
 
-      {modo === 'simulado' ? (
-        <Simulado avaliacao={avaliacao} avaliar={avaliar} />
-      ) : (
+      {modo === 'manual' && <Manual onTestar={testar} avaliacao={avaliacao} />}
+      {modo === 'simulado' && <Simulado avaliacao={avaliacao} avaliar={avaliar} />}
+      {modo === 'lista' && (
         <>
-          <div className="filtro-temas">
-            {[['todos', 'Todos'], ...Object.entries(TEMAS)].map(([id, nome]) => (
-              <button key={id} className={`chip ${tema === id ? 'chip-ativo' : ''}`} onClick={() => setTema(id)}>
-                {nome}
-              </button>
-            ))}
-          </div>
+          {soIds ? (
+            <p className="filtro-ativo">
+              Cartões do módulo que você acabou de estudar.{' '}
+              <button className="discreto" onClick={() => setSoIds(null)}>ver todos</button>
+            </p>
+          ) : (
+            <div className="filtro-temas">
+              {[['todos', 'Todos'], ...Object.entries(TEMAS)].map(([id, nome]) => (
+                <button key={id} className={`chip ${tema === id ? 'chip-ativo' : ''}`} onClick={() => setTema(id)}>
+                  {nome}
+                </button>
+              ))}
+            </div>
+          )}
           <div className="cartoes">
             {visiveis.map((p) => (
               <Cartao key={p.id} p={p} nivel={avaliacao[p.id]} avaliar={avaliar} />
@@ -104,7 +128,7 @@ function Cartao({ p, nivel, avaliar }) {
           <p><strong>Pista:</strong> {p.pista}</p>
           <p><strong>Não pode faltar:</strong></p>
           <ul className="chaves">{p.chaves.map((c) => <li key={c}>{c}</li>)}</ul>
-          <p className="pequeno fraco">onde conferir: <code>{p.onde}</code></p>
+          <p className="pequeno fraco">onde conferir: <ComLinks texto={p.onde} /></p>
         </div>
       )}
 

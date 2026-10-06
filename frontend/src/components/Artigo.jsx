@@ -3,6 +3,7 @@ import {
   ABNT, CAPITULOS, DECISOES_ABERTAS, FICHAMENTO_COLUNAS, LIMITACOES, ORDEM_DE_ESCRITA, QUADRO1,
 } from '../lib/artigo';
 import { numero, pct } from '../lib/resultado';
+import ComLinks from './ComLinks';
 
 /**
  * Mapa do artigo: o que entra em cada capítulo, as perguntas que o texto precisa
@@ -32,6 +33,13 @@ export default function Artigo() {
       try { localStorage.setItem(CHAVE, JSON.stringify(novo)); } catch { /* sem armazenamento */ }
       return novo;
     });
+  }
+
+  // Abre o capítulo e rola até ele: ele aparece abaixo da lista, fora da tela.
+  function abrir(id) {
+    setAberto(id);
+    requestAnimationFrame(() => document.querySelector('.capitulo')
+      ?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
   }
 
   const porId = Object.fromEntries(CAPITULOS.map((c) => [c.id, c]));
@@ -81,7 +89,7 @@ export default function Artigo() {
             return (
               <li key={id}>
                 <button className={`ordem-item ${aberto === id ? 'ativo' : ''}`}
-                  onClick={() => setAberto(id)}>
+                  onClick={() => abrir(id)}>
                   <span className="ordem-nome">{c.numero !== '—' && `${c.numero}. `}{c.titulo}</span>
                   <span className="pequeno fraco">{p}/{c.itens.length}</span>
                 </button>
@@ -175,7 +183,7 @@ function Elemento({ id, d }) {
   return (
     <div className="elemento">
       <div className="elemento-topo">
-        <strong>{el.rotulo}</strong>
+        <strong><ComLinks texto={el.rotulo} /></strong>
         {el.colunas && <BotaoCopiar colunas={el.colunas} linhas={el.linhas} />}
       </div>
       {el.aviso && <p className="aviso pequeno">{el.aviso}</p>}
@@ -186,7 +194,7 @@ function Elemento({ id, d }) {
         </table>
       )}
       {el.lista && <ul className="lista-simples">{el.lista.map((x) => <li key={x}>{x}</li>)}</ul>}
-      {el.nota && <p className="pequeno fraco">{el.nota}</p>}
+      {el.nota && <p className="pequeno fraco"><ComLinks texto={el.nota} /></p>}
       {el.fonte && <p className="fonte">fonte: <code>{el.fonte}</code></p>}
     </div>
   );

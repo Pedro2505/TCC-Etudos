@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { buscarInfoWaf } from '../lib/waf';
 import { numero } from '../lib/resultado';
+import ComLinks from './ComLinks';
 
 /**
  * Título, e qual modelo está carregado no servidor.
@@ -52,9 +53,9 @@ export default function Cabecalho() {
 
       {info && (
         <p className="nota">
-          {ehDemo
+          <ComLinks texto={ehDemo
             ? 'Modelo treinado em português só para esta demonstração. Os números do artigo são do modelo do CSIC 2010 (aba Resultados).'
-            : 'Este modelo aprendeu o tráfego de uma loja espanhola e barra texto comum em português. Para demonstrar, use o modelo de demonstração.'}
+            : 'Este modelo aprendeu o tráfego de uma loja espanhola e barra texto comum em português. Para demonstrar, use o modelo de demonstração.'} />
         </p>
       )}
     </header>

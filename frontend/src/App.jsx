@@ -7,11 +7,14 @@ import ConferirRoteiro from './components/ConferirRoteiro';
 import Resultados from './components/Resultados';
 import Artigo from './components/Artigo';
 import Banca from './components/Banca';
+import Plano from './components/Plano';
 import { chaveDoCaso } from './lib/resultado';
+import { rolarParaAbas } from './lib/rolar';
 import { enviarRequisicao } from './lib/waf';
 
 const ABAS = {
   vivo: 'Testar ao vivo', resultados: 'Resultados do modelo', artigo: 'Artigo', banca: 'Banca',
+  plano: 'Plano',
 };
 
 function abaDaUrl() {
@@ -25,7 +28,12 @@ export default function App() {
   const [ocupado, setOcupado] = useState(false);
 
   useEffect(() => {
-    const aoMudar = () => setAba(abaDaUrl());
+    // Trocar de aba volta para o topo do conteúdo. Sem isso a página ficava rolada
+    // onde estava, mostrando o meio da aba nova, e parecia que o clique não funcionou.
+    const aoMudar = () => {
+      setAba(abaDaUrl());
+      rolarParaAbas();
+    };
     window.addEventListener('hashchange', aoMudar);
     return () => window.removeEventListener('hashchange', aoMudar);
   }, []);
@@ -56,6 +64,7 @@ export default function App() {
     <main className="pagina">
       <Cabecalho />
 
+      <div id="topo-abas" />
       <nav className="abas" aria-label="Seções">
         {Object.entries(ABAS).map(([id, nome]) => (
           <a key={id} href={`#${id}`} aria-current={aba === id ? 'page' : undefined}>{nome}</a>
@@ -74,6 +83,7 @@ export default function App() {
       {aba === 'resultados' && <Resultados />}
       {aba === 'artigo' && <Artigo />}
       {aba === 'banca' && <Banca />}
+      {aba === 'plano' && <Plano />}
     </main>
   );
 }
