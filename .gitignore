@@ -17,6 +17,8 @@ dist/
 # Arquivos brutos do CSIC 2010 (54 MB, redistribuicao restrita pela fonte).
 # Ficam em disco, fora do versionamento.
 datasets/CSIC2010/*.txt
+# Derivado do CSIC (mesma restricao); regeravel por ingestion_csic.py
+datasets/CSIC2010/*.csv.gz
 
 # Datasets de terceiros fora de escopo (decisao de 13/08). Nao redistribuir.
 datasets/SQL Injection/

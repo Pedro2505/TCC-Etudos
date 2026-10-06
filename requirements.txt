@@ -1,0 +1,34 @@
+# Dependencias do projeto (lista curada, UTF-8).
+# Substitui o `pip freeze` anterior, que tinha 129 pacotes em UTF-16 (incluindo
+# jupyter e dependencias transitivas irrelevantes) e podia quebrar o pip install.
+# O snapshot completo do ambiente foi preservado em requirements-full.txt.
+#
+# Instalacao:  pip install -r requirements.txt
+
+# --- API / Middleware WAF ---
+fastapi==0.140.7
+uvicorn==0.51.0
+starlette==1.3.1
+
+# --- Machine Learning ---
+# ATENCAO: os arquivos .pkl em models/ sao acoplados a versao do scikit-learn.
+# Trocar a versao abaixo exige retreinar com `python model_trainer.py`.
+scikit-learn==1.9.0
+pandas==3.0.5
+numpy==2.4.6
+scipy==1.17.1
+joblib==1.5.3
+
+# --- Explicabilidade (XAI) e graficos ---
+shap==0.51.0
+matplotlib==3.11.1
+
+# --- Scripts de teste ---
+requests==2.34.2
+
+# --- Dependencias transitivas fixadas (06/10) ---
+# Com as versoes mais novas o model_trainer.py deu segfault intermitente.
+# Estas sao as versoes do ambiente original (C:\Dev\Tcc\venv), que roda estavel.
+threadpoolctl==3.6.0
+numba==0.66.0
+llvmlite==0.48.0
