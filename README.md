@@ -1,57 +1,100 @@
-# TCC — reconstrução à mão
+# Detecção de Anomalias em Aplicações Web usando Machine Learning
 
-**Pedro Henrique Juliani**
-Detecção de anomalias em aplicações web usando Machine Learning — WAF em duas camadas.
+**Autor:** Pedro Henrique Juliani · **Orientador:** Paulo Rogerio de Mello Cardoso · Unimar, 2026
 
-Este repositório é a reconstrução do zero, escrita à mão, do trabalho que está em
-`C:\Dev\Tcc`. O objetivo não é chegar mais rápido ao mesmo resultado: é chegar ao mesmo
-resultado **entendendo cada decisão**.
+WAF (*Web Application Firewall*) em duas camadas, como middleware Python (FastAPI):
 
-## Por onde começar
+1. **Camada 1 — assinaturas** (`assinaturas.py`): 24 expressões regulares nomeadas.
+2. **Camada 2 — Random Forest** (`treino_modelo.py`, `extrator.py`): julga o que a camada 1
+   deixou passar, com features heurísticas, TF-IDF de caracteres e contexto HTTP.
 
-1. Leia o **[ROTEIRO.md](ROTEIRO.md)** inteiro, de ponta a ponta, antes de escrever
-   qualquer linha. Uma leitura só, sem parar para implementar.
-2. Comece pela **Etapa 0** — fundamentos de ML, sem computador.
-3. Registre cada sessão no **[diario.md](diario.md)**.
+A camada de ML é **acrescentada** ao WAF de assinaturas e não o substitui. A pergunta medida
+é: *dado um WAF de assinaturas, quanto de detecção a mais a camada de ML traz, e a que custo
+de falso positivo?*
 
-## Regras
+Base de avaliação: **HTTP DATASET CSIC 2010**, com 32.808 requisições em escopo (18.620 legítimas
+e 14.188 anômalas).
 
-1. Todo número citado tem um script que o gerou. Se não sabe qual, não cita.
-2. Nada de copiar e colar de `C:\Dev\Tcc`. Consulta só **depois** da própria tentativa.
-3. Etapa só fecha quando passa no teste de propriedade (definido no ROTEIRO).
+---
 
-## O que já está aqui
+## Como rodar
 
-```
-datasets/
-  CSIC2010/            HTTP DATASET CSIC 2010, arquivos brutos
-    normalTrafficTraining.txt    tráfego legítimo, partição de treino
-    normalTrafficTest.txt        tráfego legítimo, partição de teste
-    anomalousTrafficTest.txt     tráfego anômalo
-  SQL Injection/       payloads de SQLi rotulados (sqli.csv, sqliv2.csv, SQLiV3.csv)
-  XSS/                 payloads de XSS rotulados (xss_dataset.csv)
-docs/                  (vazio — a monografia e os relatórios vão nascer aqui)
-models/                (vazio — os artefatos treinados vão nascer aqui)
-```
-
-## O que NÃO está aqui, de propósito
-
-O `csic2010_processado.csv.gz` do repositório antigo **não foi copiado**. Ele é a *saída*
-da Etapa 1 — o resultado do parser que você vai escrever. Tê-lo aqui seria começar pela
-resposta.
-
-Ele continua em `C:\Dev\Tcc\datasets\CSIC2010\`, e serve para uma coisa só: **conferir as
-contagens** depois que o seu parser rodar. Só abra depois de ter o seu.
-
-## Ambiente
+Requisitos: Python 3.11 e Node 20 (o Node é só para o painel).
 
 ```powershell
-cd C:\Dev\tccNovo
 python -m venv venv
 .\venv\Scripts\Activate.ps1
-git init
+pip install -r requirements.txt
 ```
 
-Instale as bibliotecas conforme a etapa pedir, e vá anotando em `requirements.txt` à
-medida que precisar — não copie a lista pronta do projeto antigo. Saber por que cada
-dependência está lá também é parte do trabalho.
+**Dados.** Os arquivos do CSIC 2010 não estão no repositório, por causa da restrição de
+redistribuição da fonte. Coloque `normalTrafficTraining.txt`, `normalTrafficTest.txt` e
+`anomalousTrafficTest.txt` em `datasets/CSIC2010/`.
+
+**Modelos.** Os `.pkl` também ficam fora do Git. Para gerá-los:
+
+```powershell
+python ingestao_csic.py          # parse e contagens do dataset
+python treino_modelo.py          # validação cruzada, ablação, limiar, modelo final -> models/
+python avaliacao_hibrida.py      # assinaturas x modelo x cascata -> docs/medicoes/
+```
+
+### Demonstração ao vivo
+
+```powershell
+$env:WAF_MODELO='demo'; python servidor.py     # API em http://127.0.0.1:8000
+cd frontend; npm install; npm run dev          # painel em http://localhost:5173
+python verificar_roteiro.py                    # confere os 26 casos do roteiro
+```
+
+> **Atenção: a demonstração usa outro modelo.** `models/demo/` foi treinado com tráfego em
+> português. O modelo do CSIC (`python servidor.py`, sem a variável) é o que gera os números
+> do artigo. Ele conhece só o tráfego "normal" da loja espanhola do dataset e bloqueia
+> entradas legítimas em português. A rota `/api/waf/info` mostra qual modelo está carregado.
+
+---
+
+## De onde vem cada número
+
+Todo número do artigo sai de um script deste repositório:
+
+| Resultado | Script | Saída |
+| :--- | :--- | :--- |
+| Composição do dataset (97.065 → 51.480 com payload → 32.808 após deduplicação) | `ingestao_csic.py` | log no console |
+| Validação cruzada (StratifiedGroupKFold 5, agrupado por payload), ablação por bloco de features, limiar | `treino_modelo.py` | `models/model_metadata.json`, `docs/medicoes/curva_limiar.csv` |
+| Camada 1 × camada 2 × união × cascata, matriz de concordância, recall por família | `avaliacao_hibrida.py` | `docs/medicoes/avaliacao_hibrida.md`, `recall_por_familia.csv` |
+| Falso positivo em tráfego legítimo | `teste_falso_positivo.py` | `docs/medicoes/teste_falso_positivo*.md` |
+| Latência por etapa e ponta a ponta | `medir_latencia.py` ¹ | `docs/medicoes/latencia.md` |
+| Normalização do treino × do servidor | `medir_normalizacao.py` ¹ | `docs/medicoes/normalizacao_treino_vs_servidor.md` |
+| Validação manual da família atribuída | `validar_familias.py` | `docs/medicoes/validacao_familias.md` |
+| Explicabilidade (SHAP) | `explicacao.py` | `docs/medicoes/shap_explain_report.png` |
+
+¹ Scripts de medição de apoio escritos com assistente de IA (Claude). Eles não treinam
+nem decidem nada, só medem. O cabeçalho de cada um declara isso.
+
+## Estrutura
+
+```
+servidor.py            middleware FastAPI: normalização -> camada 1 -> camada 2
+assinaturas.py         camada 1 (regras nomeadas)
+extrator.py            features e caminho único de inferência
+treino_modelo.py       treino e validação da camada 2
+ingestao_csic.py       parser do CSIC 2010, rotulagem por família, deduplicação, grupos
+ingestao.py            datasets do modelo de demonstração
+avaliacao_hibrida.py   avaliação das duas camadas juntas
+frontend/              painel React (testar ao vivo, resultados, artigo)
+docs/medicoes/         todas as medições geradas
+```
+
+## Limitações conhecidas
+
+- **SQLi e XSS do CSIC são pegos 100% pelas assinaturas.** O ganho da camada de ML está nas
+  anomalias sem assinatura (manipulação de parâmetros): de 4,0% para 49,6% de recall.
+- **As famílias foram atribuídas por regex**, porque o CSIC rotula só normal/anômalo. Por isso,
+  o recall das assinaturas por família é otimista por construção.
+- **O middleware inspeciona só os valores da query string.** 22,3% dos ataques do CSIC estão
+  no path, fora dessa superfície.
+- **Treino e servidor normalizam o texto de formas diferentes.** No CSIC, isso não muda nenhuma
+  decisão (0 de 32.808, ver `normalizacao_treino_vs_servidor.md`).
+- **O modelo não generaliza para outra aplicação sem novo treino** (ver a seção da demonstração).
+- **A latência foi medida com uma requisição por vez**, sem carga concorrente.

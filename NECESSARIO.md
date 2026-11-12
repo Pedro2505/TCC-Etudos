@@ -108,6 +108,20 @@ A regra 1 está cumprida para esses números. **A regra 2 ainda não:** nenhum d
 foi auditado. **A latência continua sem script.** No antigo foi "instrumentação direta" sem
 arquivo salvo (`C:\Dev\Tcc\docs\testes_realizados.md` §2). Não citar.
 
+**Atualização 12/11 — latência agora TEM script** (`medir_latencia.py`, medição de apoio
+escrita pelo Claude → `docs/medicoes/latencia.md`). 300 payloads reais do CSIC (150/150),
+modelo de `models/`, n_jobs=1, em ms:
+normalização 0,02 · assinaturas 0,06 (p95 0,10) · features 4,60 (p95 5,86) ·
+inferência 6,31 (p95 7,35) · **total até a decisão da camada 2: 10,99 média / 13,21 p95**.
+Por HTTP, medido pelo middleware: decidido pela camada 1 0,09 ms · pela camada 2 11,16
+(p95 13,04). Ida e volta no cliente: 2,06 / 13,62 ms.
+**Os 31,94 ms do projeto antigo não valem mais**: eram com n_jobs=-1 e sem script. Citar
+só os de 12/11, dizendo a máquina (AMD, Windows, Python 3.11) e "uma requisição por vez".
+
+**Atualização 12/11 — normalização treino × servidor medida** (`medir_normalizacao.py` →
+`docs/medicoes/normalizacao_treino_vs_servidor.md`): 99,21% dos textos mudam só na caixa,
+0,06% (20) mudam além disso, **0 de 32.808 decisões trocam de lado** (in-sample).
+
 Números novos do log do `treino_modelo.py` (06/10), ablação por bloco de features
 (F1 médio ± desvio, 5 folds):
 heurísticas + TF-IDF 0,7182 ± 0,0126 · só TF-IDF 0,6686 ± 0,0085 · só contexto HTTP
@@ -180,7 +194,8 @@ o rótulo real do dataset.
 - **Normalização diferente no treino e no servidor** (achado em 06/10). O treino usa
   `ingestao_csic.normalizar_payload`, e o `servidor.py` usa a sua própria
   `decodificador_ofuscacao`. Ou se corrige antes da defesa, ou entra aqui como limitação,
-  com a medida do impacto. *(06/10)*
+  com a medida do impacto. *(06/10)* **Medido em 12/11: 0 decisões mudam no CSIC.** Continua
+  sendo limitação de engenharia (o Base64 heurístico pode alterar texto legítimo fora do CSIC). *(12/11)*
 - **Comentários do código citam números sem script:** 36,6% (`servidor.py`; o medido é
   36,4%), "6,7 pontos de F1" (o log dá 6,4) e 28,54 ms. Nenhum desses vai para o artigo
   sem rerodar. *(06/10)* **Correção, mesmo dia:** o 22,3% tem origem sim. O log do

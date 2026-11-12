@@ -8,7 +8,80 @@
 
 ---
 
-## ESTADO EM 06/10 — leia isto primeiro
+## ESTADO EM 12/11 — PLANO FINAL (leia isto primeiro)
+
+**Data informada pelo Pedro em 12/11:** entrega e apresentação entre a **última semana de
+novembro e a primeira de dezembro**. Trabalhar com o pior caso: **texto fechado no
+domingo, 22/11.** Isso dá 11 dias e acaba o regime de quinta e sexta: é sessão todo dia.
+
+Nada foi registrado entre 06/10 e 12/11. As respostas do Paulo na reunião de 07/10
+continuam sem registro.
+
+**CORREÇÃO DE 12/11, depois de reler a `TCC, 1 entrega.docx`:** a ameaça nº 1 é menor do
+que foi registrado em 19/08. O título ("Detecção de Anomalias em Aplicações Web") e o
+objetivo geral ("detecção de anomalias em requisições HTTP") **já são o escopo A**. O 1º
+parágrafo da introdução cita **"manipulação de parâmetros"**, que é o tampering. A frase "a
+introdução nem menciona tampering" estava errada. SQLi/XSS aparecem como **ênfase** (objetivo
+específico 1), não como o escopo inteiro. O que continua exposto:
+(a) a "ênfase" em SQLi/XSS, onde o ganho do ML é zero;
+(b) o resumo promete "payloads ofuscados", o que não foi medido;
+(c) zero-day na seção 1.2;
+(d) o objetivo 5;
+(e) nenhum objetivo prevê a camada de assinaturas.
+
+**Decisões padrão (valem se o Paulo não disser o contrário até 13/11):**
+- **Escopo A:** alargar para anomalias HTTP. O resultado já existe e não tem custo de código.
+  Mexe no título, no resumo, no problema e nos objetivos do cap. 1.
+- **Objetivo 5:** cumprir se ficar pronto em 13/11 (o Pedro troca o estimador, roda e
+  compara: regressão logística e árvore de decisão). Se não ficar, reescrever o objetivo.
+- **Latência:** o Claude escreve um script de medição de apoio (é infraestrutura, pela exceção
+  do CLAUDE.md). Sem ele, a Tab. 6 sai do artigo.
+
+**Auditoria comprimida:** só as 4 peças que geram números do artigo, cada uma com o passo 4
+gravado no diário, feitas no mesmo dia do capítulo que as usa.
+
+| Dia | Escrita (Pedro) | Auditoria / apoio |
+| :--- | :--- | :--- |
+| qui 12/11 | e-mail ao Paulo · decidir o escopo | Claude: script de latência, pacote para o professor |
+| sex 13/11 | cap. 4 Metodologia (dataset, Tab. 1, 51.480 → 32.808) | `ingestao_csic.py` |
+| sáb 14/11 | cap. 4 (validação, limiar) | `treino_modelo.py` · objetivo 5 |
+| dom 15/11 | cap. 6 Resultados (Tab. A–D, por família, complementaridade) | `assinaturas.py`, `avaliacao_hibrida.py` |
+| seg 16/11 | cap. 6 (ablação, limiar, latência, FP) · cap. 5 Desenvolvimento | `servidor.py` (normalização duplicada) |
+| ter 17/11 | cap. 3: fichar 4 referências | — |
+| qua 18/11 | cap. 3: fichar mais 4, escrever | — |
+| qui 19/11 | cap. 2 Fundamentação (2.4 já tem 3 frases) | — |
+| sex 20/11 | cap. 7 Conclusão e limitações · revisar cap. 1 (escopo, zero-day, acurácia, objetivos) | — |
+| sáb 21/11 | referências ABNT, figuras, resumo/abstract | — |
+| dom 22/11 | revisão final → **envio ao Paulo** | — |
+| 23/11 → | simulados de banca, ensaio da demo | — |
+
+Todo dia: **15 min de pergunta de banca** sobre o capítulo do dia.
+
+### Feito em 12/11 (pelo Claude, infraestrutura e medição de apoio)
+
+- `medir_latencia.py` → `docs/medicoes/latencia.md`. **A Tab. 6 agora tem script.**
+  Total até a decisão da camada 2: 10,99 ms média, 13,21 ms p95.
+- `medir_normalizacao.py` → `docs/medicoes/normalizacao_treino_vs_servidor.md`. A
+  normalização é diferente, mas **0 de 32.808 decisões mudam**. O item 10 do bloco de 06/10
+  deixa de ser gravidade alta e vira limitação declarada.
+- `docs/medicoes/amostra_familias_50.txt`: amostra de 25 SQLi + 25 XSS extraída para a
+  **anotação manual do Pedro** (Tab. 2). O veredito de cada linha é dele.
+- `README.md` reescrito para o professor: como rodar, de onde vem cada número, limitações.
+- A Tab. 1 já é explicável pelo log: 97.065 → 51.480 (tira 45.585 sem parâmetro) → 32.808
+  (dedup remove 18.672). Quem explica no texto é o Pedro.
+
+### O que falta para cumprir 100% da 1ª entrega (é do Pedro, não do Claude)
+
+| Promessa | Situação | Saída |
+| :--- | :--- | :--- |
+| Obj. 5, comparar modelos | só RF | Pedro troca o estimador em `treino_modelo.py:279` (LogisticRegression, DecisionTree) e roda. ~1h. Ou reescreve o objetivo. |
+| Resumo: "payloads ofuscados" | não medido | suavizar o texto (recomendado) ou medir (escopo B, mais 1 dia) |
+| 1.2: "zero-day" | não medido | suavizar, ou declarar em limitações |
+| Obj. 7: acurácia | métrica errada para dado desbalanceado | manter como contraexemplo |
+
+---
+
+## ESTADO EM 06/10
 
 **Nomes dos scripts em português desde 06/10** (commit `8affda1`): `api.py` → `servidor.py`,
 `model_trainer.py` → `treino_modelo.py`, `extractor.py` → `extrator.py`,
