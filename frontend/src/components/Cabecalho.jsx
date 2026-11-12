@@ -7,7 +7,7 @@ import ComLinks from './ComLinks';
  * Título, e qual modelo está carregado no servidor.
  *
  * Existem dois modelos: o do CSIC 2010, de onde saem os números do artigo, e o de
- * demonstração, treinado com tráfego em português. A tela diz qual está rodando
+ * demonstração, treinado com datasets públicos de payloads de SQLi e XSS. A tela diz qual está rodando
  * para que um nunca seja apresentado como se fosse o outro.
  */
 export default function Cabecalho() {
@@ -54,7 +54,7 @@ export default function Cabecalho() {
       {info && (
         <p className="nota">
           <ComLinks texto={ehDemo
-            ? 'Modelo treinado em português só para esta demonstração. Os números do artigo são do modelo do CSIC 2010 (aba Resultados).'
+            ? 'Modelo de demonstração, treinado com datasets públicos de payloads de SQLi e XSS (texto variado: nomes, e-mails, números, frases). Os números do artigo são do modelo do CSIC 2010 (aba Resultados).'
             : 'Este modelo aprendeu o tráfego de uma loja espanhola e barra texto comum em português. Para demonstrar, use o modelo de demonstração.'} />
         </p>
       )}

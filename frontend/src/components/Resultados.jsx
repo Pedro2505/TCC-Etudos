@@ -179,7 +179,8 @@ export default function Resultados() {
         <Bloco titulo="E o modelo da demonstração?" fonte={d.modelo_demo.fonte}>
           <p className="resumo">
             A aba ao vivo usa outro modelo, treinado com {numero(d.modelo_demo.n_amostras, 0)} exemplos
-            de SQLi, XSS e texto comum em português. Ele existe porque o modelo do CSIC barra texto
+            de datasets públicos de SQLi e XSS, cujos exemplos legítimos são texto variado (nomes, e-mails,
+            números, frases). Ele existe porque o modelo do CSIC barra texto
             em português. Os números dele <strong>não</strong> entram no artigo: os dados são
             mais fáceis, e o F1 de {numero(d.modelo_demo.validacao_cruzada.f1.media, 3)} não é
             comparável com o de cima.

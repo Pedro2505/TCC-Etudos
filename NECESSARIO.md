@@ -191,6 +191,12 @@ o rótulo real do dataset.
   Consequências: (a) o "normal" do modelo é o tráfego de **uma** aplicação; em outra, ele
   precisaria ser retreinado. (b) A demonstração ao vivo não roda o modelo cujos números
   estão no artigo. Pergunta de banca garantida. *(06/10)*
+- **O modelo demo NÃO é "treinado em português".** Conferido em 12/11 com `ingestao.unificar_datasets()`:
+  57.465 exemplos, 23.765 legítimos, de texto variado (e-mails, nomes, números, frases em inglês,
+  endereços em espanhol). Só ~5% têm cara de português, por uma heurística grosseira. Ele não barra
+  português porque viu texto legítimo **variado**, não porque viu português. O painel dizia
+  "treinado em português" e foi corrigido. O comentário do `servidor.py` (linha ~38) ainda diz isso:
+  a correção é do Pedro. *(12/11)*
 - **Normalização diferente no treino e no servidor** (achado em 06/10). O treino usa
   `ingestao_csic.normalizar_payload`, e o `servidor.py` usa a sua própria
   `decodificador_ofuscacao`. Ou se corrige antes da defesa, ou entra aqui como limitação,
