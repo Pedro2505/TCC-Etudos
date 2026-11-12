@@ -456,3 +456,14 @@ Saíram desta sessão e vão quase inteiras para o texto:
 > mão de um detector com precisão altíssima e proveniência auditável em troca de um que erra
 > mais em tráfego legítimo e responde 'probabilidade 0,87' quando o analista pergunta por
 > que bloqueou."
+
+### Limpeza de 12/11 (pedido do Pedro: "só o que está sendo usado")
+
+Removidos, recuperáveis pelo Git (commit anterior a esta limpeza):
+`teste_evasao.py` (nada o chamava, era uma demonstração com 5 payloads, não medição; se o
+escopo B voltar, ele está no histórico) · `docs/medicoes/baseline_comparison.md` (veio do
+projeto antigo, o script dele não existe aqui, então não pode ser citado) · a cópia
+duplicada de `docs/medicoes/shap_explain_report.png` (o `explicacao.py` grava em `docs/`) ·
+`static/index.html` (painel antigo, substituído por `frontend/`) · `__pycache__/`.
+Mantidos de propósito: `logs/` (é a prova dos números de 06/10), `ingestao.py` e os datasets
+de SQLi/XSS (treinam o modelo demo), `TCC Modelo.docx` (o template do artigo).
