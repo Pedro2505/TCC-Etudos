@@ -129,7 +129,7 @@ heurísticas + TF-IDF 0,7182 ± 0,0126 · só TF-IDF 0,6686 ± 0,0085 · só con
 
 Tabela 1, do log do `ingestao_csic.py` (06/10): 36.000 normais de treino · 36.000 normais
 de teste · 25.065 anômalas, todas parseadas (bate com o publicado). 51.480 com payload →
-**32.808 em escopo**. A queda de 51.480 para 32.808 ainda precisa ser explicada.
+**32.808 em escopo**. A queda de 51.480 para 32.808 ainda precisa ser explicada. **Explicada pelo Pedro em 12/11, de cabeça:** 97.065 → tira "as que não têm parâmetro" (45.585) → 51.480 → tira os "repetidos" (18.672) → 32.808. Números do log do `ingestao_csic.py`.
 
 Base: CSIC 2010, 32.808 requisições em escopo (18.620 legítimas / 14.188 anômalas).
 Validação `StratifiedGroupKFold(5)` agrupada por payload, TF-IDF por fold, probabilidades
