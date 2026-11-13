@@ -57,6 +57,14 @@ gravado no diário, feitas no mesmo dia do capítulo que as usa.
 
 Todo dia: **15 min de pergunta de banca** sobre o capítulo do dia.
 
+### ENVIADO AO PAULO EM 12/11
+
+O Pedro mandou ao orientador o texto explicando o sistema (`docs/aulas/texto-sistema-respostas.md`,
+com as palavras dele, montado por pergunta e resposta). **Na próxima sessão, confirmar:**
+(a) se foram também o vídeo e o zip; (b) qual zip, porque o da área de trabalho é **anterior** ao
+resumo da aba Resultados; (c) se as perguntas (data, 20 páginas, regra de IA, objetivo 5) foram
+junto. **Gravar aqui as respostas do Paulo assim que chegarem.**
+
 ### Feito em 12/11 (pelo Claude, infraestrutura e medição de apoio)
 
 - `medir_latencia.py` → `docs/medicoes/latencia.md`. **A Tab. 6 agora tem script.**
@@ -212,7 +220,9 @@ Diário do dia registrado.
 2. **Escolher o resultado.** Escolheu a semente 42 "porque o F1 deu maior". Reconheceu o
    erro quando reapareceu como forma 3 de vazamento — mas a tentação é reflexo, não
    ignorância. Vai voltar na Etapa 6.
-3. O "neurônios" de 13/08 **está curado** (reconferido em 19/08).
+3. **Falso positivo × falso negativo (12/11).** Chamou o 1% de inocentes barrados de "falso
+   negativo" duas vezes. Destravou com "o alarme tocou? tinha ladrão?". **Reconferir.**
+4. O "neurônios" de 13/08 **está curado** (reconferido em 19/08).
 
 ### Pergunta de banca ainda sem resposta dada por ele
 
