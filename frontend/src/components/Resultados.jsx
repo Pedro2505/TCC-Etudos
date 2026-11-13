@@ -59,6 +59,8 @@ export default function Resultados() {
 
   return (
     <div className="resultados">
+      <Resumo d={d} ataques={ataques} />
+
       <Bloco titulo="O modelo" fonte={m.fonte}>
         <dl className="fatos">
           <Fato rotulo="Dados de treino" valor={m.dataset} />
@@ -188,6 +190,71 @@ export default function Resultados() {
         </Bloco>
       )}
     </div>
+  );
+}
+
+/**
+ * Os números principais do trabalho numa tabela só, cada um com o script que o gerou.
+ * Não calcula nada novo: só junta o que os outros blocos já leem de resultados.json.
+ */
+function Resumo({ d, ataques }) {
+  const h = d.hibrida;
+  const cv = d.modelo_csic.validacao_cruzada;
+  const config = (letra) => h.configuracoes.find((c) => c.nome.startsWith(`${letra})`));
+  const familia = (nome) => h.familias.find((f) => f.familia === nome);
+  const soModelo = h.complementaridade.find((c) => c.grupo === 'Somente o modelo');
+  const regras = config('A');
+  const juntas = config('C');
+  const tamp = familia('Tampering sem assinatura');
+  const sqli = familia('SQLi');
+  const xss = familia('XSS');
+  const total = (d.latencia?.por_etapa || []).find((l) => l.etapa.startsWith('Total'));
+  const pp = (f) => `${f.combinado - f.assinaturas >= 0 ? '+' : ''}${numero((f.combinado - f.assinaturas) * 100, 1)} pp`;
+
+  const linhas = [
+    ['Requisições avaliadas (CSIC 2010)', numero(d.dataset.em_escopo, 0),
+      `${numero(d.dataset.em_escopo - ataques, 0)} normais · ${numero(ataques, 0)} ataques`,
+      'ingestao_csic.py'],
+    ['F1 do modelo (validação cruzada, 5 partes)',
+      `${numero(cv.f1.media, 3)} ± ${numero(cv.f1.desvio, 3)}`,
+      'sem repetir payload entre treino e teste', 'treino_modelo.py'],
+    ['Só as regras: ataques pegos', pct(regras?.recall),
+      `precisão ${pct(regras?.precisao)} · barra ${pct(regras?.taxa_fp)} do tráfego normal`,
+      'avaliacao_hibrida.py'],
+    ['Regras + modelo: ataques pegos', pct(juntas?.recall),
+      `precisão ${pct(juntas?.precisao)} · barra ${pct(juntas?.taxa_fp)} do tráfego normal`,
+      'avaliacao_hibrida.py'],
+    ['Ataques que só o modelo pega', pct(soModelo?.pct),
+      `${numero(soModelo?.n, 0)} ataques que as regras deixariam passar`, 'avaliacao_hibrida.py'],
+    ['Manipulação de parâmetros', tamp ? pp(tamp) : '—',
+      tamp ? `de ${pct(tamp.assinaturas)} (só regras) para ${pct(tamp.combinado)} (regras + modelo)` : '',
+      'avaliacao_hibrida.py'],
+    ['SQLi e XSS', sqli && xss ? `${pp(sqli)} / ${pp(xss)}` : '—',
+      sqli && xss ? `as regras sozinhas já pegam ${pct(sqli.assinaturas)} e ${pct(xss.assinaturas)}` : '',
+      'avaliacao_hibrida.py'],
+    ['Tempo por requisição (quando o modelo decide)',
+      total ? `${numero(total.p50, 1)} ms` : '—',
+      total ? `mediana · p95 ${numero(total.p95, 1)} ms · uma requisição por vez` : 'rode medir_latencia.py',
+      'medir_latencia.py'],
+  ];
+
+  return (
+    <Bloco titulo="Resumo: os números do trabalho"
+      explicacao="Todos medidos sobre o modelo do CSIC 2010, não o da demonstração. Cada linha diz o script que gerou o número.">
+      <table className="tabela-texto">
+        <thead><tr><th>O quê</th><th>Número</th><th>Lendo o número</th><th>Script</th></tr></thead>
+        <tbody>
+          {linhas.map(([oque, valor, leitura, script]) => (
+            <tr key={oque}>
+              <td>{oque}</td>
+              <td><strong>{valor}</strong></td>
+              <td className="fraco">{leitura}</td>
+              <td><code>{script}</code></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </Bloco>
   );
 }
 

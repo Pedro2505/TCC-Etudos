@@ -151,6 +151,21 @@ def ler_folds(log: Path, configuracao: str = 'COMPLETO') -> list[dict]:
                                 r'recall=([\d.]+)\s+FP=\s*(\d+)\s+taxa_FP=\s*([\d.]+)%', trecho)]
 
 
+def ler_latencia(arquivo: Path) -> dict:
+    """Tabelas de docs/medicoes/latencia.md (gerado por medir_latencia.py), em ms."""
+    if not arquivo.exists():
+        return {}
+    tabelas = tabelas_markdown(arquivo.read_text(encoding='utf-8'))
+
+    def linhas(prefixo):
+        secao = next((v for k, v in tabelas.items() if k.startswith(prefixo)), [])
+        return [{'etapa': l[0], 'n': int(l[1]), 'media': float(l[2]), 'p50': float(l[3]),
+                 'p95': float(l[4]), 'p99': float(l[5]), 'max': float(l[6])}
+                for l in secao if l and l[0] != 'Etapa']
+
+    return {'por_etapa': linhas('Por etapa'), 'http': linhas('Ponta a ponta')}
+
+
 def main() -> None:
     log_treino = RAIZ / 'logs' / 'model_trainer_rerun1.log'
     log_ingestao = RAIZ / 'logs' / 'ingestion_csic.log'
@@ -170,6 +185,8 @@ def main() -> None:
                   'linhas': ler_folds(log_treino)},
         'dataset': {'fonte': 'ingestao_csic.py e treino_modelo.py (logs da execução de 06/10)',
                     **ler_dataset(log_ingestao, log_treino)},
+        'latencia': {'fonte': 'medir_latencia.py → docs/medicoes/latencia.md',
+                     **ler_latencia(MEDICOES / 'latencia.md')},
     }
 
     DESTINO.write_text(json.dumps(dados, ensure_ascii=False, indent=1), encoding='utf-8')

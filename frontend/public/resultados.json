@@ -1054,5 +1054,93 @@
   "com_payload": 51480,
   "em_escopo": 32808,
   "grupos": 16034
+ },
+ "latencia": {
+  "fonte": "medir_latencia.py → docs/medicoes/latencia.md",
+  "por_etapa": [
+   {
+    "etapa": "Normalização (servidor)",
+    "n": 300,
+    "media": 0.02,
+    "p50": 0.02,
+    "p95": 0.02,
+    "p99": 0.04,
+    "max": 0.04
+   },
+   {
+    "etapa": "Camada 1 — assinaturas",
+    "n": 300,
+    "media": 0.06,
+    "p50": 0.05,
+    "p95": 0.1,
+    "p99": 0.12,
+    "max": 0.14
+   },
+   {
+    "etapa": "Montagem das features",
+    "n": 300,
+    "media": 4.6,
+    "p50": 4.48,
+    "p95": 5.86,
+    "p99": 8.25,
+    "max": 9.78
+   },
+   {
+    "etapa": "Inferência (Random Forest)",
+    "n": 300,
+    "media": 6.31,
+    "p50": 6.17,
+    "p95": 7.35,
+    "p99": 9.22,
+    "max": 10.16
+   },
+   {
+    "etapa": "Total até a decisão da camada 2",
+    "n": 300,
+    "media": 10.99,
+    "p50": 10.76,
+    "p95": 13.21,
+    "p99": 16.74,
+    "max": 18.6
+   }
+  ],
+  "http": [
+   {
+    "etapa": "decidido por: assinatura",
+    "n": 37,
+    "media": 0.09,
+    "p50": 0.0,
+    "p95": 0.77,
+    "p99": 1.32,
+    "max": 1.5
+   },
+   {
+    "etapa": "decidido por: modelo",
+    "n": 263,
+    "media": 11.16,
+    "p50": 11.05,
+    "p95": 13.04,
+    "p99": 15.71,
+    "max": 21.26
+   },
+   {
+    "etapa": "decidido por: assinatura",
+    "n": 37,
+    "media": 2.06,
+    "p50": 2.0,
+    "p95": 2.41,
+    "p99": 2.48,
+    "max": 2.48
+   },
+   {
+    "etapa": "decidido por: modelo",
+    "n": 263,
+    "media": 13.62,
+    "p50": 13.43,
+    "p95": 14.94,
+    "p99": 17.87,
+    "max": 24.68
+   }
+  ]
  }
 }
