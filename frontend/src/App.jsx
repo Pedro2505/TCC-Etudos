@@ -17,6 +17,10 @@ const ABAS = {
   plano: 'Plano',
 };
 
+// Abas de estudo: não aparecem no menu, mas continuam abrindo pelo endereço
+// (localhost:5173/#banca, #artigo, #plano).
+const OCULTAS = ['artigo', 'banca', 'plano'];
+
 function abaDaUrl() {
   const aba = window.location.hash.slice(1);
   return aba in ABAS ? aba : 'vivo';
@@ -66,7 +70,7 @@ export default function App() {
 
       <div id="topo-abas" />
       <nav className="abas" aria-label="Seções">
-        {Object.entries(ABAS).map(([id, nome]) => (
+        {Object.entries(ABAS).filter(([id]) => !OCULTAS.includes(id) || aba === id).map(([id, nome]) => (
           <a key={id} href={`#${id}`} aria-current={aba === id ? 'page' : undefined}>{nome}</a>
         ))}
       </nav>

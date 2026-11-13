@@ -209,40 +209,40 @@ function Resumo({ d, ataques }) {
   const sqli = familia('SQLi');
   const xss = familia('XSS');
   const total = (d.latencia?.por_etapa || []).find((l) => l.etapa.startsWith('Total'));
-  const pp = (f) => `${f.combinado - f.assinaturas >= 0 ? '+' : ''}${numero((f.combinado - f.assinaturas) * 100, 1)} pp`;
+  const pp = (f) => `${f.combinado - f.assinaturas >= 0 ? '+' : ''}${numero((f.combinado - f.assinaturas) * 100, 1)} pontos`;
 
   const linhas = [
     ['Requisições avaliadas (CSIC 2010)', numero(d.dataset.em_escopo, 0),
-      `${numero(d.dataset.em_escopo - ataques, 0)} normais · ${numero(ataques, 0)} ataques`,
+      `${numero(d.dataset.em_escopo - ataques, 0)} normais e ${numero(ataques, 0)} ataques`,
       'ingestao_csic.py'],
-    ['F1 do modelo (validação cruzada, 5 partes)',
-      `${numero(cv.f1.media, 3)} ± ${numero(cv.f1.desvio, 3)}`,
-      'sem repetir payload entre treino e teste', 'treino_modelo.py'],
-    ['Só as regras: ataques pegos', pct(regras?.recall),
-      `precisão ${pct(regras?.precisao)} · barra ${pct(regras?.taxa_fp)} do tráfego normal`,
+    ['Nota F1 do modelo', `${numero(cv.f1.media, 3)} ± ${numero(cv.f1.desvio, 3)}`,
+      'média de 5 rodadas; o mesmo payload nunca aparece no treino e no teste ao mesmo tempo',
+      'treino_modelo.py'],
+    ['Ataques que as regras pegam sozinhas', pct(regras?.recall),
+      `acertam ${pct(regras?.precisao)} das vezes que barram e barram ${pct(regras?.taxa_fp)} de quem é inocente`,
       'avaliacao_hibrida.py'],
-    ['Regras + modelo: ataques pegos', pct(juntas?.recall),
-      `precisão ${pct(juntas?.precisao)} · barra ${pct(juntas?.taxa_fp)} do tráfego normal`,
+    ['Ataques que regras e modelo pegam juntos', pct(juntas?.recall),
+      `acertam ${pct(juntas?.precisao)} das vezes que barram e barram ${pct(juntas?.taxa_fp)} de quem é inocente`,
       'avaliacao_hibrida.py'],
     ['Ataques que só o modelo pega', pct(soModelo?.pct),
-      `${numero(soModelo?.n, 0)} ataques que as regras deixariam passar`, 'avaliacao_hibrida.py'],
-    ['Manipulação de parâmetros', tamp ? pp(tamp) : '—',
-      tamp ? `de ${pct(tamp.assinaturas)} (só regras) para ${pct(tamp.combinado)} (regras + modelo)` : '',
+      `${numero(soModelo?.n, 0)} ataques que passariam se só existissem as regras`,
       'avaliacao_hibrida.py'],
-    ['SQLi e XSS', sqli && xss ? `${pp(sqli)} / ${pp(xss)}` : '—',
-      sqli && xss ? `as regras sozinhas já pegam ${pct(sqli.assinaturas)} e ${pct(xss.assinaturas)}` : '',
+    ['Ganho do modelo em manipulação de parâmetros', tamp ? pp(tamp) : '—',
+      tamp ? `as regras pegam ${pct(tamp.assinaturas)}; com o modelo, ${pct(tamp.combinado)}` : '',
       'avaliacao_hibrida.py'],
-    ['Tempo por requisição (quando o modelo decide)',
-      total ? `${numero(total.p50, 1)} ms` : '—',
-      total ? `mediana · p95 ${numero(total.p95, 1)} ms · uma requisição por vez` : 'rode medir_latencia.py',
+    ['Ganho do modelo em SQLi e XSS', sqli && xss ? `${pp(sqli)} / ${pp(xss)}` : '—',
+      sqli && xss ? `as regras sozinhas já pegam ${pct(sqli.assinaturas)} e ${pct(xss.assinaturas)}; não sobra nada para o modelo` : '',
+      'avaliacao_hibrida.py'],
+    ['Tempo do WAF por requisição', total ? `${numero(total.p50, 1)} ms` : '—',
+      total ? `metade leva menos que isso e 95% levam até ${numero(total.p95, 1)} ms (uma requisição por vez)` : 'rode medir_latencia.py',
       'medir_latencia.py'],
   ];
 
   return (
     <Bloco titulo="Resumo: os números do trabalho"
-      explicacao="Todos medidos sobre o modelo do CSIC 2010, não o da demonstração. Cada linha diz o script que gerou o número.">
+      explicacao="Tudo aqui vem do modelo treinado no CSIC 2010, e não do que roda na demonstração. Ao lado de cada número está o script que o gerou.">
       <table className="tabela-texto">
-        <thead><tr><th>O quê</th><th>Número</th><th>Lendo o número</th><th>Script</th></tr></thead>
+        <thead><tr><th>O quê</th><th>Número</th><th>O que isso quer dizer</th><th>Script</th></tr></thead>
         <tbody>
           {linhas.map(([oque, valor, leitura, script]) => (
             <tr key={oque}>
