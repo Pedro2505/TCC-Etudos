@@ -1,0 +1,37 @@
+
+==============================================================================
+TREINO E VALIDACAO DO MODELO DO WAF
+==============================================================================
+Este script faz quatro coisas, nesta ordem:
+
+    1. Carrega o dataset e transforma texto em numeros.
+    2. Mede o desempenho de forma honesta, com StratifiedGroupKFold.
+    3. Escolhe o limiar de decisao (o corte entre "libera" e "bloqueia").
+    4. Treina o modelo final e salva no disco.
+
+Rodar:  python model_trainer.py
+
+------------------------------------------------------------------------------
+O QUE MUDOU EM RELACAO A VERSAO ANTERIOR, E POR QUE
+------------------------------------------------------------------------------
+A versao antiga fazia um `train_test_split` simples e reportava um numero unico.
+Tres problemas, todos corrigidos aqui:
+
+(a) VAZAMENTO DE IDF. O TF-IDF era ajustado (`fit`) sobre o dataset TODO, antes de
+    separar treino e teste. O TF-IDF calcula "em quantos documentos cada n-grama
+    aparece", entao ajustar antes do split faz essa estatistica incluir informacao
+    do teste. O modelo entra na prova sabendo algo sobre a prova.
+    -> Aqui o TF-IDF e ajustado SO no treino de cada fold.
+
+(b) VAZAMENTO DE PAYLOAD. O CSIC 2010 manda cada requisicao duas vezes: uma como
+    GET (parametros na URL) e outra como POST (mesmos parametros no corpo). Um
+    split aleatorio joga a versao GET no treino e a POST no teste. O modelo le o
+    payload, que e identico nas duas -> ele reencontra no teste o que estudou.
+    -> Aqui uso StratifiedGroupKFold agrupando por payload (ver secao 2).
+
+(c) UM NUMERO SO. Uma divisao unica com `random_state=42` produz um numero que
+    depende do sorteio. Se der 0,72 nao sei se o modelo e bom ou se eu tive sorte.
+    -> Aqui uso 5 folds e reporto media +- desvio padrao.
+==============================================================================
+
+[1/4] Carregando csic2010_processado.csv.gz...

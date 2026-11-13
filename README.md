@@ -67,7 +67,7 @@ Todo número do artigo sai de um script deste repositório:
 | Latência por etapa e ponta a ponta | `medir_latencia.py` ¹ | `docs/medicoes/latencia.md` |
 | Normalização do treino × do servidor | `medir_normalizacao.py` ¹ | `docs/medicoes/normalizacao_treino_vs_servidor.md` |
 | Validação manual da família atribuída | `validar_familias.py` | `docs/medicoes/validacao_familias.md` |
-| Explicabilidade (SHAP) | `explicacao.py` | `docs/medicoes/shap_explain_report.png` |
+| Explicabilidade (SHAP) | `explicacao.py` | `docs/shap_explain_report.png` |
 
 ¹ Scripts de medição de apoio escritos com assistente de IA (Claude). Eles não treinam
 nem decidem nada, só medem. O cabeçalho de cada um declara isso.
@@ -82,9 +82,23 @@ treino_modelo.py       treino e validação da camada 2
 ingestao_csic.py       parser do CSIC 2010, rotulagem por família, deduplicação, grupos
 ingestao.py            datasets do modelo de demonstração
 avaliacao_hibrida.py   avaliação das duas camadas juntas
-frontend/              painel React (testar ao vivo, resultados, artigo)
-docs/medicoes/         todas as medições geradas
+teste_falso_positivo.py, validar_familias.py, explicacao.py   medições complementares
+medir_latencia.py, medir_normalizacao.py                      medições de apoio ¹
+exportar_painel.py, verificar_roteiro.py                      apoio ao painel e à demo
+frontend/              painel React (testar ao vivo, resultados)
+models/                metadados dos modelos (os .pkl ficam fora do Git)
+logs/                  saída de console das rodadas que geraram os números
+docs/medicoes/         todas as medições geradas pelos scripts
+docs/artigo/           o artigo: modelo ABNT da Unimar e a 1ª entrega (cap. 1)
+docs/aulas/            material de orientação e estudo (índice em docs/aulas/README.md)
+CONTINUAR.md           ponto de retomada: estado atual e plano dia a dia
+NECESSARIO.md          matéria-prima do artigo: números (com script), decisões, limitações
+ROTEIRO.md, diario.md  plano das 13 etapas e registro das sessões
 ```
+
+Os scripts ficam na raiz de propósito: eles se importam entre si (`servidor.py` usa
+`extrator.py` e `assinaturas.py`) e gravam em caminhos relativos (`models/`, `docs/medicoes/`).
+Movê-los para uma subpasta exigiria mexer no código que gera os números do artigo.
 
 ## Limitações conhecidas
 

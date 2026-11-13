@@ -3,12 +3,36 @@
 > **Para o Claude:** leia este arquivo, o `ROTEIRO.md` e o `diario.md` antes de responder.
 > O material de orientação está em [`docs/aulas/README.md`](docs/aulas/README.md).
 >
-> Última atualização: **2026-10-06** (checkup geral após a tela azul). As seções abaixo
+> Última atualização: **2026-11-13** (reorganização para o fim de semana sem PC). As seções abaixo
 > deste bloco são o estado de **19/08** e ficam como histórico.
 
 ---
 
-## ESTADO EM 12/11 — PLANO FINAL (leia isto primeiro)
+## ESTADO EM 13/11 — FIM DE SEMANA SEM PC (leia isto primeiro)
+
+O Pedro fica **sem computador de sex 13/11 a seg 16/11** e vai escrever o artigo na lan
+house, só com o GitHub no navegador. Para isso, em 13/11:
+
+- Repositório reorganizado e enviado: os `.docx` foram para `docs/artigo/`; criado
+  [`docs/artigo/README.md`](docs/artigo/README.md), o mapa de onde está cada material
+  (números com script, frases, limitações, tabelas, regras ABNT); `logs/` passou a ser
+  versionado (são a prova dos números); README da raiz com a estrutura completa.
+- Os scripts **continuam na raiz**, de propósito: eles se importam entre si e gravam em
+  caminhos relativos. Mover mexeria no código que gera os números.
+
+**Efeito no plano de 12/11:** a escrita de sex/sáb/dom (cap. 4 e cap. 6) segue. As
+**auditorias** previstas para esses dias (`ingestao_csic.py`, `treino_modelo.py`,
+`assinaturas.py`, `avaliacao_hibrida.py`) e o **objetivo 5** precisam rodar código, então
+passam para **segunda, 16/11** em diante. O texto escrito antes da auditoria fica marcado
+como pendente dela.
+
+**Na volta (seg 16/11), começar por:** (1) ler o que ele escreveu e revisar como banca;
+(2) gravar no `NECESSARIO.md` o que tiver saído; (3) auditorias atrasadas, uma por vez, com
+o passo 4; (4) confirmar as respostas do Paulo (ver "Enviado ao Paulo em 12/11", abaixo).
+
+---
+
+## ESTADO EM 12/11 — PLANO FINAL
 
 **Data informada pelo Pedro em 12/11:** entrega e apresentação entre a **última semana de
 novembro e a primeira de dezembro**. Trabalhar com o pior caso: **texto fechado no
@@ -17,7 +41,7 @@ domingo, 22/11.** Isso dá 11 dias e acaba o regime de quinta e sexta: é sessã
 Nada foi registrado entre 06/10 e 12/11. As respostas do Paulo na reunião de 07/10
 continuam sem registro.
 
-**CORREÇÃO DE 12/11, depois de reler a `TCC, 1 entrega.docx`:** a ameaça nº 1 é menor do
+**CORREÇÃO DE 12/11, depois de reler a `docs/artigo/TCC, 1 entrega.docx`:** a ameaça nº 1 é menor do
 que foi registrado em 19/08. O título ("Detecção de Anomalias em Aplicações Web") e o
 objetivo geral ("detecção de anomalias em requisições HTTP") **já são o escopo A**. O 1º
 parágrafo da introdução cita **"manipulação de parâmetros"**, que é o tampering. A frase "a
@@ -417,7 +441,7 @@ da matriz de concordância acontecendo ao vivo.
 
 ## A entrega parcial já feita
 
-`TCC, 1 entrega.docx` na raiz — **1.088 palavras (~3–4 páginas ABNT)**, já entregue ao
+`docs/artigo/TCC, 1 entrega.docx` — **1.088 palavras (~3–4 páginas ABNT)**, já entregue ao
 orientador (Paulo Rogerio de Mello Cardoso). Contém resumo/abstract estruturados e o
 capítulo 1 completo (contextualização, problema, justificativa, objetivos, organização).
 
@@ -476,4 +500,4 @@ projeto antigo, o script dele não existe aqui, então não pode ser citado) · 
 duplicada de `docs/medicoes/shap_explain_report.png` (o `explicacao.py` grava em `docs/`) ·
 `static/index.html` (painel antigo, substituído por `frontend/`) · `__pycache__/`.
 Mantidos de propósito: `logs/` (é a prova dos números de 06/10), `ingestao.py` e os datasets
-de SQLi/XSS (treinam o modelo demo), `TCC Modelo.docx` (o template do artigo).
+de SQLi/XSS (treinam o modelo demo), `docs/artigo/TCC Modelo.docx` (o template do artigo).

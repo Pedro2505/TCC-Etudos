@@ -1,0 +1,125 @@
+
+==============================================================================
+PIPELINE DE INGESTAO — HTTP DATASET CSIC 2010
+==============================================================================
+Por que este modulo substitui o ingestion.py como fonte principal:
+
+Os datasets de SQLi/XSS usados nas Sprints 1-4 tem a classe benigna composta por
+CONSULTAS SQL LEGITIMAS (ex: "SELECT COUNT(thumb) FROM elephant"). O WAF, porem,
+opera na camada HTTP, onde trafego benigno e "tenis de corrida masculino" ou
+"pedro@gmail.com". Essa incompatibilidade de dominio faz a taxa de falso positivo
+medida (0,23%) nao descrever a tarefa real: em trafego HTTP realista ela e de
+23,1% (ver docs/medicoes/false_positive_test.md).
+
+O CSIC 2010 resolve isso: sao requisicoes HTTP REAIS a uma aplicacao de
+e-commerce (a loja "tienda1"), com metodo, path, parametros, headers e corpo.
+
+--- ARQUIVOS ESPERADOS em datasets/CSIC2010/ -------------------------------
+    normalTrafficTraining.txt   36.000 requisicoes normais (treino)
+    normalTrafficTest.txt       36.000 requisicoes normais (teste)
+    anomalousTrafficTest.txt    25.065 requisicoes anomalas (teste)
+
+Fonte original: http://www.isi.csic.es/dataset/  (historicamente instavel)
+Mirrors: repositorio msudol/Web-Application-Attack-Datasets no GitHub; Kaggle
+("CSIC 2010 Web Application Attacks"). As contagens acima servem como checksum:
+se o parser nao encontrar exatamente esses numeros, o arquivo esta truncado.
+
+--- FORMATO BRUTO ---------------------------------------------------------
+    GET http://localhost:8080/tienda1/publico/anadir.jsp?id=2&nombre=Jam%F3n HTTP/1.1
+    User-Agent: Mozilla/5.0 ...
+    Host: localhost:8080
+    Content-Length: 146          <- apenas em POST/PUT
+                                 <- linha vazia separa headers do corpo
+    id=2&nombre=Jam%F3n&precio=85 ...
+
+Requisicoes se separam pela LINHA DE REQUISICAO (metodo + URL + versao), nao por
+linha vazia — GET e POST usam linhas vazias internamente, o que quebraria um
+split ingenuo por "
+
+".
+
+ATENCAO AO ENCODING: o percent-encoding do CSIC e ISO-8859-1, nao UTF-8.
+"Jam%F3n" e "Jamón" em latin-1; decodificar como UTF-8 gera erro ou mojibake.
+Os arquivos em si sao ASCII puro (todo byte alto vem percent-encoded).
+
+--- LIMITACOES A DECLARAR NA MONOGRAFIA -----------------------------------
+1. Trafego gerado automaticamente, nao capturado de producao.
+2. Uma unica aplicacao-alvo (tienda1), tecnologias de 2010.
+3. O conjunto anomalo mistura tres categorias (ataques estaticos, ataques
+   dinamicos e "requisicoes ilegais nao intencionais"), sem rotulo de tipo.
+   A funcao classificar_familia_ataque() supre isso por heuristica.
+4. Cada ataque tende a aparecer em variante GET e POST -> deduplicar antes de
+   qualquer split, ou havera vazamento treino/teste.
+==============================================================================
+
+[*] normalTrafficTraining.txt: 36000 requisicoes parseadas (esperado: 36000)
+[*] normalTrafficTest.txt: 36000 requisicoes parseadas (esperado: 36000)
+[*] anomalousTrafficTest.txt: 25065 requisicoes parseadas (esperado: 25065)
+
+[*] Requisicoes brutas: 97065
+[*] Sem payload inspecionavel (ataque no path ou GET simples): 45585 (47.0%) — dessas, 5585 sao ataques
+[*] Escopo restrito a requisicoes com payload: 51480 restantes
+[*] Deduplicacao por ['Sentence', 'path', 'metodo', 'Label']: 18672 removidas (36.3%), 32808 restantes
+[*] Grupos de payload distintos: 16034 para 32808 requisicoes (2.0 por grupo em media, maior com 5)
+[*] Grupos contendo as duas classes: 266 (1.66%) — quanto menor, melhor a estratificacao dos folds
+    -> use groups=df['grupo_payload'] em StratifiedGroupKFold; um split aleatorio comum vaza payload entre treino e teste
+
+==============================================================================
+RESUMO DO DATASET CSIC 2010
+==============================================================================
+Total de requisicoes: 32808
+
+Distribuicao de classes:
+Label
+0    18620
+1    14188
+
+Metodos HTTP:
+metodo
+GET     16272
+POST    16271
+PUT       265
+
+Familias de ataque (heuristica) — base para o leave-one-family-out:
+familia_ataque
+Tampering sem assinatura      11332
+SQLi                           1018
+XSS                             952
+CRLF Injection                  388
+Injecao SSI/Comando             384
+Caractere de Controle/Nulo      114
+
+Paths mais frequentes:
+path
+/tienda1/publico/autenticar.jsp         6783
+/tienda1/publico/registro.jsp           6779
+/tienda1/miembros/editar.jsp            6770
+/tienda1/publico/pagar.jsp              6438
+/tienda1/publico/anadir.jsp             5547
+/tienda1/publico/caracteristicas.jsp     208
+/tienda1/publico/entrar.jsp              141
+/tienda1/publico/vaciar.jsp              141
+
+--- Exemplos de trafego NORMAL (o que o modelo antigo nunca viu) ---
+  '3 Vino Rioja 100 55 Añadir al carrito'
+  '3 Vino Rioja 100 55 Añadir al carrito'
+  'entrar choong d1se3ción off Entrar'
+  'entrar choong d1se3ción off Entrar'
+  '2'
+  '2'
+
+--- Exemplos de trafego ANOMALO ---
+  [SQLi] "2 Jamón Ibérico 85 '; DROP TABLE usuarios; SELECT * FROM datos WHERE nombre LIKE"
+  [SQLi] "2 Jamón Ibérico 85 '; DROP TABLE usuarios; SELECT * FROM datos WHERE nombre LIKE"
+  [Tampering sem assinatura] '2/ Jamón Ibérico 85 49 Añadir al carrito'
+  [Tampering sem assinatura] '2/ Jamón Ibérico 85 49 Añadir al carrito'
+  [XSS] 'entrar bob@<SCRipt>alert(Paros)</scrIPT>.parosproxy.org 84m3ri156 on Entrar'
+  [XSS] 'entrar bob@<SCRipt>alert(Paros)</scrIPT>.parosproxy.org 84m3ri156 on Entrar'
+
+[OK] Dataset processado salvo em C:\Dev\tccNovo\datasets\CSIC2010\csic2010_processado.csv.gz
+     Colunas: ['Sentence', 'Label', 'metodo', 'path', 'query_decodificada', 'corpo_decodificado', 'nomes_parametros', 'n_parametros', 'tem_corpo', 'content_length', 'n_headers', 'origem', 'familia_ataque', 'tem_payload', 'grupo_payload']
+     Byte nulo protegido como U+E000 em 114 requisicoes — sem isso o round-trip pelo CSV TRUNCA o payload no \x00 e apaga a evidencia do ataque.
+
+     Para carregar:  use model_trainer.carregar_dados_csic(), que ja aplica restaurar_nulo().
+     Direto pelo pandas:  pd.read_csv(..., keep_default_na=False) seguido de ingestion_csic.restaurar_nulo(df).
+     keep_default_na=False e necessario: sem isso o pandas converte payloads vazios e strings como 'null'/'NA' em NaN.

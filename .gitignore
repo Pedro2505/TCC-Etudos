@@ -13,6 +13,9 @@ dist/
 
 # Artefatos de execucao
 *.log
+# Excecao: logs/ guarda a prova dos numeros do artigo (so contagens e metricas,
+# sem trafego bruto do CSIC). Versionados para consulta longe do PC.
+!logs/*.log
 
 # Arquivos brutos do CSIC 2010 (54 MB, redistribuicao restrita pela fonte).
 # Ficam em disco, fora do versionamento.
@@ -33,6 +36,6 @@ models/**/*.pkl
 Thumbs.db
 desktop.ini
 
-# Capturas do TCC Modelo.docx (referencia de formatacao)
+# Capturas do docs/artigo/TCC Modelo.docx (referencia de formatacao)
 image.png
 image copy.png

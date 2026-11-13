@@ -1,0 +1,125 @@
+
+==============================================================================
+AVALIACAO DA ARQUITETURA HIBRIDA — ASSINATURAS + MACHINE LEARNING
+==============================================================================
+Pergunta que este script responde:
+
+    "Somar uma camada de ML a um WAF de assinaturas detecta mais do que
+     qualquer uma das duas camadas sozinha, e a que custo de falso positivo?"
+
+Ate aqui o trabalho comparava ML CONTRA assinaturas, como concorrentes. Este
+script muda o enquadramento para o que de fato acontece em producao: as duas
+camadas somadas, em cascata.
+
+--- O QUE E MEDIDO ---------------------------------------------------------
+Quatro configuracoes, no MESMO conjunto e com a MESMA metodologia de validacao
+(StratifiedGroupKFold(5) agrupado por payload, probabilidades out-of-fold):
+
+    A) Camada 1 isolada    -> so assinaturas (assinaturas.py)
+    B) Camada 2 isolada    -> so o modelo, no limiar calibrado 0,660
+    C) Uniao               -> bloqueia se QUALQUER camada disparar
+    D) Cascata recalibrada -> camada 1 primeiro; a camada 2 julga o resto, com
+                              o limiar reescolhido sob o MESMO orcamento total
+                              de falso positivo (<= 1%)
+
+E a matriz de concordancia entre as duas camadas, que e a evidencia direta de
+complementaridade: quantos ataques SO a assinatura pega, quantos SO o modelo
+pega, quantos ambos pegam e quantos escapam dos dois.
+
+--- POR QUE C E D EXISTEM SEPARADAS ----------------------------------------
+Em termos de DECISAO, cascata e uniao sao equivalentes: bloquear se a camada 1
+disparar, senao consultar a camada 2, produz exatamente o mesmo conjunto
+bloqueado que "camada 1 OU camada 2". Nao ha ganho de recall em ordenar.
+
+O que a cascata muda e outra coisa, e vale a pena declarar com precisao:
+
+  1. PROVENIENCIA. Cada bloqueio sai com a causa: uma regra nomeada ou uma
+     probabilidade com laudo SHAP. Um log de auditoria que so diz "403" e
+     operacionalmente incompleto.
+  2. CUSTO. O que a camada 1 resolve nao paga os ~10ms da camada 2.
+  3. ORCAMENTO DE FALSO POSITIVO. Este e o ponto tecnico interessante. A
+     camada 1 consome parte do orcamento de FP. Se ela consome pouco, sobra
+     margem para BAIXAR o limiar da camada 2 e ganhar recall sem estourar o
+     alvo declarado. A configuracao D mede exatamente isso.
+
+--- VIES DECLARADO: A CIRCULARIDADE DA ATRIBUICAO DE FAMILIA ---------------
+O CSIC 2010 rotula apenas normal/anomalo. A familia de ataque e atribuida por
+mim, com as regexes de `ingestion_csic.FAMILIAS_PAYLOAD`. As regras da camada 1
+foram escritas de forma independente (ver o docstring de assinaturas.py), mas
+descrevem os mesmos fenomenos e portanto se sobrepoem.
+
+    => O recall da camada 1 medido POR FAMILIA e OTIMISTA por construcao.
+       Uma familia definida por "casa com regex de SQLi" tende a ser detectada
+       por um detector de assinaturas de SQLi.
+
+Os numeros IMUNES a esse vies sao os medidos contra o rotulo real do CSIC:
+recall sobre o conjunto anomalo inteiro, taxa de falso positivo sobre o
+trafego legitimo, e a matriz de concordancia. Sao esses que sustentam a tese.
+
+A linha de 'Tampering sem assinatura' merece uma nota propria. Que a camada 1
+tenha recall zero nela e tautologico: a familia e DEFINIDA como "nao casou com
+nenhuma assinatura". Mas a tautologia e o proprio argumento -- "ataque sem
+assinatura" e "assinaturas nao detectam" sao a mesma afirmacao, e ela vale para
+qualquer WAF de regras, nao so para o meu. O que NAO e tautologico, e e o
+resultado deste trabalho, e quanto desses ataques a camada 2 detecta.
+
+Rodar:  python avaliacao_hibrida.py
+Saida:  docs/medicoes/avaliacao_hibrida.md
+==============================================================================
+
+[1/4] Carregando csic2010_processado.csv.gz...
+      32808 requisicoes | legitimas: 18620 | anomalas: 14188
+Extraindo features manuais...
+
+[1/4] Camada 1 — avaliando 24 assinaturas...
+      disparou em 3314 das 32808 requisicoes
+
+[2/4] Camada 2 — validacao cruzada StratifiedGroupKFold(5)...
+      (mesma metodologia do model_trainer.py: TF-IDF ajustado por fold,
+       agrupamento por payload, probabilidades out-of-fold)
+      fold 1/5: F1=0.7732  precisao=0.9215  recall=0.6660  FP= 161  taxa_FP= 4.32%  (43.2% de ataques no fold)
+      fold 2/5: F1=0.7846  precisao=0.9287  recall=0.6792  FP= 148  taxa_FP= 3.97%  (43.2% de ataques no fold)
+      fold 3/5: F1=0.7895  precisao=0.9423  recall=0.6794  FP= 118  taxa_FP= 3.17%  (43.2% de ataques no fold)
+      fold 4/5: F1=0.7915  precisao=0.9259  recall=0.6912  FP= 157  taxa_FP= 4.22%  (43.2% de ataques no fold)
+      fold 5/5: F1=0.7733  precisao=0.9280  recall=0.6628  FP= 146  taxa_FP= 3.92%  (43.3% de ataques no fold)
+
+      Limiar calibrado da monografia: 0.650
+
+[3/4] Comparando as quatro configuracoes...
+      Limiar da camada 2 recalibrado sob orcamento total: 0.650 (era 0.650)
+      Falso positivo consumido pela camada 1: 0 (0.00% do trafego legitimo)
+
+====================================================================================
+DESEMPENHO DAS QUATRO CONFIGURACOES
+====================================================================================
+Configuracao                                    Precisao   Recall       F1   Taxa FP
+------------------------------------------------------------------------------------
+A) Camada 1 isolada (assinaturas)               100.00%   23.36%   0.3787     0.00%
+B) Camada 2 isolada (modelo, limiar 0.650)       97.86%   59.43%   0.7395     0.99%
+C) Uniao (limiar 0.650)                          97.88%   59.78%   0.7422     0.99%
+D) Cascata recalibrada (limiar 0.650)            97.88%   59.78%   0.7422     0.99%
+
+====================================================================================
+MATRIZ DE CONCORDANCIA — sobre os 14188 ataques
+====================================================================================
+  Detectados pelas DUAS camadas         3265 ( 23.0%)
+  SO pela assinatura                      49 (  0.3%)
+  SO pelo modelo                        5167 ( 36.4%)
+  Por nenhuma das duas                  5707 ( 40.2%)
+
+====================================================================================
+RECALL POR FAMILIA — cada camada e o sistema combinado
+====================================================================================
+Familia                               n   camada 1   camada 2   combinado  ganho C2
+------------------------------------------------------------------------------------
+Tampering sem assinatura          11332       4.0%      49.6%       49.6%      +0.5 pp
+SQLi                               1018     100.0%      99.9%      100.0%      +0.0 pp
+XSS                                 952     100.0%     100.0%      100.0%      +0.0 pp
+CRLF Injection                      388     100.0%      98.5%      100.0%      +0.0 pp
+Injecao SSI/Comando                 384     100.0%     100.0%      100.0%      +0.0 pp
+Caractere de Controle/Nulo          114     100.0%      63.2%      100.0%      +0.0 pp
+------------------------------------------------------------------------------------
+SQLi + XSS (escopo do TCC)         1970     100.0%      99.9%      100.0%     +0.0 pp
+
+[4/4] Relatorio: docs\medicoes\avaliacao_hibrida.md
+      Curva:      docs/medicoes/curva_limiar_cascata.csv

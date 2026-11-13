@@ -1,0 +1,180 @@
+
+==============================================================================
+TREINO E VALIDACAO DO MODELO DO WAF
+==============================================================================
+Este script faz quatro coisas, nesta ordem:
+
+    1. Carrega o dataset e transforma texto em numeros.
+    2. Mede o desempenho de forma honesta, com StratifiedGroupKFold.
+    3. Escolhe o limiar de decisao (o corte entre "libera" e "bloqueia").
+    4. Treina o modelo final e salva no disco.
+
+Rodar:  python model_trainer.py
+
+------------------------------------------------------------------------------
+O QUE MUDOU EM RELACAO A VERSAO ANTERIOR, E POR QUE
+------------------------------------------------------------------------------
+A versao antiga fazia um `train_test_split` simples e reportava um numero unico.
+Tres problemas, todos corrigidos aqui:
+
+(a) VAZAMENTO DE IDF. O TF-IDF era ajustado (`fit`) sobre o dataset TODO, antes de
+    separar treino e teste. O TF-IDF calcula "em quantos documentos cada n-grama
+    aparece", entao ajustar antes do split faz essa estatistica incluir informacao
+    do teste. O modelo entra na prova sabendo algo sobre a prova.
+    -> Aqui o TF-IDF e ajustado SO no treino de cada fold.
+
+(b) VAZAMENTO DE PAYLOAD. O CSIC 2010 manda cada requisicao duas vezes: uma como
+    GET (parametros na URL) e outra como POST (mesmos parametros no corpo). Um
+    split aleatorio joga a versao GET no treino e a POST no teste. O modelo le o
+    payload, que e identico nas duas -> ele reencontra no teste o que estudou.
+    -> Aqui uso StratifiedGroupKFold agrupando por payload (ver secao 2).
+
+(c) UM NUMERO SO. Uma divisao unica com `random_state=42` produz um numero que
+    depende do sorteio. Se der 0,72 nao sei se o modelo e bom ou se eu tive sorte.
+    -> Aqui uso 5 folds e reporto media +- desvio padrao.
+==============================================================================
+
+[1/4] Carregando csic2010_processado.csv.gz...
+      32808 requisicoes | legitimas: 18620 | anomalas: 14188
+
+[2/4] Calculando features...
+Extraindo features manuais...
+      16034 grupos de payload distintos (2.0 requisicoes por grupo)
+
+[3/4] Validacao cruzada StratifiedGroupKFold(5)...
+
+    >>> Heuristicas + TF-IDF (modelo antigo)
+      fold 1/5: F1=0.7058  precisao=0.9099  recall=0.5765  FP= 162  taxa_FP= 4.35%  (43.2% de ataques no fold)
+      fold 2/5: F1=0.7204  precisao=0.9239  recall=0.5904  FP= 138  taxa_FP= 3.70%  (43.2% de ataques no fold)
+      fold 3/5: F1=0.7269  precisao=0.9327  recall=0.5955  FP= 122  taxa_FP= 3.28%  (43.2% de ataques no fold)
+      fold 4/5: F1=0.7330  precisao=0.9092  recall=0.6140  FP= 174  taxa_FP= 4.67%  (43.2% de ataques no fold)
+      fold 5/5: F1=0.7049  precisao=0.8975  recall=0.5803  FP= 188  taxa_FP= 5.05%  (43.3% de ataques no fold)
+
+      RESUMO — Heuristicas + TF-IDF (modelo antigo)
+        F1            0.7182 ± 0.0126
+        Precisao      0.9146 ± 0.0137
+        Recall        0.5913 ± 0.0148
+        ROC-AUC       0.8214 ± 0.0060
+        Taxa de FP     4.21% ± 0.72%
+        FP total         784 | FN total: 5798
+
+    >>> Apenas TF-IDF
+      fold 1/5: F1=0.6552  precisao=0.8810  recall=0.5215  FP= 200  taxa_FP= 5.37%  (43.2% de ataques no fold)
+      fold 2/5: F1=0.6738  precisao=0.8778  recall=0.5467  FP= 216  taxa_FP= 5.80%  (43.2% de ataques no fold)
+      fold 3/5: F1=0.6702  precisao=0.8807  recall=0.5409  FP= 208  taxa_FP= 5.59%  (43.2% de ataques no fold)
+      fold 4/5: F1=0.6774  precisao=0.8723  recall=0.5538  FP= 230  taxa_FP= 6.18%  (43.2% de ataques no fold)
+      fold 5/5: F1=0.6667  precisao=0.8660  recall=0.5419  FP= 238  taxa_FP= 6.39%  (43.3% de ataques no fold)
+
+      RESUMO — Apenas TF-IDF
+        F1            0.6686 ± 0.0085
+        Precisao      0.8755 ± 0.0064
+        Recall        0.5410 ± 0.0120
+        ROC-AUC       0.7919 ± 0.0048
+        Taxa de FP     5.86% ± 0.42%
+        FP total        1092 | FN total: 6513
+
+    >>> Apenas contexto HTTP
+      fold 1/5: F1=0.4251  precisao=0.9027  recall=0.2780  FP=  85  taxa_FP= 2.28%  (43.2% de ataques no fold)
+      fold 2/5: F1=0.4356  precisao=0.8873  recall=0.2887  FP= 104  taxa_FP= 2.79%  (43.2% de ataques no fold)
+      fold 3/5: F1=0.4345  precisao=0.9061  recall=0.2858  FP=  84  taxa_FP= 2.26%  (43.2% de ataques no fold)
+      fold 4/5: F1=0.4397  precisao=0.8876  recall=0.2922  FP= 105  taxa_FP= 2.82%  (43.2% de ataques no fold)
+      fold 5/5: F1=0.4212  precisao=0.8937  recall=0.2755  FP=  93  taxa_FP= 2.50%  (43.3% de ataques no fold)
+
+      RESUMO — Apenas contexto HTTP
+        F1            0.4312 ± 0.0077
+        Precisao      0.8955 ± 0.0086
+        Recall        0.2840 ± 0.0071
+        ROC-AUC       0.7099 ± 0.0055
+        Taxa de FP     2.53% ± 0.27%
+        FP total         471 | FN total: 10158
+
+    >>> COMPLETO (+ contexto HTTP)
+      fold 1/5: F1=0.7732  precisao=0.9215  recall=0.6660  FP= 161  taxa_FP= 4.32%  (43.2% de ataques no fold)
+      fold 2/5: F1=0.7846  precisao=0.9287  recall=0.6792  FP= 148  taxa_FP= 3.97%  (43.2% de ataques no fold)
+      fold 3/5: F1=0.7895  precisao=0.9423  recall=0.6794  FP= 118  taxa_FP= 3.17%  (43.2% de ataques no fold)
+      fold 4/5: F1=0.7915  precisao=0.9259  recall=0.6912  FP= 157  taxa_FP= 4.22%  (43.2% de ataques no fold)
+      fold 5/5: F1=0.7733  precisao=0.9280  recall=0.6628  FP= 146  taxa_FP= 3.92%  (43.3% de ataques no fold)
+
+      RESUMO — COMPLETO (+ contexto HTTP)
+        F1            0.7824 ± 0.0088
+        Precisao      0.9293 ± 0.0078
+        Recall        0.6757 ± 0.0115
+        ROC-AUC       0.8880 ± 0.0027
+        Taxa de FP     3.92% ± 0.45%
+        FP total         730 | FN total: 4601
+
+==============================================================================
+COMPARACAO DOS CONJUNTOS DE FEATURES (media dos 5 folds)
+==============================================================================
+Configuracao                                          F1          Recall   Taxa FP
+------------------------------------------------------------------------------
+Heuristicas + TF-IDF (modelo antigo)       0.7182 ±0.013   0.5913 ±0.015     4.21%
+Apenas TF-IDF                              0.6686 ±0.009   0.5410 ±0.012     5.86%
+Apenas contexto HTTP                       0.4312 ±0.008   0.2840 ±0.007     2.53%
+COMPLETO (+ contexto HTTP)                 0.7824 ±0.009   0.6757 ±0.011     3.92%
+
+==============================================================================
+CALIBRACAO DO LIMIAR DE DECISAO
+==============================================================================
+
+      Limiar escolhido: 0.650
+        taxa de FP: 0.99%  (alvo: <= 1.0%)
+        recall:     59.43%  (pega 59.4% dos ataques)
+        precisao:   97.86%
+        F1:         0.7395  (maior F1 dentro do orcamento de FP)
+
+      Como o limiar afeta o trade-off:
+          limiar    taxa FP    recall       F1
+           0.200    64.67%   94.85%   0.6782
+           0.300    37.66%   87.12%   0.7366
+           0.400    13.03%   76.23%   0.7886
+           0.500     3.92%   67.57%   0.7825
+           0.600     1.58%   61.90%   0.7550
+           0.700     0.69%   57.28%   0.7242
+           0.800     0.28%   52.95%   0.6907
+           0.900     0.06%   46.03%   0.6301
+
+      Curva completa salva em docs\medicoes\curva_limiar.csv
+
+>>> limiar padrao
+
+==============================================================================
+RECALL POR FAMILIA DE ATAQUE (limiar 0.500)
+==============================================================================
+Familia                               n   % total  detectados   recall   p media
+------------------------------------------------------------------------------
+Tampering sem assinatura          11332    79.9%        6756    59.6%     0.649
+SQLi                               1018     7.2%        1018   100.0%     0.959
+XSS                                 952     6.7%         952   100.0%     0.984
+CRLF Injection                      388     2.7%         388   100.0%     0.924
+Injecao SSI/Comando                 384     2.7%         384   100.0%     0.953
+Caractere de Controle/Nulo          114     0.8%          89    78.1%     0.720
+------------------------------------------------------------------------------
+SQLi + XSS (tema do TCC)           1970                         100.0%     0.971
+==============================================================================
+
+>>> limiar calibrado
+
+==============================================================================
+RECALL POR FAMILIA DE ATAQUE (limiar 0.650)
+==============================================================================
+Familia                               n   % total  detectados   recall   p media
+------------------------------------------------------------------------------
+Tampering sem assinatura          11332    79.9%        5625    49.6%     0.649
+SQLi                               1018     7.2%        1017    99.9%     0.959
+XSS                                 952     6.7%         952   100.0%     0.984
+CRLF Injection                      388     2.7%         382    98.5%     0.924
+Injecao SSI/Comando                 384     2.7%         384   100.0%     0.953
+Caractere de Controle/Nulo          114     0.8%          72    63.2%     0.720
+------------------------------------------------------------------------------
+SQLi + XSS (tema do TCC)           1970                          99.9%     0.971
+==============================================================================
+
+[4/4] Treinando o modelo final sobre o dataset completo...
+      models/waf_model.pkl        (62 colunas, 100 arvores)
+      models/tfidf_vectorizer.pkl
+      models/model_metadata.json  (limiar=0.650)
+
+==============================================================================
+Concluido.
+==============================================================================

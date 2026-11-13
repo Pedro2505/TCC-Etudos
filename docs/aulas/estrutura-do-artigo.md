@@ -47,7 +47,7 @@ método correto vale mais que um que esconde. O método é o que está sendo ava
 ## 1. Estrutura e orçamento de páginas
 
 > **Esta é a estrutura que o Pedro já declarou na seção 1.5 da entrega parcial
-> (`TCC, 1 entrega.docx`), e que já está com o orientador. Não inventar outra.**
+> (`docs/artigo/TCC, 1 entrega.docx`), e que já está com o orientador. Não inventar outra.**
 
 | Seção | Conteúdo | Alvo | Estado |
 | :--- | :--- | ---: | :--- |
@@ -67,7 +67,7 @@ método correto vale mais que um que esconde. O método é o que está sendo ava
 
 ## 1b. Pendências herdadas da entrega parcial
 
-Levantadas em 2026-08-13 ao reler o `TCC, 1 entrega.docx`.
+Levantadas em 2026-08-13 ao reler o `docs/artigo/TCC, 1 entrega.docx`.
 
 ### RISCO ALTO — nenhum objetivo específico prevê a camada de assinaturas
 

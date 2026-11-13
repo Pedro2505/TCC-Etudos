@@ -19,6 +19,11 @@ escreve vão em `docs/`, um nível acima.
 | [`videos-em-portugues.md`](videos-em-portugues.md) | Vídeos de apoio em português por tema (métricas, Random Forest, validação cruzada), com as três regras de como assistir. Nenhum verificado. |
 | [`cronograma-ate-outubro.md`](cronograma-ate-outubro.md) | As 24 sessões (quintas e sextas) até 31/10, os cortes de escopo decididos, e o que cabe em novembro. |
 | [`estrutura-do-artigo.md`](estrutura-do-artigo.md) | Estrutura do artigo ABNT, orçamento de páginas, inventário das 12 tabelas/figuras, e a seção de trabalhos relacionados. |
+| [`como-usar-o-sistema.md`](como-usar-o-sistema.md) | Guia de uso do sistema e do painel. |
+| [`roteiro-video.md`](roteiro-video.md) | Roteiro do vídeo de demonstração para o orientador. |
+| [`texto-sistema-respostas.md`](texto-sistema-respostas.md) | Texto enviado ao Paulo em 12/11: o sistema explicado com as palavras do Pedro, por pergunta. |
+
+O kit para escrever o artigo longe do PC está em [`../artigo/README.md`](../artigo/README.md).
 
 ---
 
