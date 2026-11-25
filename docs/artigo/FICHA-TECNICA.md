@@ -363,3 +363,18 @@ Um slide por tabela da §5, cada uma com o script de origem no rodapé.
 - ✅ Figura da matriz de confusão (`medir_erros.py`, 25/11).
 - ✅ Quais são os 184 falsos positivos e os 5.707 que passaram (`medir_erros.py`, 25/11).
 - ❓ Declaração de uso de IA e de código de terceiros (ponto 1).
+
+## 8. Figuras prontas para o artigo
+
+Geradas por `gerar_graficos.py` (escrito pelo Claude a pedido do Pedro, 25/11), que só lê os
+relatórios de `docs/medicoes/`. Cada figura traz a fonte no rodapé.
+
+| Figura | Arquivo | Vai no |
+| :--- | :--- | :--- |
+| Matriz de confusão (A, B, C) | `docs/medicoes/matriz_confusao.png` (`medir_erros.py`) | Cap. 6 |
+| Recall por família: regras × modelo | `docs/medicoes/figuras/fig1_recall_por_familia.png` | Cap. 6 (resultado central) |
+| Ganho de detecção × custo em FP | `docs/medicoes/figuras/fig2_configuracoes.png` | Cap. 6 |
+| Quem detectou cada ataque | `docs/medicoes/figuras/fig3_complementaridade.png` | Cap. 6 |
+| Curva do limiar (FP × recall) | `docs/medicoes/figuras/fig4_curva_limiar.png` | Cap. 4 ou 6 |
+| Comparação de algoritmos | `docs/medicoes/figuras/fig5_algoritmos.png` | Cap. 6 |
+| Latência por etapa | `docs/medicoes/figuras/fig6_latencia.png` | Cap. 6 |

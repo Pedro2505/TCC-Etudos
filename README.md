@@ -84,6 +84,7 @@ Todo número do artigo sai de um script deste repositório:
 | Matriz de confusão, falsos positivos e falsos negativos | `medir_erros.py` ¹ | `docs/medicoes/erros.md`, `matriz_confusao.png` |
 | Validação manual da família atribuída | `validar_familias.py` | `docs/medicoes/validacao_familias.md` |
 | Explicabilidade (SHAP) | `explicacao.py` | `docs/shap_explain_report.png` |
+| Figuras do artigo (lê os relatórios acima) | `gerar_graficos.py` ² | `docs/medicoes/figuras/` |
 
 ² Escrito com assistente de IA (Claude) a pedido do autor, em 25/11/2026. Usa a mesma
 validação do `treino_modelo.py` e não grava modelo.
