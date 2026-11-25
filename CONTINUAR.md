@@ -552,3 +552,11 @@ que o RF dá de novo F1 0,7824 ± 0,0088.
 RF repete 0,7824 ± 0,0088 e o limiar 0,650 (a mudança na `validar` não alterou nada). RL bem pior;
 árvore não opera em FP ≤ 1%. Resultado em `docs/medicoes/comparacao_modelos.md`. **Ponto 3 do
 Paulo: números prontos; a justificativa da escolha é do Pedro.**
+
+### Ponto 4 — demonstração com o modelo avaliado (25/11)
+
+`demo_csic.py` (escrito pelo Claude a pedido do Pedro) reenvia requisições GET reais do CSIC a
+`python servidor.py` (modelo de `models/`). Rodado: legítimas 6/6 passaram, SQLi 6/6 e XSS 6/6
+pela assinatura, tampering 5/6 pelo modelo. In-sample (o modelo final viu tudo) — mostra o
+mecanismo, não o desempenho. README corrigido (a demo não é "treinada em português"; XSS sintético).
+**Dos pedidos do Paulo que precisam de PC, não falta nenhum.** Daqui em diante é escrita.

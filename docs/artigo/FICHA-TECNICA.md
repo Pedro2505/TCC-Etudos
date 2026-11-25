@@ -206,6 +206,15 @@ normalização 0,02 · assinaturas 0,06 (0,10) · features 4,60 (5,86) · infer�
 
 0 de 32.808 decisões mudam. 20 textos (0,06%) mudam além da caixa.
 
+### Demonstração com o modelo avaliado — `demo_csic.py` → `docs/medicoes/demo_csic.md`
+
+Requisições GET reais do CSIC reenviadas a `python servidor.py` (modelo de `models/`), 6 por
+categoria, semente 42: legítimas 6/6 passaram · SQLi 6/6 e XSS 6/6 bloqueados pela **assinatura** ·
+tampering 5/6 bloqueados pelo **modelo**, 1 passou.
+**Não é desempenho:** o modelo final viu essas requisições no treino. Repare que 5 de 6 é bem
+acima dos 49,6% medidos out-of-fold. Essa diferença é a prova de por que o artigo usa
+out-of-fold, e a banca pode perguntar exatamente isso.
+
 ### Modelo do CSIC em texto legítimo em português — `verificar_roteiro.py` (06/10)
 
 4 casos legítimos bloqueados (p = 0,88–0,98). Com o modelo demo, os 26 casos passam.

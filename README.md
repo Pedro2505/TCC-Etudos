@@ -39,7 +39,19 @@ python treino_modelo.py          # validação cruzada, ablação, limiar, model
 python avaliacao_hibrida.py      # assinaturas x modelo x cascata -> docs/medicoes/
 ```
 
-### Demonstração ao vivo
+### Demonstração com o modelo avaliado (o do artigo)
+
+```powershell
+python servidor.py                             # modelo do CSIC, models/
+python demo_csic.py                            # reenvia requisições reais do CSIC e mostra qual camada decide
+```
+
+O `demo_csic.py` manda requisições GET reais do CSIC (legítimas, SQLi, XSS e tampering) para o
+path original da loja. 403 = o WAF bloqueou; 404 = o WAF deixou passar. **Mostra o mecanismo, não
+o desempenho:** o modelo de `models/` foi treinado com todas as 32.808 requisições, inclusive estas.
+O desempenho é o das probabilidades out-of-fold (`docs/medicoes/avaliacao_hibrida.md`).
+
+### Demonstração com o painel (outro modelo)
 
 ```powershell
 $env:WAF_MODELO='demo'; python servidor.py     # API em http://127.0.0.1:8000
@@ -47,10 +59,12 @@ cd frontend; npm install; npm run dev          # painel em http://localhost:5173
 python verificar_roteiro.py                    # confere os 26 casos do roteiro
 ```
 
-> **Atenção: a demonstração usa outro modelo.** `models/demo/` foi treinado com tráfego em
-> português. O modelo do CSIC (`python servidor.py`, sem a variável) é o que gera os números
-> do artigo. Ele conhece só o tráfego "normal" da loja espanhola do dataset e bloqueia
-> entradas legítimas em português. A rota `/api/waf/info` mostra qual modelo está carregado.
+> **Atenção: o painel usa outro modelo, e nenhum número do artigo vem dele.** `models/demo/`
+> foi treinado com datasets públicos de SQLi e com um dataset de XSS **sintético**, gerado no
+> projeto antigo a partir de 24 frases-modelo (`generate_xss.py`). O modelo do CSIC conhece só o
+> tráfego "normal" da loja espanhola do dataset e bloqueia entradas legítimas em português; por
+> isso o painel, que é em português, usa o modelo de demonstração. A rota `/api/waf/info` mostra
+> qual modelo está carregado.
 
 ---
 

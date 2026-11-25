@@ -88,8 +88,10 @@ O que falta:
 
 - ⚠️ O comentário do `servidor.py` (~linha 38) ainda diz "treinado em português". É falso
   (conferido em 12/11). **A correção é sua.**
-- ❌ Ele pediu para **ver o modelo avaliado funcionando**. Precisa de um roteiro de demo com
-  `python servidor.py` usando payloads **do próprio CSIC**, não frases em português.
+- ✅ **Modelo avaliado funcionando:** `demo_csic.py` (25/11) reenvia requisições reais do CSIC a
+  `python servidor.py` e mostra qual camada decide. Resultado em `docs/medicoes/demo_csic.md`.
+  Mostra o mecanismo, **não** o desempenho (o modelo final viu essas requisições no treino).
+- ✅ README corrigido: dizia que o modelo demo foi "treinado com tráfego em português".
 - ❌ De onde vêm os dois limiares? Os dois foram escolhidos pelo mesmo critério?
   (`treino_modelo.py:344`, `escolher_limiar`, alvo de FP)
 
