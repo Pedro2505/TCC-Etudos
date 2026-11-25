@@ -48,6 +48,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import (confusion_matrix, f1_score, precision_recall_curve,
                             precision_score, recall_score, roc_auc_score)
 from sklearn.model_selection import StratifiedGroupKFold
+from sklearn.base import clone
 
 if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8')
@@ -254,7 +255,7 @@ def montar_matriz(df: pd.DataFrame, idx_treino: np.ndarray, idx_teste: np.ndarra
 # =============================================================================
 
 def validar(df: pd.DataFrame, usar_heuristicas=True, usar_tfidf=True,
-            usar_contexto=True, verboso=True):
+            usar_contexto=True, verboso=True, modelo=None):
     """
     Executa a validacao cruzada e devolve as metricas por fold e as probabilidades
     out-of-fold.
@@ -275,12 +276,14 @@ def validar(df: pd.DataFrame, usar_heuristicas=True, usar_tfidf=True,
     for n_fold, (idx_tr, idx_te) in enumerate(cv.split(df, y, groups=grupos), start=1):
         X_tr, X_te, _, _ = montar_matriz(df, idx_tr, idx_te,
                                          usar_heuristicas, usar_tfidf, usar_contexto)
+        if modelo is None:
+            estimador = RandomForestClassifier(n_estimators=N_ARVORES, random_state=SEMENTE,
+                                               n_jobs=-1)
+        else:
+            estimador = clone(modelo)
+        estimador.fit(X_tr, y[idx_tr])
 
-        modelo = RandomForestClassifier(n_estimators=N_ARVORES, random_state=SEMENTE,
-                                        n_jobs=-1)
-        modelo.fit(X_tr, y[idx_tr])
-
-        prob = modelo.predict_proba(X_te)[:, 1]
+        prob = estimador.predict_proba(X_te)[:, 1]
         prob_oof[idx_te] = prob
         pred = (prob >= 0.5).astype(int)     # limiar padrao; calibrado na secao 4
 

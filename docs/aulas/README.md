@@ -17,7 +17,7 @@ escreve vão em `docs/`, um nível acima.
 | [`etapa-00-explicacao-do-porteiro.md`](Etapa%2000/etapa-00-explicacao-do-porteiro.md) | **A mesma coisa sem fórmula.** A analogia do porteiro da loja: os dois tipos de erro, quem sofre com cada um, e por que a acurácia engana. **Se a matemática confundir, começar por aqui.** |
 | [`etapa-00-fundamentos-parte-2-bloco-2.md`](Etapa%2000/etapa-00-fundamentos-parte-2-bloco-2.md) | **Validação cruzada K-Fold e vazamento de dados.** Por que uma divisão só mede sorte, média ± desvio, previsões out-of-fold, e as **três formas de vazamento** deste projeto (TF-IDF fora do fold, par GET/POST, limiar medido no próprio teste). Fecha a Etapa 0. |
 | [`videos-em-portugues.md`](videos-em-portugues.md) | Vídeos de apoio em português por tema (métricas, Random Forest, validação cruzada), com as três regras de como assistir. Nenhum verificado. |
-| [`cronograma-ate-outubro.md`](cronograma-ate-outubro.md) | As 24 sessões (quintas e sextas) até 31/10, os cortes de escopo decididos, e o que cabe em novembro. |
+| [`arquivo/cronograma-ate-outubro.md`](arquivo/cronograma-ate-outubro.md) | **Arquivado (prazo vencido).** As 24 sessões (quintas e sextas) até 31/10, os cortes de escopo decididos, e o que cabe em novembro. |
 | [`estrutura-do-artigo.md`](estrutura-do-artigo.md) | Estrutura do artigo ABNT, orçamento de páginas, inventário das 12 tabelas/figuras, e a seção de trabalhos relacionados. |
 | [`como-usar-o-sistema.md`](como-usar-o-sistema.md) | Guia de uso do sistema e do painel. |
 | [`roteiro-video.md`](roteiro-video.md) | Roteiro do vídeo de demonstração para o orientador. |

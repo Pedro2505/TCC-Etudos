@@ -39,3 +39,9 @@ desktop.ini
 # Capturas do docs/artigo/TCC Modelo.docx (referencia de formatacao)
 image.png
 image copy.png
+
+# Criada pelo servidor.py ao subir (servidor.py:306)
+static/
+
+# Requisicoes brutas dos erros (medir_erros.py): trafego do CSIC, mesma restricao
+datasets/CSIC2010/*.csv

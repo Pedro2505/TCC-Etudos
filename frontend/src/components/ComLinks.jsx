@@ -1,14 +1,11 @@
 /**
- * Texto em que toda menção a uma aba ("aba Artigo", "aba Resultados"…) vira link
+ * Texto em que toda menção a uma aba ("aba Resultados", "aba Testar ao vivo"…) vira link
  * para ela. Antes essas menções eram texto puro e não levavam a lugar nenhum.
  */
 const ABAS = [
   ['Testar ao vivo', 'vivo'],
   ['Resultados do modelo', 'resultados'],
   ['Resultados', 'resultados'],
-  ['Artigo', 'artigo'],
-  ['Banca', 'banca'],
-  ['Plano', 'plano'],
 ];
 
 const PADRAO = new RegExp(`(aba (?:${ABAS.map(([n]) => n).join('|')}))`, 'g');

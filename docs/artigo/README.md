@@ -25,6 +25,8 @@
 
 | Preciso de… | Abra |
 | :--- | :--- |
+| **Todos os fatos num lugar só: dataset, bibliotecas, parâmetros, resultados** | [`FICHA-TECNICA.md`](FICHA-TECNICA.md) |
+| **O que o Paulo pediu em 25/11, ponto por ponto, com onde está cada coisa** | [`PEDIDOS-DO-PAULO.md`](PEDIDOS-DO-PAULO.md) |
 | **Os números, com o script que gerou cada um** | [`NECESSARIO.md`](../../NECESSARIO.md) §2b |
 | As suas frases já prontas (palavras suas) | [`NECESSARIO.md`](../../NECESSARIO.md) §1 |
 | Conceitos e decisões a escrever, com o capítulo de destino | [`NECESSARIO.md`](../../NECESSARIO.md) §2 |

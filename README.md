@@ -66,8 +66,13 @@ Todo número do artigo sai de um script deste repositório:
 | Falso positivo em tráfego legítimo | `teste_falso_positivo.py` | `docs/medicoes/teste_falso_positivo*.md` |
 | Latência por etapa e ponta a ponta | `medir_latencia.py` ¹ | `docs/medicoes/latencia.md` |
 | Normalização do treino × do servidor | `medir_normalizacao.py` ¹ | `docs/medicoes/normalizacao_treino_vs_servidor.md` |
+| Comparação entre algoritmos (objetivo 5) | `comparar_modelos.py` ² | `docs/medicoes/comparacao_modelos.md` |
+| Matriz de confusão, falsos positivos e falsos negativos | `medir_erros.py` ¹ | `docs/medicoes/erros.md`, `matriz_confusao.png` |
 | Validação manual da família atribuída | `validar_familias.py` | `docs/medicoes/validacao_familias.md` |
 | Explicabilidade (SHAP) | `explicacao.py` | `docs/shap_explain_report.png` |
+
+² Escrito com assistente de IA (Claude) a pedido do autor, em 25/11/2026. Usa a mesma
+validação do `treino_modelo.py` e não grava modelo.
 
 ¹ Scripts de medição de apoio escritos com assistente de IA (Claude). Eles não treinam
 nem decidem nada, só medem. O cabeçalho de cada um declara isso.

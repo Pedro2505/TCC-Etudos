@@ -89,6 +89,17 @@ com as palavras dele, montado por pergunta e resposta). **Na próxima sessão, c
 resumo da aba Resultados; (c) se as perguntas (data, 20 páginas, regra de IA, objetivo 5) foram
 junto. **Gravar aqui as respostas do Paulo assim que chegarem.**
 
+### RESPOSTA DO PAULO (registrada em 25/11, texto integral em `docs/artigo/paulo.md`)
+
+Sete pontos: (1) caminho da requisição no código + o que é dele, de terceiros e **de IA**;
+(2) dataset, 97.065 → 32.808, features, por que RF, split sem repetição; (3) **comparar
+algoritmos** (objetivo 5) — grupos de features não substituem; (4) **modelo da demo ≠ modelo
+avaliado no CSIC**: explicar e demonstrar o avaliado; (5) matriz de confusão, regras × modelo ×
+híbrido, métricas com os números dele, **discutir os ~40% de anomalias que passaram**;
+(6) limitações, FP legítimo, como a latência foi medida; (7) código, dependências e scripts
+reprodutíveis. Na banca: abrir o código, explicar trechos, rodar testes escolhidos na hora e
+fazer uma alteração ao vivo.
+
 ### Feito em 12/11 (pelo Claude, infraestrutura e medição de apoio)
 
 - `medir_latencia.py` → `docs/medicoes/latencia.md`. **A Tab. 6 agora tem script.**
@@ -373,7 +384,7 @@ Em ordem de eficácia. Os dois primeiros são diários, os dois últimos são de
 | :--- | :--- |
 | **Formato** | **Artigo** ABNT NBR 6022, mínimo 20 páginas — não é monografia. Isso substitui a Etapa 12 do `ROTEIRO.md`. Ver `docs/aulas/estrutura-do-artigo.md`. |
 | **Prazos** | Entrega **outubro/2026** · defesa **novembro/2026**. Texto fechado em **16/10**. |
-| **Regime** | Quintas e sextas. 24 sessões até 31/10. Ver `docs/aulas/cronograma-ate-outubro.md`. |
+| **Regime** | Quintas e sextas. 24 sessões até 31/10. Ver `docs/aulas/arquivo/cronograma-ate-outubro.md` (arquivado). |
 | **Enquadramento** | A camada de ML é **acrescentada** ao WAF de assinaturas, **não o substitui**. O resultado do trabalho é o **delta** (detecção ganha × FP introduzido), não o F1 do modelo. Ver `estrutura-do-artigo.md` §0. |
 | **Cortes** | Etapa 11 (SHAP) em versão mínima; `datasets/SQL Injection/` e `datasets/XSS/` fora de escopo. |
 | **Reaproveitamento do projeto antigo** (13/08) | **Frontend:** reaproveitado inteiro — não está nas 13 etapas, não é o trabalho. **Middleware (Etapa 9):** esqueleto reaproveitado, mas três pontos são dele (ver abaixo). Todo o resto continua sendo feito à mão. |
@@ -501,3 +512,43 @@ duplicada de `docs/medicoes/shap_explain_report.png` (o `explicacao.py` grava em
 `static/index.html` (painel antigo, substituído por `frontend/`) · `__pycache__/`.
 Mantidos de propósito: `logs/` (é a prova dos números de 06/10), `ingestao.py` e os datasets
 de SQLi/XSS (treinam o modelo demo), `docs/artigo/TCC Modelo.docx` (o template do artigo).
+
+### Limpeza do repositório (25/11)
+
+Removidos: `logs/model_trainer_rerun2.log` (rodada interrompida pelo segfault), os prints
+`image*.png` da raiz, a pasta vazia `static/` (agora no `.gitignore`), e as abas ocultas
+Artigo, Banca e Plano do painel (componentes e `lib/`). Arquivado: `docs/aulas/arquivo/cronograma-ate-outubro.md`.
+Mantido de propósito: `logs/model_trainer_rerun1.log`, idêntico ao `model_trainer.log`, que é a
+prova de reprodutibilidade. O build do frontend passou depois da remoção.
+
+### Paulo sobre a apresentação (recebido em 25/11)
+
+> "Vc vai entregar o artigo para a banca ler, e vai fazer uma apresentação falando do artigo e
+> mostrando os resultados, como vc alcançou, e explicando a teoria, a metodologia e os
+> resultados finais."
+
+Formato da defesa: **artigo lido pela banca antes** + **apresentação** em 4 blocos (teoria,
+metodologia, como alcançou os resultados, resultados finais). Somado ao `paulo.md`: abrir o
+código, explicar trechos, testes escolhidos na hora, alteração ao vivo.
+**Tempo da apresentação: ~15 min** (Pedro, 25/11). **Ainda sem resposta:** data de entrega, data da banca, escopo, demo.
+
+### DECISÃO DE ESCOPO (25/11) — falta o aval do Paulo
+
+O Pedro escolheu **alargar o escopo**: o tema passa a ser detecção de anomalias em requisições
+HTTP com ML, e SQLi/XSS viram famílias dentro dele. Razão dele: "o tema é detecção de anomalias
+HTTP usando ML". Consequências: a tabela por família vira o resultado central, o tampering
+precisa ser definido na fundamentação, e o cap. 1 (título, objetivos, introdução) precisa ser
+revisado. **Falta:** a alternativa descartada dita por ele, e o aval do Paulo.
+
+### Objetivo 5 — preparação (25/11)
+
+`treino_modelo.validar` ganhou o parâmetro `modelo=None` (padrão: o mesmo Random Forest de
+sempre; outro estimador entra via `sklearn.base.clone`, um modelo limpo por fold). O Pedro
+escreveu o parâmetro e o import; **o `if`/`else` das linhas 279–286 foi escrito pelo Claude a
+pedido dele**: entra na declaração de uso de IA (ponto 1 do Paulo). Import do módulo testado: ok.
+Nada foi retreinado; `models/` intacto. **Falta:** o script `comparar_modelos.py` e conferir
+que o RF dá de novo F1 0,7824 ± 0,0088.
+**Atualização, mesmo dia:** `comparar_modelos.py` escrito pelo Claude a pedido do Pedro e rodado.
+RF repete 0,7824 ± 0,0088 e o limiar 0,650 (a mudança na `validar` não alterou nada). RL bem pior;
+árvore não opera em FP ≤ 1%. Resultado em `docs/medicoes/comparacao_modelos.md`. **Ponto 3 do
+Paulo: números prontos; a justificativa da escolha é do Pedro.**

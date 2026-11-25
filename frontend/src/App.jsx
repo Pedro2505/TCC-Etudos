@@ -5,21 +5,11 @@ import Pipeline from './components/Pipeline';
 import Historico from './components/Historico';
 import ConferirRoteiro from './components/ConferirRoteiro';
 import Resultados from './components/Resultados';
-import Artigo from './components/Artigo';
-import Banca from './components/Banca';
-import Plano from './components/Plano';
 import { chaveDoCaso } from './lib/resultado';
 import { rolarParaAbas } from './lib/rolar';
 import { enviarRequisicao } from './lib/waf';
 
-const ABAS = {
-  vivo: 'Testar ao vivo', resultados: 'Resultados do modelo', artigo: 'Artigo', banca: 'Banca',
-  plano: 'Plano',
-};
-
-// Abas de estudo: não aparecem no menu, mas continuam abrindo pelo endereço
-// (localhost:5173/#banca, #artigo, #plano).
-const OCULTAS = ['artigo', 'banca', 'plano'];
+const ABAS = { vivo: 'Testar ao vivo', resultados: 'Resultados do modelo' };
 
 function abaDaUrl() {
   const aba = window.location.hash.slice(1);
@@ -70,7 +60,7 @@ export default function App() {
 
       <div id="topo-abas" />
       <nav className="abas" aria-label="Seções">
-        {Object.entries(ABAS).filter(([id]) => !OCULTAS.includes(id) || aba === id).map(([id, nome]) => (
+        {Object.entries(ABAS).map(([id, nome]) => (
           <a key={id} href={`#${id}`} aria-current={aba === id ? 'page' : undefined}>{nome}</a>
         ))}
       </nav>
@@ -85,9 +75,6 @@ export default function App() {
         </>
       )}
       {aba === 'resultados' && <Resultados />}
-      {aba === 'artigo' && <Artigo />}
-      {aba === 'banca' && <Banca />}
-      {aba === 'plano' && <Plano />}
     </main>
   );
 }

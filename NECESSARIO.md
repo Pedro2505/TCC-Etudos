@@ -89,6 +89,8 @@ Cada item abaixo é um parágrafo que ainda não existe. A ideia está fechada; 
 | 7 | Complementaridade das camadas: quantos ataques só a assinatura pega, quantos só o modelo pega, quantos nenhuma | Resultados (**resultado central**) | 19/08 |
 | 8 | Latência por etapa do pipeline e o efeito do `n_jobs` na inferência unitária — o custo do delta | Resultados | 19/08 |
 | 9 | Por que cascata e união são equivalentes em decisão, e por que a cascata existe mesmo assim (proveniência do bloqueio e custo evitado) | Desenvolvimento | 19/08 |
+| 10 | **Escopo alargado** para anomalias HTTP (decisão do Pedro, falta o aval do Paulo): SQLi/XSS viram famílias; o ganho do ML (+45,6 pp) está no tampering. Definir *parameter tampering*. Exemplo dele, 25/11: "trocar o preço ou a quantidade pra valor negativo" | Cap. 1 (objetivos, introdução) + Fundamentação | 25/11 |
+| 11 | **Pergunta aberta (dica de 25/11):** por que uma assinatura não pega `precio=-85`? Como o modelo percebe que é anômalo, e o que ele precisou ver no treino? **A mesma resposta explica o ponto 4 do Paulo** (o modelo do CSIC bloqueia português legítimo). Resposta: do Pedro, ainda não dada | Resultados (tampering) + Limitações + ponto 4 | 25/11 |
 
 ---
 
@@ -121,6 +123,18 @@ só os de 12/11, dizendo a máquina (AMD, Windows, Python 3.11) e "uma requisiç
 **Atualização 12/11 — normalização treino × servidor medida** (`medir_normalizacao.py` →
 `docs/medicoes/normalizacao_treino_vs_servidor.md`): 99,21% dos textos mudam só na caixa,
 0,06% (20) mudam além disso, **0 de 32.808 decisões trocam de lado** (in-sample).
+
+**Atualização 25/11 — comparação entre algoritmos (objetivo 5)** (`comparar_modelos.py`, escrito
+pelo Claude a pedido do Pedro → `docs/medicoes/comparacao_modelos.md`, `logs/comparar_modelos.log`).
+F1 a 0,5 (5 folds): RF 0,7824 ± 0,0088 · regressão logística 0,5359 ± 0,0119 · árvore 0,7410 ± 0,0090.
+ROC-AUC: 0,8880 · 0,7193 · 0,7785. No FP ≤ 1%: RF recall 59,43% / F1 0,7395; RL recall 34,17% /
+F1 0,5044; **árvore não atinge FP ≤ 1% (mínimo 18,17%)**. Recall em tampering: RF 49,6% · RL 18,6%.
+
+**Atualização 25/11 — erros da união** (`medir_erros.py`, medição de apoio → `docs/medicoes/erros.md`,
+figura `docs/medicoes/matriz_confusao.png`). Matriz C: VN 18.436 · FP 184 · FN 5.707 · VP 8.481
+(bate com `avaliacao_hibrida.md`). **Os 5.707 que passaram são 100% tampering** (50,4% da família);
+prob. mediana 0,360. Os 184 FP: autenticar.jsp 124 · editar.jsp 29 · registro.jsp 22 · outros 9;
+prob. mediana 0,730. Assinaturas: 24 regras em 6 famílias (`python assinaturas.py`).
 
 Números novos do log do `treino_modelo.py` (06/10), ablação por bloco de features
 (F1 médio ± desvio, 5 folds):
@@ -197,6 +211,10 @@ o rótulo real do dataset.
   português porque viu texto legítimo **variado**, não porque viu português. O painel dizia
   "treinado em português" e foi corrigido. O comentário do `servidor.py` (linha ~38) ainda diz isso:
   a correção é do Pedro. *(12/11)*
+- **O dataset de XSS da demo é sintético** (achado em 25/11). `datasets/XSS/xss_dataset.csv`
+  foi gerado por `C:\Dev\Tcc\generate_xss.py`: 12 payloads XSS + 12 frases normais em
+  português, sorteadas 1.000 vezes cada. A origem dos CSVs de SQLi da demo é desconhecida.
+  Nenhum número da demo deve ir para o artigo. O CSIC veio do Kaggle (`ispangler`). *(25/11)*
 - **Normalização diferente no treino e no servidor** (achado em 06/10). O treino usa
   `ingestao_csic.normalizar_payload`, e o `servidor.py` usa a sua própria
   `decodificador_ofuscacao`. Ou se corrige antes da defesa, ou entra aqui como limitação,
