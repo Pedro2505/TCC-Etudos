@@ -74,6 +74,20 @@ A solução que funcionou para a última foi **ponto final**: uma ideia por fras
 
 ---
 
+### Cap. 4 Metodologia — respostas do Pedro, com as palavras dele (25/11)
+
+Método: uma pergunta por vez no chat; a resposta entra aqui sem reescrever.
+
+1. *De onde vieram os dados?* — "do kaggle, dataset csic 2010 de uma loja espanhola"
+2. *O que tirou de 97.065 → 32.808, e por quê?* — "tirei as repetidas e as do teste para n dar overfitig o modelo decorar"
+   *Revisão:* o 2º corte é "sem parâmetro" (45.585), não "do teste"; e o motivo da dedup é a cópia no teste inflar a medição (vazamento), não overfitting — o mesmo erro de 06/10.
+   *Corrigido por ele, mesma sessão:* o problema da repetida no treino e no teste é "a nota que a gente mede, fica inflada".
+3. *Par GET/POST do mesmo ataque em lados opostos do split?* — "a nota ficaria inflada de novo, o modelo ja viu"
+4. *O que o StratifiedGroupKFold faz?* (explicado no chat antes, com a analogia dos gêmeos) — "ele divide em 5 partes os dados, eiqueta e cada parte ficar com a mesma proporcao de ataques q o total"
+   *Falta:* que etiquetas iguais ficam do mesmo lado, e o porquê (o par GET/POST).
+
+---
+
 ## 2. Conteúdo levantado, ainda por escrever (eu escrevo)
 
 Cada item abaixo é um parágrafo que ainda não existe. A ideia está fechada; o texto não.

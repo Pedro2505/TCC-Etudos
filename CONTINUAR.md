@@ -575,3 +575,11 @@ Pedido do Pedro: revisar tudo e corrigir o que estiver errado. O artigo ainda n�
 - **Conferido sem erro:** `texto-sistema-respostas.md` (o que foi ao Paulo) e o `resultados.json` do painel.
 - **Continua pendente (não se corrige por código):** a validação manual de famílias
   (`validacao_familias.md`) é anterior às correções de 28/07 — refazer com a amostra de 50 (é do Pedro).
+
+### Onde parou (25/11, fim da sessão)
+
+Começou o Cap. 4 pelo método "pergunta por vez, resposta dele no NECESSARIO". Respostas 1–4 gravadas
+no `NECESSARIO.md` ("Cap. 4 Metodologia — respostas do Pedro"). Parou cansado na pergunta do "Group":
+**retomar por aí** (etiquetas iguais ficam do mesmo lado, para o par GET/POST não vazar). Próximas
+perguntas do Cap. 4: TF-IDF por fold, limiar 0,65, por que 1% de FP. Guia visual:
+https://claude.ai/artifact/PHJ6tQT4K9PUpfq2SCyRCF. Ainda falta mandar a mensagem ao Paulo.
