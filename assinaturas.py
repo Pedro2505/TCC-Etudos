@@ -59,7 +59,8 @@ exatamente esse o caso aqui. Por isso a arquitetura passou a ser em cascata:
 
 --- LIMITACAO DE PROJETO ---------------------------------------------------
 Assinaturas nao detectam, por definicao, ataque que nao contenha assinatura.
-No CSIC isso e 89,9% das anomalias (parameter tampering). Essa nao e uma falha
+No CSIC em escopo, a familia "Tampering sem assinatura" e 79,9% das anomalias
+(11.332 de 14.188; avaliacao_hibrida.py). Essa nao e uma falha
 desta implementacao: e a fronteira da abordagem, e e precisamente o espaco que
 a camada 2 ocupa.
 ==============================================================================

@@ -227,13 +227,16 @@ out-of-fold, e a banca pode perguntar exatamente isso.
 - ⚠️ **XSS da demo é sintético** (`generate_xss.py`, 24 frases-modelo repetidas). Parte do
   "normal" da demo são exatamente as frases em português do roteiro. Isso pesa no ponto 4 do Paulo.
 - ❓ SQLi da demo: origem desconhecida.
-- ⚠️ `docs/medicoes/teste_falso_positivo_csic.md` diz "gerado por `false_positive_test.py`",
-  com limiar 0,651. Esse script não existe com esse nome neste repositório (o atual é
-  `teste_falso_positivo.py`). **Rerode antes de citar qualquer número desse arquivo.**
+- ✅ Teste de falso positivo em português **rerodado em 25/11** (`teste_falso_positivo.py`):
+  modelo do CSIC erra 38 de 39 (97,4%, falha de transferência entre domínios) · modelo demo
+  erra 11 de 39 (28,2%). Corpus sintético e pequeno: serve de evidência, não de métrica.
 - ✅ Assinaturas: **24 regras em 6 famílias** (`python assinaturas.py`, 25/11).
 - ✅ Comparação entre algoritmos (`comparar_modelos.py`, 25/11).
-- ⚠️ O comentário de `treino_modelo.py` (~linha 412) diz que SQLi e XSS são "6,6% das
-  anomalias (468 + 472)". O medido é 1.018 + 952 de 14.188 = 13,9%. **Não citar o comentário.**
+- ✅ Comentários do código com números errados **corrigidos em 25/11** (13,9%/79,9%, 36,4%,
+  6,4 pontos de F1, latência com script). Ver `CONTINUAR.md`, "Revisão geral".
+- ⚠️ `validar_familias.py` / `docs/medicoes/validacao_familias.md`: a validação manual foi feita
+  **antes** das correções de 28/07 e o próprio arquivo diz "preciso refazer". **Não citar** os
+  números dele; refazer é a anotação manual da amostra (`amostra_familias_50.txt`), que é sua.
 - ✅ Figura da matriz de confusão (`medir_erros.py`, 25/11).
 - ✅ Quais são os 184 falsos positivos e os 5.707 que passaram (`medir_erros.py`, 25/11).
 - ❓ Declaração de uso de IA e de código de terceiros (ponto 1).

@@ -31,9 +31,10 @@ app.add_middleware(
 # colocaria I/O de disco no caminho crítico; com o modelo em RAM, o custo por
 # requisição é apenas a travessia das árvores.
 #
-# carregar_artefatos() também ajusta n_jobs=1: medi 28,54ms de inferência com
-# n_jobs=-1 contra 7,95ms com n_jobs=1 para uma única amostra. O despacho ao pool de
-# threads do joblib custa mais que percorrer as 100 árvores quando há uma linha só.
+# carregar_artefatos() também ajusta n_jobs=1. Para uma única amostra, o despacho ao
+# pool de threads do joblib custa mais que percorrer as 100 árvores. Com n_jobs=1 a
+# inferência mede 6,31 ms em média (medir_latencia.py -> docs/medicoes/latencia.md).
+# O valor com n_jobs=-1 não foi medido neste repositório.
 # Qual modelo carregar. Um WAF de ML aprende o comportamento normal de UMA aplicação:
 # o modelo do CSIC 2010 conhece o tráfego da loja "tienda1" (espanhol) e bloqueia
 # português com p≈0,90, porque está fora da distribuição que ele viu. Para a
@@ -171,12 +172,14 @@ async def waf_middleware(request: Request, call_next):
     # CAMADA 2 — MODELO DE MACHINE LEARNING
     # ========================================================================
     # Julga o que a camada 1 liberou. É aqui que está a contribuição do trabalho:
-    # medi que 36,6% dos ataques do CSIC são detectados SOMENTE por esta camada —
+    # medi que 36,4% dos ataques do CSIC são detectados SOMENTE por esta camada
+    # (avaliacao_hibrida.py -> docs/medicoes/avaliacao_hibrida.md) —
     # requisições que um WAF de assinaturas operando sozinho deixaria passar
     # inteiras, porque não contêm assinatura nenhuma para casar.
 
     # 2. Contexto HTTP real da requisição.
-    # Estas features valem 6,7 pontos de F1 na validação cruzada, e aqui eu tenho os
+    # Estas features valem 6,4 pontos de F1 na validação cruzada (0,7824 com elas,
+    # 0,7182 sem; logs/model_trainer.log), e aqui eu tenho os
     # valores verdadeiros — diferente dos scripts de teste, que usam padrões.
     contexto = {
         'metodo': request.method,

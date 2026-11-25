@@ -224,8 +224,8 @@ prova". Qualquer outra coisa é fé.
 
 ### O conceito — e por que essa etapa quase derrubou o trabalho original
 
-Seu tema é **SQL Injection e XSS**. Mas no CSIC 2010, SQLi + XSS somam **6,6%** das
-anomalias. Os outros **89,9%** são *parameter tampering* — campos com tipo errado, tamanho
+Seu tema é **SQL Injection e XSS**. Mas no CSIC 2010, SQLi + XSS somam **13,9%** das
+anomalias (corrigido em 25/11; o roteiro original dizia 6,6% e 89,9%, números do projeto antigo antes das correções de 28/07). **79,9%** são *parameter tampering* — campos com tipo errado, tamanho
 absurdo, caractere inválido. Coisa que não é injeção.
 
 Consequência: **o F1 global do seu modelo mede principalmente detecção de tampering.** Se

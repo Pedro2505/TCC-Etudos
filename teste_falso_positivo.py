@@ -38,7 +38,7 @@ E um resultado legitimo e importante -- confirma que um WAF de ML aprende o
 comportamento de UMA aplicacao e nao transfere para outra sem retreino, que e
 justamente por que o CSIC distribui um conjunto de treino por aplicacao. Mas nao
 e a taxa de falso positivo do sistema operando no dominio para o qual foi
-treinado; essa e de 3,89% (limiar padrao) ou 0,97% (limiar calibrado), medida por
+treinado; essa e de 3,92% (limiar padrao 0,5) ou 0,99% (limiar calibrado 0,65), medida por
 validacao cruzada no proprio CSIC.
 
 Por padrao aponto para models/demo/, cujo treino inclui trafego benigno em
@@ -140,8 +140,8 @@ if __name__ == '__main__':
             f.write('> **Atenção.** Corpus em português contra modelo treinado em '
                     'espanhol (CSIC/tienda1). O número abaixo mede falha de '
                     'transferência entre domínios, **não** falso positivo. A taxa de '
-                    'falso positivo do modelo no seu próprio domínio é de 3,89% '
-                    '(limiar padrão) ou 0,97% (limiar calibrado).\n\n')
+                    'falso positivo do modelo no seu próprio domínio é de 3,92% '
+                    '(limiar padrão 0,5) ou 0,99% (limiar calibrado 0,65; logs/model_trainer.log).\n\n')
         f.write('Corpus sintético agrupado por categoria de tráfego HTTP real. '
                 'Ver limitação declarada no cabeçalho do script.\n\n')
         f.write('\n'.join(linhas_md) + '\n\n')

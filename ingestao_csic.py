@@ -8,8 +8,9 @@ Os datasets de SQLi/XSS usados nas Sprints 1-4 tem a classe benigna composta por
 CONSULTAS SQL LEGITIMAS (ex: "SELECT COUNT(thumb) FROM elephant"). O WAF, porem,
 opera na camada HTTP, onde trafego benigno e "tenis de corrida masculino" ou
 "pedro@gmail.com". Essa incompatibilidade de dominio faz a taxa de falso positivo
-medida (0,23%) nao descrever a tarefa real: em trafego HTTP realista ela e de
-23,1% (ver docs/medicoes/teste_falso_positivo.md).
+medida (0,23%, projeto antigo, sem script aqui) nao descrever a tarefa real: num
+corpus sintetico de trafego HTTP em portugues, o modelo demo erra 28,2% (11 de 39;
+teste_falso_positivo.py -> docs/medicoes/teste_falso_positivo.md, rerodado em 25/11).
 
 O CSIC 2010 resolve isso: sao requisicoes HTTP REAIS a uma aplicacao de
 e-commerce (a loja "tienda1"), com metodo, path, parametros, headers e corpo.
@@ -424,7 +425,8 @@ def normalizar_payload(texto: str) -> str:
     classes), o que arruina o balanceamento dos folds.
 
     Mantenho a funcao porque ela e util para MEDIR quantos ataques sao
-    estruturalmente indistinguiveis de trafego normal (medi 12,8%), o que e um
+    estruturalmente indistinguiveis de trafego normal (12,8% no projeto antigo; SEM
+    script neste repositorio, nao citar antes de medir), o que e um
     resultado relevante: essa fracao e, por construcao, invisivel para qualquer
     classificador que leia apenas o texto do payload.
     """

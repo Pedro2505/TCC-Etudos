@@ -93,8 +93,8 @@ Os três pontos onde este trabalho já quase caiu, e onde você deve ser mais ri
   número 1 à defesa** e precisa ser resolvido antes do texto final: ou alarga o escopo, ou
   mede ganho sobre SQLi/XSS ofuscados. Ver `CONTINUAR.md`.
   *Nota de proveniência:* a versão anterior deste arquivo afirmava 6,6% e 89,9%; a medição
-  do projeto antigo diz 13,9% e 79,9%. **Nenhum dos dois foi rerodado neste repositório.**
-  Não citar nenhum antes de gerar com script próprio.
+  do projeto antigo diz 13,9% e 79,9%. **Atualização 25/11: rerodado neste repositório —**
+  **13,9% (1.018 + 952 de 14.188) e 79,9% (11.332), `avaliacao_hibrida.py`.** O 6,6%/89,9% está errado.
 
 - **Vazamento de dados**, em três formas: TF-IDF ajustado fora do fold; pares GET/POST do
   mesmo payload caindo em lados opostos do split (deduplicação exata não pega — precisa de

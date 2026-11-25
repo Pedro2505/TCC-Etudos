@@ -124,9 +124,9 @@ def carregar_artefatos(pasta: Optional[Path] = None) -> tuple:
         # Compatibilidade com modelos antigos, treinados antes do metadata existir.
         metadata = {'limiar_decisao': 0.5, 'colunas': None}
 
-    # n_jobs=1 na inferência: medi 28,54ms com n_jobs=-1 contra 7,95ms com n_jobs=1
-    # para predição de amostra única. Distribuir o trabalho entre threads custa mais
-    # que percorrer as 100 árvores quando há só uma linha para classificar.
+    # n_jobs=1 na inferência: distribuir o trabalho entre threads custa mais que
+    # percorrer as 100 árvores quando há só uma linha para classificar. Com n_jobs=1 a
+    # inferência mede 6,31 ms em média (medir_latencia.py); n_jobs=-1 não foi medido aqui.
     modelo.n_jobs = 1
     return modelo, vetorizador, metadata
 

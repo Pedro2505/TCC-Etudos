@@ -169,9 +169,9 @@ Recall por família — **a tabela que decide a defesa**:
 | Injeção SSI/Comando | 384 | 100,0% | 100,0% | +0,0 pp |
 | Caractere de Controle/Nulo | 114 | 100,0% | 63,2% | +0,0 pp |
 
-Latência (300 execuções por etapa): extração de features 2,28 ms média / 2,71 ms p95 ·
+~~Latência do projeto antigo (300 execuções por etapa): extração de features 2,28 ms média / 2,71 ms p95 ·
 inferência 28,54 ms / 30,50 ms · pipeline completo 31,94 ms / 34,33 ms. Com `n_jobs=1` a
-inferência cai para 7,95 ms — 3,6×.
+inferência cai para 7,95 ms — 3,6×.~~ **SEM SCRIPT, NÃO CITAR.** Os números válidos são os de 12/11 (`medir_latencia.py`), acima.
 
 **Viés a declarar junto da tabela por família:** a família é atribuída por regex, e as
 assinaturas descrevem os mesmos fenômenos — o recall da camada 1 por família é otimista por
@@ -209,8 +209,8 @@ o rótulo real do dataset.
   57.465 exemplos, 23.765 legítimos, de texto variado (e-mails, nomes, números, frases em inglês,
   endereços em espanhol). Só ~5% têm cara de português, por uma heurística grosseira. Ele não barra
   português porque viu texto legítimo **variado**, não porque viu português. O painel dizia
-  "treinado em português" e foi corrigido. O comentário do `servidor.py` (linha ~38) ainda diz isso:
-  a correção é do Pedro. *(12/11)*
+  "treinado em português" e foi corrigido. O README dizia o mesmo, corrigido em 25/11. O comentário do `servidor.py` (linha ~38):
+  conferido em 25/11: o texto atual não diz "treinado em português" e está correto. *(12/11)*
 - **O dataset de XSS da demo é sintético** (achado em 25/11). `datasets/XSS/xss_dataset.csv`
   foi gerado por `C:\Dev\Tcc\generate_xss.py`: 12 payloads XSS + 12 frases normais em
   português, sorteadas 1.000 vezes cada. A origem dos CSVs de SQLi da demo é desconhecida.
@@ -222,7 +222,7 @@ o rótulo real do dataset.
   sendo limitação de engenharia (o Base64 heurístico pode alterar texto legítimo fora do CSIC). *(12/11)*
 - **Comentários do código citam números sem script:** 36,6% (`servidor.py`; o medido é
   36,4%), "6,7 pontos de F1" (o log dá 6,4) e 28,54 ms. Nenhum desses vai para o artigo
-  sem rerodar. *(06/10)* **Correção, mesmo dia:** o 22,3% tem origem sim. O log do
+  sem rerodar. *(06/10)* **Corrigidos no código em 25/11** (36,4%, 6,4 pontos, latência com script). **Correção, mesmo dia:** o 22,3% tem origem sim. O log do
   `ingestao_csic.py` mostra 5.585 ataques sem parâmetro, de 25.065 = 22,3%.
 - **Uso de IA no trabalho:** descobrir a regra da Unimar e declarar o que for exigido.
   Pergunta para o Paulo. *(19/08)*

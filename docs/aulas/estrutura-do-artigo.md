@@ -179,7 +179,7 @@ sobrou frase órfã no futuro: isso denuncia texto remendado.
 ### Especificidade — a introdução ainda serve para qualquer TCC do tema
 
 Não aparecem: CSIC 2010, Random Forest, a arquitetura em duas camadas, o fato de SQLi+XSS
-serem 6,6% das anomalias do dataset, o delta. A contribuição real do trabalho ainda não está
+serem 13,9% das anomalias do dataset (corrigido em 25/11; o 6,6% antigo estava errado), o delta. A contribuição real do trabalho ainda não está
 escrita em lugar nenhum. Normal numa entrega parcial; **é o que separa nota boa de nota
 máxima na versão final.**
 
@@ -267,7 +267,7 @@ Pelos artigos que usam **CSIC 2010** — com eles a comparação é número cont
 ### A lacuna a procurar (e provavelmente encontrar)
 
 Muito artigo sobre CSIC 2010 reporta **F1 global sem separar família de ataque**. Como
-SQLi + XSS são apenas 6,6% das anomalias do dataset (o resto é *parameter tampering*), esses
+SQLi + XSS são apenas 13,9% das anomalias do dataset (79,9% é *parameter tampering*; `avaliacao_hibrida.py`), esses
 trabalhos reportam uma métrica que mede majoritariamente tampering.
 
 Se você encontrar isso — **é a sua lacuna**, e vira o argumento de contribuição da

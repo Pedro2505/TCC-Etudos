@@ -560,3 +560,18 @@ Paulo: números prontos; a justificativa da escolha é do Pedro.**
 pela assinatura, tampering 5/6 pelo modelo. In-sample (o modelo final viu tudo) — mostra o
 mecanismo, não o desempenho. README corrigido (a demo não é "treinada em português"; XSS sintético).
 **Dos pedidos do Paulo que precisam de PC, não falta nenhum.** Daqui em diante é escrita.
+
+### Revisão geral (25/11)
+
+Pedido do Pedro: revisar tudo e corrigir o que estiver errado. O artigo ainda não existe, ficou fora.
+- **Comentários do código com números errados, corrigidos:** 36,6% → 36,4% e 6,7 → 6,4 pontos
+  (`servidor.py`); 6,6%/89,9% → 13,9%/79,9% (`treino_modelo.py`, `assinaturas.py`); 28,54/7,95 ms
+  (sem script) → 6,31 ms de `medir_latencia.py` (`servidor.py`, `extrator.py`, `treino_modelo.py`);
+  23,1% → 28,2% e 12,8% marcado sem script (`ingestao_csic.py`); 3,89%/0,97% → 3,92%/0,99%
+  (`teste_falso_positivo.py`). Todos compilam.
+- **Teste de falso positivo rerodado** para os dois modelos: CSIC 97,4% (transferência), demo 28,2%.
+- **Documentos:** 6,6%/89,9% corrigidos no `ROTEIRO.md`, `estrutura-do-artigo.md` e `CLAUDE.md`;
+  latência antiga riscada no `NECESSARIO.md`.
+- **Conferido sem erro:** `texto-sistema-respostas.md` (o que foi ao Paulo) e o `resultados.json` do painel.
+- **Continua pendente (não se corrige por código):** a validação manual de famílias
+  (`validacao_familias.md`) é anterior às correções de 28/07 — refazer com a amostra de 50 (é do Pedro).

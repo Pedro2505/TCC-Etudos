@@ -409,9 +409,9 @@ def escolher_limiar(y: np.ndarray, prob_oof: np.ndarray, alvo_fp: float):
 # =============================================================================
 # Por que esta secao e indispensavel no meu TCC:
 #
-# O tema do trabalho e deteccao de SQLi e XSS. Mas no CSIC 2010, SQLi e XSS somam
-# apenas 6,6% das anomalias (468 + 472 de 14.188) -- 89,9% e *parameter tampering*
-# sem assinatura. Ou seja, um F1 global calculado sobre o dataset inteiro mede
+# No CSIC 2010 em escopo, SQLi e XSS somam 13,9% das anomalias (1.018 + 952 de
+# 14.188) -- 79,9% (11.332) e *parameter tampering* sem assinatura
+# (avaliacao_hibrida.py -> recall_por_familia.csv). Ou seja, um F1 global calculado sobre o dataset inteiro mede
 # principalmente deteccao de tampering, e quase nao informa sobre SQLi/XSS.
 #
 # Reportar so o numero global seria repetir o erro que me custou os 0,23%: apresentar
@@ -500,10 +500,10 @@ def treinar_final(df: pd.DataFrame, limiar: float, resumo: dict,
                                     n_jobs=-1)
     modelo.fit(X, df['Label'].to_numpy())
 
-    # n_jobs=1 para a inferencia. Medi que com n_jobs=-1 uma predicao de amostra
-    # unica leva 28,54ms, contra 7,95ms com n_jobs=1: o custo de distribuir o
-    # trabalho entre threads supera o de percorrer as 100 arvores. Paralelizar
-    # ajuda no treino (milhares de amostras) e atrapalha na inferencia unitaria.
+    # n_jobs=1 para a inferencia: o custo de distribuir o trabalho entre threads
+    # supera o de percorrer as 100 arvores numa amostra so. Paralelizar ajuda no
+    # treino (milhares de amostras) e atrapalha na inferencia unitaria. Com n_jobs=1
+    # a inferencia mede 6,31 ms em media (medir_latencia.py); n_jobs=-1 nao foi medido aqui.
     modelo.n_jobs = 1
 
     pasta_destino.mkdir(parents=True, exist_ok=True)
