@@ -221,7 +221,130 @@ out-of-fold, e a banca pode perguntar exatamente isso.
 
 ---
 
-## 6. Pendências que esta ficha encontrou
+## 6. Capítulo por capítulo: o que você precisa para escrever
+
+> A estrutura e as páginas são as da sua 1ª entrega (seção 1.5) e de
+> [`estrutura-do-artigo.md`](../aulas/estrutura-do-artigo.md) §1. Para cada capítulo: o que
+> precisa conter, de onde tirar os fatos, quais tabelas e figuras entram, qual pedido do Paulo
+> ele cumpre, e as perguntas que o seu texto tem que responder. **A redação é sua.**
+
+### Cap. 1 — Introdução (1,5–2 p.) · já escrito na 1ª entrega, **precisa revisar**
+
+| Precisa | De onde |
+| :--- | :--- |
+| Escopo alargado para anomalias HTTP; SQLi/XSS como famílias dentro dele | `NECESSARIO.md` §2, item 10 (falta o aval do Paulo) |
+| Objetivo 5 (comparar algoritmos) mantido: agora tem resultado | §5 desta ficha |
+| Um objetivo que preveja a camada de assinaturas | `estrutura-do-artigo.md` §1b, "risco alto" |
+| Tirar a promessa de detectar zero-day, ou suavizar | `NECESSARIO.md` §3 |
+| Correções de digitação da 1ª entrega | `NECESSARIO.md` §4 |
+
+Perguntas: qual é a pergunta de pesquisa em uma frase? (`estrutura-do-artigo.md` §0)
+Por que somar ao WAF e não substituir? (a sua frase de 13/08, `NECESSARIO.md` §1)
+
+### Cap. 2 — Fundamentação teórica (2 p.)
+
+| Precisa explicar | Material de estudo |
+| :--- | :--- |
+| Requisição HTTP: método, path, query string, corpo | `docs/aulas/Etapa 00/` |
+| SQLi, XSS e **parameter tampering**, com um exemplo de cada | exemplos reais na saída do `demo_csic.py`; o seu exemplo do preço negativo (`NECESSARIO.md` §2, item 10) |
+| O que é um WAF de assinaturas | `assinaturas.py` (cabeçalho) |
+| Random Forest: árvores que votam | `docs/aulas/Etapa 00/` |
+| TF-IDF de caracteres (n-gramas) | `treino_modelo.py:225` |
+| Matriz de confusão, precisão, recall, F1, taxa de FP | figura `matriz_confusao.png`; **use os seus números** (ponto 5 do Paulo) |
+| Por que acurácia engana | a sua frase de 13/08, `NECESSARIO.md` §1 |
+| Validação cruzada e vazamento de dados | o seu parágrafo de 19/08 (3 de 6 frases), `NECESSARIO.md` §1 |
+
+Referências: cada conceito com uma citação (livro de ML, OWASP, artigo do CSIC).
+
+### Cap. 3 — Trabalhos relacionados (1,5–2 p.)
+
+| Precisa | De onde |
+| :--- | :--- |
+| 8 a 12 trabalhos que usam o CSIC 2010 ou ML em WAF | Google Acadêmico: "CSIC 2010 machine learning", "web application firewall machine learning" |
+| Para cada um: o que fez, que métrica reportou, **e a diferença para o seu** | — |
+| A diferença principal: eles reportam F1 global; você separa por família e mede o ganho sobre as regras | `estrutura-do-artigo.md` §2 (linha ~270) |
+
+Atenção: anote se o trabalho fez validação agrupada. A maioria não faz, e esse é um argumento seu.
+
+### Cap. 4 — Metodologia (4–5 p.) · pontos 2 e 3 do Paulo
+
+| Precisa | De onde nesta ficha |
+| :--- | :--- |
+| Dataset: origem (Kaggle, `ispangler`), autores originais, arquivos, encoding | §1 |
+| **Tabela 1**: 97.065 → 51.480 → 32.808, o que saiu em cada passo e por quê | §1 (a sua explicação de 12/11 está no `NECESSARIO.md` §2b) |
+| A família atribuída por regex, e o viés que isso causa | §1, §5 (o viés) |
+| Normalização | §3, `servidor.py:84` |
+| As features: heurísticas, contexto HTTP, TF-IDF | §3, tabela da camada 2 |
+| Validação: `StratifiedGroupKFold`, agrupado por payload, TF-IDF por fold, out-of-fold | §3 |
+| Limiar: maior F1 com FP ≤ 1%, sobre out-of-fold | §3; `treino_modelo.py:334–360` |
+| As 3 configurações avaliadas: só regras, só modelo, união | §5 |
+| A comparação de algoritmos: o que é igual para os três | cabeçalho de `comparar_modelos.py` |
+| Ambiente: bibliotecas, versões, máquina | §2 |
+
+Perguntas: o que `groups=` impede que a deduplicação não impede? Por que o TF-IDF é ajustado
+dentro do fold? Por que o limiar não é 0,5? (são as três formas de vazamento)
+
+### Cap. 5 — Desenvolvimento (2–3 p.) · pontos 1 e 4 do Paulo
+
+| Precisa | De onde nesta ficha |
+| :--- | :--- |
+| **O caminho de uma requisição**, etapa por etapa, com o arquivo | §3, tabela "Arquitetura" |
+| As 24 assinaturas em 6 famílias | §3 |
+| Por que a assinatura vem antes do modelo, se a decisão é a mesma da união | `servidor.py:139–150`; `NECESSARIO.md` §2, item 9 |
+| O que é inspecionado (só a query string) e o limite disso (22,3% no path) | §1, §3 |
+| Os dois modelos: qual é qual, dados, limiar, por que existem | §3, "Os dois modelos"; `PEDIDOS-DO-PAULO.md` ponto 4 |
+| A demonstração com o modelo avaliado | §5, `demo_csic.py` |
+| **Declaração de autoria e de uso de IA** | `README.md` (notas ¹ e ²) e `CONTINUAR.md` |
+
+Figura sugerida: diagrama das duas camadas (requisição → normalização → assinaturas → modelo → bloqueia/passa).
+
+### Cap. 6 — Resultados e discussão (4–5 p.) · pontos 3 e 5 do Paulo
+
+| Tabela ou figura | De onde nesta ficha | Arquivo de origem |
+| :--- | :--- | :--- |
+| Regras × modelo × união | §5 | `avaliacao_hibrida.md` |
+| **Matriz de confusão** (figura) | §5 | `matriz_confusao.png` |
+| Complementaridade (só regra, só modelo, ambas, nenhuma) | §5 | `avaliacao_hibrida.md` |
+| **Recall por família** (o resultado central) | §5 | `recall_por_familia.csv` |
+| **Os 40% que passaram são 100% tampering** | §5, "Os erros da união" | `erros.md` |
+| **Comparação de algoritmos** | §5 | `comparacao_modelos.md` |
+| Ablação por bloco de features | §5 | `logs/model_trainer.log` |
+| Curva do limiar (FP × recall) | §5 | `curva_limiar.csv` |
+| Latência por etapa | §5 | `latencia.md` |
+
+Perguntas que o Paulo pediu respondidas com os seus números: o que significa precisão de
+97,88%? E recall de 59,78%? Por que o ganho é zero em SQLi/XSS e +45,6 pp em tampering? Por que
+o Random Forest e não os outros dois? **Regra do delta:** a detecção ganha e o FP introduzido
+aparecem sempre juntos (`estrutura-do-artigo.md` §0).
+
+### Cap. 7 — Conclusão, limitações e trabalhos futuros (2 p.) · ponto 6 do Paulo
+
+| Precisa | De onde |
+| :--- | :--- |
+| O que os números provam, e só isso | §5 |
+| Onde o sistema erra: tampering (50,4% passa) e os 184 FP em login/cadastro | §5, "Os erros da união" (olhe os exemplos em `erros_exemplos.csv`) |
+| Não funciona em outra aplicação sem retreinar (97,4% em português) | §5, `teste_falso_positivo_csic.md` |
+| Só a query string; corpo, headers e path ficam de fora | §3 |
+| A família por regex é otimista para as assinaturas | §5, o viés |
+| Latência medida uma requisição por vez, sem carga | §5 |
+| A normalização do treino é diferente da do servidor (0 decisões mudam) | §5 |
+| Zero-day: palavra fora do vocabulário é ignorada | `NECESSARIO.md` §3 |
+| Trabalhos futuros: SQLi/XSS ofuscados, inspecionar corpo e headers, outro dataset | as alternativas que você descartou |
+
+### Resumo e referências
+
+- **Resumo:** reescreva depois de todos os capítulos, com os números finais da §5.
+- **Referências ABNT:** o CSIC (autores originais + Kaggle com data de acesso), scikit-learn,
+  OWASP, os 8–12 trabalhos do cap. 3, o livro de ML do cap. 2.
+
+### Os 15 minutos da apresentação (sai do artigo pronto)
+
+Teoria (cap. 2) → metodologia (cap. 4) → como chegou (caps. 5 e 6) → resultados finais (cap. 6).
+Um slide por tabela da §5, cada uma com o script de origem no rodapé.
+
+---
+
+## 7. Pendências que esta ficha encontrou
 
 - ✅ CSIC: Kaggle, usuário `ispangler` (25/11).
 - ⚠️ **XSS da demo é sintético** (`generate_xss.py`, 24 frases-modelo repetidas). Parte do
